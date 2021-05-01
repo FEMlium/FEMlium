@@ -1,0 +1,9 @@
+*~
+*.bak
+*.cache
+*.egg
+*.egg-info
+*.py[cod]
+.pytest_cache
+build
+dist
