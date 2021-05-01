@@ -1,0 +1,2 @@
+recursive-include femlium *.py
+global-exclude __pycache__ *.pyc
