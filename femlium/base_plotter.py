@@ -41,17 +41,15 @@ class BasePlotter(object):
             dtype = np.dtype(expected_type)
 
         assert np.min(unique_markers) >= 0
-        output = np.empty(np.max(unique_markers) + 1, dtype=dtype)
+        output = np.full(np.max(unique_markers) + 1, default, dtype=dtype)
         for m in unique_markers:
             if argument is None:
-                output[m] = default
+                pass
             elif isinstance(argument, expected_type):
                 output[m] = argument
             elif isinstance(argument, dict):
                 if m in argument:
                     output[m] = argument[m]
-                else:
-                    output[m] = default
             else:
                 raise ValueError("Invalid argument provided")
         return output

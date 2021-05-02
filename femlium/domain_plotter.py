@@ -7,6 +7,7 @@
 import numpy as np
 import geojson
 import folium
+import branca
 from femlium.base_plotter import BasePlotter
 
 
@@ -66,6 +67,15 @@ class DomainPlotter(BasePlotter):
             json,
             style_function=style_function
         ).add_to(geo_map)
+
+        colors_values = np.arange(0, np.max(unique_markers) + 1)
+        assert colors.shape == colors_values.shape
+        if np.unique(colors).shape[0] > 1:
+            colormap = branca.colormap.LinearColormap(
+                            colors=colors,
+                            index=colors_values, vmin=colors_values[0], vmax=colors_values[-1],
+                            caption="Segment markers")
+            geo_map.add_child(colormap)
 
     def _convert_domain_to_geojson(self, vertices, segment_markers, colors, weights):
         """
