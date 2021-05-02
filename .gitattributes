@@ -1,4 +1,4 @@
-
 *.ipynb	diff=jupyternotebook
-
 *.ipynb	merge=jupyternotebook
+*.csv filter=lfs diff=lfs merge=lfs -text
+*.msh filter=lfs diff=lfs merge=lfs -text
