@@ -40,7 +40,8 @@ class BasePlotter(object):
         else:
             dtype = np.dtype(expected_type)
 
-        output = np.empty(unique_markers.shape[0], dtype=dtype)
+        assert np.min(unique_markers) >= 0
+        output = np.empty(np.max(unique_markers) + 1, dtype=dtype)
         for m in unique_markers:
             if argument is None:
                 output[m] = default
