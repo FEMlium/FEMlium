@@ -115,20 +115,20 @@ class BaseMeshPlotter(BasePlotter):
         assert cell_colors_not_none.shape == cell_colors_values_not_none.shape
         if np.unique(cell_colors_not_none).shape[0] > 1:
             colormap = branca.colormap.LinearColormap(
-                            colors=cell_colors_not_none,
-                            index=cell_colors_values_not_none,
-                            vmin=cell_colors_values_not_none[0], vmax=cell_colors_values_not_none[-1],
-                            caption="Cell markers")
-            geo_map.add_child(colormap)
+                colors=cell_colors_not_none,
+                index=cell_colors_values_not_none,
+                vmin=cell_colors_values_not_none[0], vmax=cell_colors_values_not_none[-1],
+                caption="Cell markers")
+            colormap.add_to(geo_map)
 
         face_colors_values = np.arange(0, np.max(unique_face_markers) + 1)
         assert face_colors.shape == face_colors_values.shape
         if np.unique(face_colors).shape[0] > 1:
             colormap = branca.colormap.LinearColormap(
-                            colors=face_colors,
-                            index=face_colors_values, vmin=face_colors_values[0], vmax=face_colors_values[-1],
-                            caption="Face markers")
-            geo_map.add_child(colormap)
+                colors=face_colors,
+                index=face_colors_values, vmin=face_colors_values[0], vmax=face_colors_values[-1],
+                caption="Face markers")
+            colormap.add_to(geo_map)
 
     def _convert_mesh_to_geojson(self, vertices, cells, cell_markers, face_markers,
                                  cell_colors, face_colors, face_weights):
