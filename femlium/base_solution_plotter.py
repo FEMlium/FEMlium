@@ -9,9 +9,9 @@ import matplotlib
 import matplotlib.pyplot as plt
 import geojson
 import folium
-import branca
 from femlium.base_plotter import BasePlotter
 from femlium.plugins import PolyLineArrow
+from femlium.utils import ColorbarWrapper
 
 
 class BaseSolutionPlotter(BasePlotter):
@@ -105,9 +105,8 @@ class BaseSolutionPlotter(BasePlotter):
             style_function=style_function
         ).add_to(geo_map)
 
-        colormap = branca.colormap.LinearColormap(
-            colors=colors, index=levels, vmin=levels[0], vmax=levels[-1], caption=name)
-        colormap.add_to(geo_map)
+        colorbar = ColorbarWrapper(colors=colors, values=levels, caption=name)
+        colorbar.add_to(geo_map)
 
     def _convert_scalar_field_to_geojson(self, vertices, cells, scalar_field, mode, levels, colors):
         """
@@ -290,9 +289,8 @@ class BaseSolutionPlotter(BasePlotter):
                 polyline_arrow.add_to(geo_map)
 
             colors = [matplotlib.colors.to_hex(cmap(cnorm(lev))) for lev in levels]
-            colormap = branca.colormap.LinearColormap(
-                colors=colors, index=levels, vmin=levels[0], vmax=levels[-1], caption=name)
-            colormap.add_to(geo_map)
+            colorbar = ColorbarWrapper(colors=colors, values=levels, caption=name)
+            colorbar.add_to(geo_map)
         else:
             raise ValueError("Invalid mode")
 

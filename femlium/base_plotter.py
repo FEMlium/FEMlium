@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: MIT
 
 import numpy as np
-from femlium.transformer_wrapper import TransformerWrapper
+from femlium.utils import TransformerWrapper
 
 
 class BasePlotter(object):
