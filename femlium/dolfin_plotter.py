@@ -53,24 +53,21 @@ class DolfinPlotter(BaseMeshPlotter, BaseSolutionPlotter):
         vertices = mesh.coordinates()
         cells = mesh.cells()
 
-        mesh.init(0, 1)
-        vertex_to_face_connectivity = mesh.topology()(0, 1)
-
         if cell_mesh_function is not None:
             cell_markers = cell_mesh_function.array()
         else:
             cell_markers = None
 
         if face_mesh_function is not None:
+            mesh.init(2, 1)
+            cell_to_faces_connectivity = mesh.topology()(2, 1)
+
+            fiat_to_femlium = {0: 1, 1: 2, 2: 0}
+
             face_markers = np.zeros(cells.shape, dtype=np.dtype(int))
             for c in range(cells.shape[0]):
-                for (f, pair) in enumerate(((0, 1), (1, 2), (0, 2))):
-                    faces_0 = vertex_to_face_connectivity(cells[c, pair[0]])
-                    faces_1 = vertex_to_face_connectivity(cells[c, pair[1]])
-                    face_index = set(faces_0).intersection(faces_1)
-                    assert len(face_index) == 1
-                    face_index = face_index.pop()
-                    face_markers[c, f] = face_mesh_function[face_index]
+                for (f, global_face_number) in enumerate(cell_to_faces_connectivity(c)):
+                    face_markers[c, fiat_to_femlium[f]] = face_mesh_function[global_face_number]
         else:
             face_markers = None
 
