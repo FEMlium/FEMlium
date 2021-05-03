@@ -63,10 +63,7 @@ class DomainPlotter(BasePlotter):
             }
 
         json = self._convert_domain_to_geojson(vertices, segment_markers, colors, weights)
-        folium.GeoJson(
-            json,
-            style_function=style_function
-        ).add_to(geo_map)
+        folium.GeoJson(json, style_function=style_function).add_to(geo_map)
 
         colors_values = np.arange(0, np.max(unique_markers) + 1)
         assert colors.shape == colors_values.shape

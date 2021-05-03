@@ -103,10 +103,7 @@ class BaseMeshPlotter(BasePlotter):
 
         json = self._convert_mesh_to_geojson(
             vertices, cells, cell_markers, face_markers, cell_colors, face_colors, face_weights)
-        folium.GeoJson(
-            json,
-            style_function=style_function
-        ).add_to(geo_map)
+        folium.GeoJson(json, style_function=style_function).add_to(geo_map)
 
         cell_colors_where_none = np.argwhere(cell_colors == "none")
         cell_colors_not_none = np.delete(cell_colors, cell_colors_where_none)

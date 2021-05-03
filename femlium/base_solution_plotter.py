@@ -10,8 +10,7 @@ import matplotlib.pyplot as plt
 import geojson
 import folium
 from femlium.base_plotter import BasePlotter
-from femlium.plugins import PolyLineArrow
-from femlium.utils import ColorbarWrapper
+from femlium.utils import ColorbarWrapper, GeoJsonWithArrows
 
 
 class BaseSolutionPlotter(BasePlotter):
@@ -72,8 +71,8 @@ class BaseSolutionPlotter(BasePlotter):
 
         if cmap is None:
             cmap = "jet"
-        elif isinstance(cmap, str):
-            cmap = plt.get_cmap(cmap)
+        if isinstance(cmap, str):
+            cmap = plt.get_cmap(cmap, lut=levels.shape[0])
         cnorm = plt.Normalize(vmin=levels[0], vmax=levels[-1])
         colors = [matplotlib.colors.to_hex(cmap(cnorm(lev))) for lev in levels]
 
@@ -100,10 +99,7 @@ class BaseSolutionPlotter(BasePlotter):
                 raise ValueError("Invalid type")
 
         json = self._convert_scalar_field_to_geojson(vertices, cells, scalar_field, mode, levels, colors)
-        folium.GeoJson(
-            json,
-            style_function=style_function
-        ).add_to(geo_map)
+        folium.GeoJson(json, style_function=style_function).add_to(geo_map)
 
         colorbar = ColorbarWrapper(colors=colors, values=levels, caption=name)
         colorbar.add_to(geo_map)
@@ -269,8 +265,8 @@ class BaseSolutionPlotter(BasePlotter):
 
         if cmap is None:
             cmap = "jet"
-        elif isinstance(cmap, str):
-            cmap = plt.get_cmap(cmap)
+        if isinstance(cmap, str):
+            cmap = plt.get_cmap(cmap, lut=levels.shape[0])
         cnorm = plt.Normalize(vmin=levels[0], vmax=levels[-1])
 
         if name is None:
@@ -280,13 +276,17 @@ class BaseSolutionPlotter(BasePlotter):
             return self.add_scalar_field_to(
                 geo_map, vertices, cells, vector_field_magnitude, mode, levels, cmap, name)
         elif mode == "quiver":
-            polylines, polylines_arrow = self._convert_vector_field_to_folium(
+            json = self._convert_vector_field_to_geojson(
                 vertices, vector_field_magnitude, vector_field, scale,
                 lambda lev: matplotlib.colors.to_hex(cmap(cnorm(lev))))
 
-            for (polyline, polyline_arrow) in zip(polylines, polylines_arrow):
-                polyline.add_to(geo_map)
-                polyline_arrow.add_to(geo_map)
+            def style_function(x):
+                return {
+                    "color": x["properties"]["color"],
+                    "weight": x["properties"]["weight"]
+                }
+
+            GeoJsonWithArrows(json, style_function=style_function, frequency="endonly").add_to(geo_map)
 
             colors = [matplotlib.colors.to_hex(cmap(cnorm(lev))) for lev in levels]
             colorbar = ColorbarWrapper(colors=colors, values=levels, caption=name)
@@ -294,10 +294,9 @@ class BaseSolutionPlotter(BasePlotter):
         else:
             raise ValueError("Invalid mode")
 
-    def _convert_vector_field_to_folium(self, vertices, vector_field_magnitude, vector_field, scale, cmap):
+    def _convert_vector_field_to_geojson(self, vertices, vector_field_magnitude, vector_field, scale, cmap):
         """
-        Convert a vector field to lists of folium objects, where each line represent the value of
-        the vector at each vertex.
+        Convert a scalar field to a geojson FeatureCollection.
 
         Parameters
         ----------
@@ -319,18 +318,38 @@ class BaseSolutionPlotter(BasePlotter):
 
         Returns
         -------
-        list of folium.PolyLine
-            Each line represent the value of the vector at each vertex.
-        list of PolyLineArrow
-            Arrow corresponding to each polyline.
+        geojson.FeatureCollection
+            A geojson FeatureCollection representing the scalar field.
         """
 
-        polylines = [
-            folium.PolyLine(
-                [self.transformer(*vertices[v, :])[::-1],
-                 self.transformer(*(vertices[v, :] + scale * vector_field[v, :]))[::-1]],
-                color=cmap(vector_field_magnitude[v]), weight=2)
-            for v in range(vertices.shape[0])]
-        polylines_arrow = [
-            PolyLineArrow(polyline, frequency="endonly") for polyline in polylines]
-        return polylines, polylines_arrow
+        multiline_coordinates = dict()
+        multiline_properties = dict()
+        for v in range(vertices.shape[0]):
+            coordinates = [
+                self.transformer(*vertices[v, :]),
+                self.transformer(*(vertices[v, :] + scale * vector_field[v, :]))]
+            color = cmap(vector_field_magnitude[v])
+            # Store current coordinates
+            if color not in multiline_coordinates:
+                multiline_coordinates[color] = list()
+            multiline_coordinates[color].append(coordinates)
+            # Store current properties
+            properties = {
+                "color": color,
+                "weight": str(2)
+            }
+            if color not in multiline_properties:
+                multiline_properties[color] = properties
+            else:
+                assert multiline_properties[color] == properties
+
+        multiline_features = list()
+        for color in multiline_coordinates.keys():
+            multiline = geojson.MultiLineString(coordinates=multiline_coordinates[color])
+            feature = geojson.Feature(
+                geometry=multiline,
+                properties=multiline_properties[color]
+            )
+            multiline_features.append(feature)
+
+        return geojson.FeatureCollection(multiline_features)
