@@ -25,7 +25,7 @@ class BasePlotter(object):
         Wrapper to the transformer object provided as first input parameter.
     """
 
-    def __init__(self, transformer):
+    def __init__(self, transformer=None):
         self.transformer = TransformerWrapper(transformer)
 
     @staticmethod
