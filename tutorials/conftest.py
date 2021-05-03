@@ -93,12 +93,23 @@ class TutorialItem(pytest.Item):
         super(TutorialItem, self).__init__(name, parent)
 
     def runtest(self):
+        self._import_backend_or_skip()
         os.chdir(self.parent.fspath.dirname)
         sys.path.append(self.parent.fspath.dirname)
         spec = importlib.util.spec_from_file_location(self.name, str(self.parent.fspath))
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
         plt.close("all")  # do not trigger matplotlib max_open_warning
+
+    def _import_backend_or_skip(self):
+        if self.name.endswith("dolfin.py"):
+            pytest.importorskip("dolfin")
+        if self.name.endswith("dolfinx.py"):
+            pytest.importorskip("dolfinx")
+        elif self.name.endswith("firedrake.py"):
+            pytest.importorskip("firedrake")
+        elif self.name.endswith("meshio.py"):
+            pytest.importorskip("meshio")
 
     def reportinfo(self):
         return self.fspath, 0, self.name
