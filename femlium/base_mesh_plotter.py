@@ -110,16 +110,24 @@ class BaseMeshPlotter(BasePlotter):
         cell_colors_values = np.arange(0, np.max(unique_cell_markers) + 1)
         cell_colors_values_not_none = np.delete(cell_colors_values, cell_colors_where_none)
         assert cell_colors_not_none.shape == cell_colors_values_not_none.shape
-        if np.unique(cell_colors_not_none).shape[0] > 1:
+        cell_colors_in_figure = np.delete(
+            cell_colors_not_none, np.setdiff1d(cell_colors_values_not_none, unique_cell_markers))
+        cell_colors_values_in_figure = np.delete(
+            cell_colors_values_not_none, np.setdiff1d(cell_colors_values_not_none, unique_cell_markers))
+        if np.unique(cell_colors_in_figure).shape[0] > 1:
             colorbar = ColorbarWrapper(
-                colors=cell_colors_not_none, values=cell_colors_values_not_none, caption="Cell markers")
+                colors=cell_colors_in_figure, values=cell_colors_values_in_figure, caption="Cell markers")
             colorbar.add_to(geo_map)
 
         face_colors_values = np.arange(0, np.max(unique_face_markers) + 1)
         assert face_colors.shape == face_colors_values.shape
-        if np.unique(face_colors).shape[0] > 1:
+        face_colors_in_figure = np.delete(
+            face_colors, np.setdiff1d(face_colors_values, unique_face_markers))
+        face_colors_values_in_figure = np.delete(
+            face_colors_values, np.setdiff1d(face_colors_values, unique_face_markers))
+        if np.unique(face_colors_in_figure).shape[0] > 1:
             colorbar = ColorbarWrapper(
-                colors=face_colors, values=face_colors_values, caption="Face markers")
+                colors=face_colors_in_figure, values=face_colors_values_in_figure, caption="Face markers")
             colorbar.add_to(geo_map)
 
     def _convert_mesh_to_geojson(self, vertices, cells, cell_markers, face_markers,

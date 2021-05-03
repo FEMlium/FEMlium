@@ -67,8 +67,11 @@ class DomainPlotter(BasePlotter):
 
         colors_values = np.arange(0, np.max(unique_markers) + 1)
         assert colors.shape == colors_values.shape
-        if np.unique(colors).shape[0] > 1:
-            colorbar = ColorbarWrapper(colors=colors, values=colors_values, caption="Segment markers")
+        colors_in_figure = np.delete(colors, np.setdiff1d(colors_values, unique_markers))
+        colors_values_in_figure = np.delete(colors_values, np.setdiff1d(colors_values, unique_markers))
+        if np.unique(colors_in_figure).shape[0] > 1:
+            colorbar = ColorbarWrapper(
+                colors=colors_in_figure, values=colors_values_in_figure, caption="Segment markers")
             colorbar.add_to(geo_map)
 
     def _convert_domain_to_geojson(self, vertices, segment_markers, colors, weights):
