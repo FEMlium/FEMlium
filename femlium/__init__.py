@@ -8,7 +8,6 @@ from femlium.base_plotter import BasePlotter
 from femlium.base_mesh_plotter import BaseMeshPlotter
 from femlium.base_solution_plotter import BaseSolutionPlotter
 from femlium.domain_plotter import DomainPlotter
-from femlium.meshio_plotter import MeshioPlotter
 from femlium.numpy_plotter import NumpyPlotter
 
 __all__ = [
@@ -16,6 +15,21 @@ __all__ = [
     "BaseMeshPlotter",
     "BaseSolutionPlotter",
     "DomainPlotter",
-    "MeshioPlotter",
     "NumpyPlotter"
 ]
+
+try:
+    import meshio  # noqa: F401
+except ImportError:
+    pass
+else:
+    from femlium.meshio_plotter import MeshioPlotter
+    __all__ += ["MeshioPlotter"]
+
+try:
+    import dolfin  # noqa: F401
+except ImportError:
+    pass
+else:
+    from femlium.dolfin_plotter import DolfinPlotter
+    __all__ += ["DolfinPlotter"]

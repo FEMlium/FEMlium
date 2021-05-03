@@ -273,8 +273,8 @@ class BaseSolutionPlotter(BasePlotter):
             name = "Vector field"
 
         if mode in ("contourf", "contour"):
-            return self.add_scalar_field_to(
-                geo_map, vertices, cells, vector_field_magnitude, mode, levels, cmap, name)
+            return BaseSolutionPlotter.add_scalar_field_to(
+                self, geo_map, vertices, cells, vector_field_magnitude, mode, levels, cmap, name)
         elif mode == "quiver":
             json = self._convert_vector_field_to_geojson(
                 vertices, vector_field_magnitude, vector_field, scale,
