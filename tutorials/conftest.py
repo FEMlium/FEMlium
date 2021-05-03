@@ -6,6 +6,7 @@
 
 import os
 import re
+import sys
 import importlib
 import pytest
 import pytest_flake8
@@ -54,11 +55,10 @@ def pytest_collect_file(path, parent):
         if config.getoption("--flake8"):
             return pytest_flake8.pytest_collect_file(path.new(ext=".py"), parent)
         else:
-            if "data" not in path.dirname:  # skip running mesh generation notebooks
-                if not path.basename.startswith("x"):
-                    return TutorialFile.from_parent(parent=parent, fspath=path.new(ext=".py"))
-                else:
-                    return DoNothingFile.from_parent(parent=parent, fspath=path.new(ext=".py"))
+            if not path.basename.startswith("x"):
+                return TutorialFile.from_parent(parent=parent, fspath=path.new(ext=".py"))
+            else:
+                return DoNothingFile.from_parent(parent=parent, fspath=path.new(ext=".py"))
     elif path.ext == ".py":
         assert not path.new(ext=".ipynb").exists(), "Please run pytest on jupyter notebooks, not plain python files."
         return DoNothingFile.from_parent(parent=parent, fspath=path)
@@ -94,6 +94,7 @@ class TutorialItem(pytest.Item):
 
     def runtest(self):
         os.chdir(self.parent.fspath.dirname)
+        sys.path.append(self.parent.fspath.dirname)
         spec = importlib.util.spec_from_file_location(self.name, str(self.parent.fspath))
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
