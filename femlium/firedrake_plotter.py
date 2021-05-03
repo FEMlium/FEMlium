@@ -136,10 +136,10 @@ class FiredrakePlotter(BaseMeshPlotter, BaseSolutionPlotter):
         """
 
         mesh = scalar_field.function_space().mesh()
-        function_plotter = firedrake.FunctionPlotter(mesh, 1)
-        vertices = np.array([function_plotter.triangulation.x, function_plotter.triangulation.y]).T
-        cells = function_plotter.triangulation.triangles
-        scalar_field_values = function_plotter(scalar_field)
+        scalar_function_space = firedrake.FunctionSpace(mesh, "CG", 1)
+        vertices = mesh.coordinates.dat.data_ro
+        cells = mesh.coordinates.cell_node_map().values
+        scalar_field_values = firedrake.interpolate(scalar_field, scalar_function_space).vector().array()
 
         return BaseSolutionPlotter.add_scalar_field_to(
             self, geo_map, vertices, cells, scalar_field_values, mode, levels, cmap, name)
@@ -176,10 +176,11 @@ class FiredrakePlotter(BaseMeshPlotter, BaseSolutionPlotter):
         """
 
         mesh = vector_field.function_space().mesh()
-        function_plotter = firedrake.FunctionPlotter(mesh, 1)
-        vertices = np.array([function_plotter.triangulation.x, function_plotter.triangulation.y]).T
-        cells = function_plotter.triangulation.triangles
-        vector_field_values = function_plotter(vector_field).reshape(-1, 2)
+        vector_function_space = firedrake.VectorFunctionSpace(mesh, "CG", 1)
+        vertices = mesh.coordinates.dat.data_ro
+        cells = mesh.coordinates.cell_node_map().values
+        vector_field_values = firedrake.interpolate(
+            vector_field, vector_function_space).vector().array().reshape(-1, 2)
 
         return BaseSolutionPlotter.add_vector_field_to(
             self, geo_map, vertices, cells, vector_field_values, mode, levels, scale, cmap, name)
