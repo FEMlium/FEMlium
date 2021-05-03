@@ -66,7 +66,7 @@ def test_domain_plotter_without_transformer_add_domain_to_map_vertices_only(loop
             },
             "properties": {
                 "color": "black",
-                "weight": "1"
+                "weight": 1
             },
             "type": "Feature"
         }],
@@ -94,7 +94,7 @@ def test_domain_plotter_with_transformer_add_domain_to_map_vertices_only(transfo
             },
             "properties": {
                 "color": "black",
-                "weight": "1"
+                "weight": 1
             },
             "type": "Feature"
         }],
@@ -121,7 +121,7 @@ def test_domain_plotter_add_domain_to_map_vertices_single_color_weight(loop):
             },
             "properties": {
                 "color": "blue",
-                "weight": "3"
+                "weight": 3
             },
             "type": "Feature"
         }],
@@ -151,7 +151,7 @@ def test_domain_plotter_add_domain_to_map_vertices_single_marker(loop, single_ma
             },
             "properties": {
                 "color": "black",
-                "weight": "1"
+                "weight": 1
             },
             "type": "Feature"
         }],
@@ -182,7 +182,7 @@ def test_domain_plotter_add_domain_to_map_vertices_single_marker_color_weight(lo
             },
             "properties": {
                 "color": "blue",
-                "weight": "3"
+                "weight": 3
             },
             "type": "Feature"
         }],
@@ -210,7 +210,7 @@ def test_domain_plotter_add_domain_to_map_vertices_multiple_markers(loop, multip
             "id": "0",
             "properties": {
                 "color": "black",
-                "weight": "1"
+                "weight": 1
             },
             "type": "Feature"
         }, {
@@ -221,7 +221,7 @@ def test_domain_plotter_add_domain_to_map_vertices_multiple_markers(loop, multip
             "id": "1",
             "properties": {
                 "color": "black",
-                "weight": "1"
+                "weight": 1
             },
             "type": "Feature"
         }],
@@ -257,7 +257,7 @@ def test_domain_plotter_add_domain_to_map_vertices_multiple_markers_colors_weigh
             },
             "properties": {
                 "color": "blue",
-                "weight": "2"
+                "weight": 2
             },
             "type": "Feature"
         }, {
@@ -267,7 +267,7 @@ def test_domain_plotter_add_domain_to_map_vertices_multiple_markers_colors_weigh
             },
             "properties": {
                 "color": "red",
-                "weight": "3"
+                "weight": 3
             },
             "type": "Feature"
         }],
@@ -307,7 +307,7 @@ def test_domain_plotter_add_domain_to_map_vertices_multiple_markers_missing_colo
             },
             "properties": {
                 "color": "blue",
-                "weight": "2"
+                "weight": 2
             },
             "type": "Feature"
         }, {
@@ -317,7 +317,7 @@ def test_domain_plotter_add_domain_to_map_vertices_multiple_markers_missing_colo
             },
             "properties": {
                 "color": "black",
-                "weight": "1"
+                "weight": 1
             },
             "type": "Feature"
         }],

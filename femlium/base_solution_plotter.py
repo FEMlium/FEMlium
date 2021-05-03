@@ -151,7 +151,7 @@ class BaseSolutionPlotter(BasePlotter):
                         # Store current curve properties
                         properties = {
                             "color": colors[lev],
-                            "weight": str(2)
+                            "weight": 2
                         }
                         if lev not in multiline_properties:
                             multiline_properties[lev] = properties
@@ -186,7 +186,7 @@ class BaseSolutionPlotter(BasePlotter):
                         # Store current polygon properties
                         properties = {
                             "fillColor": colors[lev],
-                            "fillOpacity": str(1)
+                            "fillOpacity": 1
                         }
                         if lev not in multipolygon_properties:
                             multipolygon_properties[lev] = properties
@@ -336,7 +336,7 @@ class BaseSolutionPlotter(BasePlotter):
             # Store current properties
             properties = {
                 "color": color,
-                "weight": str(2)
+                "weight": 2
             }
             if color not in multiline_properties:
                 multiline_properties[color] = properties

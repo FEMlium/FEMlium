@@ -179,7 +179,7 @@ class BaseMeshPlotter(BasePlotter):
                     # Boundary properties
                     "stroke": True,
                     "color": face_colors[cell_face_markers[0]],
-                    "weight": str(face_weights[cell_face_markers[0]]),
+                    "weight": int(face_weights[cell_face_markers[0]]),
                 }
             else:
                 cell_key = (cell_markers[c], False)
@@ -194,7 +194,7 @@ class BaseMeshPlotter(BasePlotter):
                     # Interior properties
                     "fill": True,
                     "fillColor": cell_colors[cell_key[0]],
-                    "fillOpacity": str(1)
+                    "fillOpacity": 1
                 })
             else:
                 cell_properties.update({
@@ -225,7 +225,7 @@ class BaseMeshPlotter(BasePlotter):
                     face_properties = {
                         "stroke": True,
                         "color": face_colors[face_markers[c, f]],
-                        "weight": str(face_weights[face_markers[c, f]]),
+                        "weight": int(face_weights[face_markers[c, f]]),
                     }
                     if face_key not in multiline_properties:
                         multiline_properties[face_key] = face_properties

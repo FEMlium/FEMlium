@@ -89,7 +89,7 @@ def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_only(vertices, cells):
                 "fillColor": None,
                 "fillOpacity": None,
                 "stroke": True,
-                "weight": "1"
+                "weight": 1
             },
             "type": "Feature"
         }],
@@ -123,7 +123,7 @@ def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_single_face_color_weig
                 "fillColor": None,
                 "fillOpacity": None,
                 "stroke": True,
-                "weight": "2"
+                "weight": 2
             },
             "type": "Feature"
         }],
@@ -160,7 +160,7 @@ def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_single_face_marker(
                 "fillColor": None,
                 "fillOpacity": None,
                 "stroke": True,
-                "weight": "1"
+                "weight": 1
             },
             "type": "Feature"
         }],
@@ -199,7 +199,7 @@ def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_single_face_marker_col
                 "fillColor": None,
                 "fillOpacity": None,
                 "stroke": True,
-                "weight": "3"
+                "weight": 3
             },
             "type": "Feature"
         }],
@@ -239,7 +239,7 @@ def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_multiple_face_markers(
                 "fillColor": None,
                 "fillOpacity": None,
                 "stroke": True,
-                "weight": "1"
+                "weight": 1
             },
             "type": "Feature"
         }, {
@@ -266,7 +266,7 @@ def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_multiple_face_markers(
             "properties": {
                 "color": "black",
                 "stroke": True,
-                "weight": "1"
+                "weight": 1
             },
             "type": "Feature"
         }, {
@@ -278,7 +278,7 @@ def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_multiple_face_markers(
             "properties": {
                 "color": "black",
                 "stroke": True,
-                "weight": "1"
+                "weight": 1
             },
             "type": "Feature"
         }, {
@@ -290,7 +290,7 @@ def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_multiple_face_markers(
             "properties": {
                 "color": "black",
                 "stroke": True,
-                "weight": "1"
+                "weight": 1
             },
             "type": "Feature"
         }],
@@ -343,7 +343,7 @@ def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_multiple_face_markers_
                 "fillColor": None,
                 "fillOpacity": None,
                 "stroke": True,
-                "weight": "4"
+                "weight": 4
             },
             "type": "Feature"
         }, {
@@ -370,7 +370,7 @@ def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_multiple_face_markers_
             "properties": {
                 "color": "green",
                 "stroke": True,
-                "weight": "4"
+                "weight": 4
             },
             "type": "Feature"
         }, {
@@ -382,7 +382,7 @@ def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_multiple_face_markers_
             "properties": {
                 "color": "blue",
                 "stroke": True,
-                "weight": "2"
+                "weight": 2
             },
             "type": "Feature"
         }, {
@@ -394,7 +394,7 @@ def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_multiple_face_markers_
             "properties": {
                 "color": "red",
                 "stroke": True,
-                "weight": "3"
+                "weight": 3
             },
             "type": "Feature"
         }],
@@ -443,7 +443,7 @@ def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_multiple_face_markers_
                 "fillColor": None,
                 "fillOpacity": None,
                 "stroke": True,
-                "weight": "4"
+                "weight": 4
             },
             "type": "Feature"
         }, {
@@ -470,7 +470,7 @@ def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_multiple_face_markers_
             "properties": {
                 "color": "black",
                 "stroke": True,
-                "weight": "4"
+                "weight": 4
             },
             "type": "Feature"
         }, {
@@ -482,7 +482,7 @@ def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_multiple_face_markers_
             "properties": {
                 "color": "blue",
                 "stroke": True,
-                "weight": "2"
+                "weight": 2
             },
             "type": "Feature"
         }, {
@@ -494,7 +494,7 @@ def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_multiple_face_markers_
             "properties": {
                 "color": "red",
                 "stroke": True,
-                "weight": "1"
+                "weight": 1
             },
             "type": "Feature"
         }],
@@ -529,9 +529,9 @@ def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_single_cell_color(vert
                 "color": "black",
                 "fill": True,
                 "fillColor": "orange",
-                "fillOpacity": "1",
+                "fillOpacity": 1,
                 "stroke": True,
-                "weight": "1"
+                "weight": 1
             },
             "type": "Feature"
         }],
@@ -569,7 +569,7 @@ def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_single_cell_marker(
                 "fillColor": None,
                 "fillOpacity": None,
                 "stroke": True,
-                "weight": "1"
+                "weight": 1
             },
             "type": "Feature"
         }],
@@ -605,9 +605,9 @@ def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_single_cell_marker_col
                 "color": "black",
                 "fill": True,
                 "fillColor": "orange",
-                "fillOpacity": "1",
+                "fillOpacity": 1,
                 "stroke": True,
-                "weight": "1"
+                "weight": 1
             },
             "type": "Feature"
         }],
@@ -641,7 +641,7 @@ def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_multiple_cell_markers(
                 "fillColor": None,
                 "fillOpacity": None,
                 "stroke": True,
-                "weight": "1"
+                "weight": 1
             },
             "type": "Feature"
         }, {
@@ -656,7 +656,7 @@ def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_multiple_cell_markers(
                 "fillColor": None,
                 "fillOpacity": None,
                 "stroke": True,
-                "weight": "1"
+                "weight": 1
             },
             "type": "Feature"
         }],
@@ -692,9 +692,9 @@ def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_multiple_cell_markers_
                 "color": "black",
                 "fill": True,
                 "fillColor": "blue",
-                "fillOpacity": "1",
+                "fillOpacity": 1,
                 "stroke": True,
-                "weight": "1"
+                "weight": 1
             },
             "type": "Feature"
         }, {
@@ -706,9 +706,9 @@ def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_multiple_cell_markers_
                 "color": "black",
                 "fill": True,
                 "fillColor": "red",
-                "fillOpacity": "1",
+                "fillOpacity": 1,
                 "stroke": True,
-                "weight": "1"
+                "weight": 1
             },
             "type": "Feature"
         }],
@@ -748,9 +748,9 @@ def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_multiple_cell_markers_
                 "color": "black",
                 "fill": True,
                 "fillColor": "blue",
-                "fillOpacity": "1",
+                "fillOpacity": 1,
                 "stroke": True,
-                "weight": "1"
+                "weight": 1
             },
             "type": "Feature"
         }, {
@@ -764,7 +764,7 @@ def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_multiple_cell_markers_
                 "fillColor": None,
                 "fillOpacity": None,
                 "stroke": True,
-                "weight": "1"
+                "weight": 1
             },
             "type": "Feature"
         }],

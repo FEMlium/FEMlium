@@ -119,7 +119,7 @@ class DomainPlotter(BasePlotter):
                 # Store properties of the previous line
                 previous_properties = {
                     "color": colors[previous_marker],
-                    "weight": str(weights[previous_marker])
+                    "weight": int(weights[previous_marker])
                 }
                 if previous_marker not in multiline_properties:
                     multiline_properties[previous_marker] = previous_properties
