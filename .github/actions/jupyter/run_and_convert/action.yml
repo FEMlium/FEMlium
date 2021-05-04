@@ -1,0 +1,27 @@
+name: Run and convert
+description: Run and convert jupyter notebooks
+
+inputs:
+  list_notebooks:
+    description: "Array of notebooks to be run and converted"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Run and convert notebooks
+      run: |
+        INPUT_FOLDER=$PWD
+        git clone https://github.com/FEMlium/femlium.github.io.git
+        cp -rf femlium.github.io/share/jupyter/nbconvert/templates/html/femlium /usr/local/share/jupyter/nbconvert/templates/
+        OUTPUT_FOLDER=$PWD/_build/html
+        mkdir -p $OUTPUT_FOLDER
+        readarray -d ' ' SRCS < <(echo ${{ inputs.list_notebooks }})
+        for SRC in "${SRCS[@]}"; do
+            INPUT_SUBFOLDER=$(dirname "$SRC")
+            OUTPUT_SUBFOLDER=$OUTPUT_FOLDER/$INPUT_SUBFOLDER
+            cd $INPUT_SUBFOLDER
+            jupyter nbconvert --to html --template femlium --execute --output-dir $OUTPUT_SUBFOLDER $(basename "$SRC")
+            cd $INPUT_FOLDER
+        done
+      shell: bash
