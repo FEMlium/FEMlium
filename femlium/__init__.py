@@ -35,6 +35,14 @@ else:
     __all__ += ["DolfinPlotter"]
 
 try:
+    import dolfinx  # noqa: F401
+except ImportError:
+    pass
+else:
+    from femlium.dolfinx_plotter import DolfinxPlotter
+    __all__ += ["DolfinxPlotter"]
+
+try:
     import firedrake  # noqa: F401
 except ImportError:
     pass
