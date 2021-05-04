@@ -6,6 +6,7 @@
 
 import numpy as np
 import matplotlib
+import matplotlib._tri
 import matplotlib.pyplot as plt
 import geojson
 import folium
