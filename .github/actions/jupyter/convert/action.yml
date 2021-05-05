@@ -21,7 +21,7 @@ runs:
             INPUT_SUBFOLDER=$(dirname "$SRC")
             OUTPUT_SUBFOLDER=$OUTPUT_FOLDER/$INPUT_SUBFOLDER
             cd $INPUT_SUBFOLDER
-            jupyter nbconvert --to html --template femlium --execute --output-dir $OUTPUT_SUBFOLDER $(basename "$SRC")
+            jupyter nbconvert --to html --template femlium --output-dir $OUTPUT_SUBFOLDER $(basename "$SRC")
             cd $INPUT_FOLDER
         done
       shell: bash

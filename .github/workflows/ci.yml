@@ -127,8 +127,8 @@ jobs:
         id: list_notebooks
         run: ${{ matrix.list_notebooks }}
         shell: bash
-      - name: Run and convert notebooks
-        uses: ./.github/actions/jupyter/run_and_convert
+      - name: Convert notebooks
+        uses: ./.github/actions/jupyter/convert
         with:
           list_notebooks: ${{ steps.list_notebooks.outputs.list_notebooks }}
       - name: Upload notebooks to website

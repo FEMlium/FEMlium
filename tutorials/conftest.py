@@ -7,13 +7,12 @@
 import os
 import re
 import sys
-import importlib
 import pytest
 import pytest_flake8
-import matplotlib.pyplot as plt
+import nbformat
 from nbconvert.exporters import PythonExporter
+from nbconvert.preprocessors import ExecutePreprocessor
 import nbconvert.filters
-plt.switch_backend("Agg")
 
 
 def pytest_ignore_collect(path, config):
@@ -29,36 +28,36 @@ def pytest_collect_file(path, parent):
     """
 
     if path.ext == ".ipynb":
-        # Convert .ipynb notebooks to plain .py files
-        def comment_lines(text, prefix="# "):
-            regex = re.compile(r".{1,80}(?:\s+|$)")
-            input_lines = text.split("\n")
-            output_lines = [split_line.rstrip() for line in input_lines for split_line in regex.findall(line)]
-            output = prefix + ("\n" + prefix).join(output_lines)
-            return output.replace(prefix + "\n", prefix.rstrip(" ") + "\n")
-
-        def ipython2python(code):
-            return nbconvert.filters.ipython2python(code).rstrip("\n") + "\n"
-
-        filters = {
-            "comment_lines": comment_lines,
-            "ipython2python": ipython2python
-        }
-        exporter = PythonExporter(filters=filters)
-        exporter.exclude_input_prompt = True
-        code, _ = exporter.from_filename(path)
-        code = code.rstrip("\n") + "\n"
-        with open(path.new(ext=".py"), "w", encoding="utf-8") as f:
-            f.write(code)
-        # Collect the corresponding .py file
         config = parent.config
         if config.getoption("--flake8"):
+            # Convert .ipynb notebooks to plain .py files
+            def comment_lines(text, prefix="# "):
+                regex = re.compile(r".{1,80}(?:\s+|$)")
+                input_lines = text.split("\n")
+                output_lines = [split_line.rstrip() for line in input_lines for split_line in regex.findall(line)]
+                output = prefix + ("\n" + prefix).join(output_lines)
+                return output.replace(prefix + "\n", prefix.rstrip(" ") + "\n")
+
+            def ipython2python(code):
+                return nbconvert.filters.ipython2python(code).rstrip("\n") + "\n"
+
+            filters = {
+                "comment_lines": comment_lines,
+                "ipython2python": ipython2python
+            }
+            exporter = PythonExporter(filters=filters)
+            exporter.exclude_input_prompt = True
+            code, _ = exporter.from_filename(path)
+            code = code.rstrip("\n") + "\n"
+            with open(path.new(ext=".py"), "w", encoding="utf-8") as f:
+                f.write(code)
+            # Collect the corresponding .py file
             return pytest_flake8.pytest_collect_file(path.new(ext=".py"), parent)
         else:
             if not path.basename.startswith("x"):
-                return TutorialFile.from_parent(parent=parent, fspath=path.new(ext=".py"))
+                return TutorialFile.from_parent(parent=parent, fspath=path)
             else:
-                return DoNothingFile.from_parent(parent=parent, fspath=path.new(ext=".py"))
+                return DoNothingFile.from_parent(parent=parent, fspath=path)
     elif path.ext == ".py":
         assert not path.new(ext=".ipynb").exists(), "Please run pytest on jupyter notebooks, not plain python files."
         return DoNothingFile.from_parent(parent=parent, fspath=path)
@@ -96,20 +95,26 @@ class TutorialItem(pytest.Item):
         self._import_backend_or_skip()
         os.chdir(self.parent.fspath.dirname)
         sys.path.append(self.parent.fspath.dirname)
-        spec = importlib.util.spec_from_file_location(self.name, str(self.parent.fspath))
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        plt.close("all")  # do not trigger matplotlib max_open_warning
+        with open(self.parent.fspath) as f:
+            nb = nbformat.read(f, as_version=4)
+        execute_preprocessor = ExecutePreprocessor()
+        execute_preprocessor.preprocess(nb)
+        with open(self.parent.fspath, "w") as f:
+            nbformat.write(nb, f)
 
     def _import_backend_or_skip(self):
-        if self.name.endswith("dolfin.py"):
+        if self.name.endswith("dolfin.ipynb"):
             pytest.importorskip("dolfin")
-        if self.name.endswith("dolfinx.py"):
+        elif self.name.endswith("dolfinx.ipynb"):
             pytest.importorskip("dolfinx")
-        elif self.name.endswith("firedrake.py"):
+        elif self.name.endswith("firedrake.ipynb"):
             pytest.importorskip("firedrake")
-        elif self.name.endswith("meshio.py"):
+        elif self.name.endswith("meshio.ipynb"):
             pytest.importorskip("meshio")
+        elif self.name.endswith("generate_mesh.ipynb"):
+            pass
+        else:
+            raise ValueError("Invalid name " + self.name)
 
     def reportinfo(self):
         return self.fspath, 0, self.name
