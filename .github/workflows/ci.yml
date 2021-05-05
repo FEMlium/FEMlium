@@ -132,7 +132,7 @@ jobs:
         with:
           list_notebooks: ${{ steps.list_notebooks.outputs.list_notebooks }}
       - name: Upload notebooks to website
-        if: github.repository == 'FEMlium/FEMlium' && github.ref == 'refs/heads/master'
+        if: github.repository == 'FEMlium/FEMlium' && github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v3
         with:
           personal_token: ${{ secrets.REPO_ACCESS_TOKEN }}
