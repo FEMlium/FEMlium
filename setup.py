@@ -37,10 +37,10 @@ setup(name="FEMlium",
           "geojson",
           "matplotlib",
           "numpy",
+          "pyproj",
           "pytest-runner"
       ],
       tests_require=[
-          "pyproj",
           "pytest",
           "pytest-flake8"
       ]

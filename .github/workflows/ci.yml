@@ -105,7 +105,7 @@ jobs:
         run: |
           ${{ matrix.setup_dependencies }}
           echo "Test dependencies"
-          pip3 -q install --upgrade pyproj pytest pytest-flake8 pytest-xdist
+          pip3 -q install --upgrade pytest pytest-flake8 pytest-xdist
           echo "Tutorial dependencies"
           pip3 -q install --upgrade gmsh jupyter nbconvert
           PYTHON_VERSION=$(python3 -c 'import sys; print("python" + str(sys.version_info.major) + "." + str(sys.version_info.minor))')
