@@ -6,6 +6,10 @@
 
 from setuptools import find_packages, setup
 
+with open("requirements.txt") as f:
+    install_requires = f.read().splitlines()
+tests_require = ["pytest", "pytest-flake8"]
+
 setup(name="FEMlium",
       description="Interactive geographic plots of finite element data with folium",
       long_description="Interactive geographic plots of finite element data with folium",
@@ -31,17 +35,6 @@ setup(name="FEMlium",
       ],
       packages=find_packages(),
       include_package_data=True,
-      install_requires=[
-          "branca",
-          "folium",
-          "geojson",
-          "matplotlib",
-          "numpy",
-          "pyproj",
-          "pytest-runner"
-      ],
-      tests_require=[
-          "pytest",
-          "pytest-flake8"
-      ]
+      install_requires=install_requires,
+      tests_require=tests_require
       )
