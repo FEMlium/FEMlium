@@ -131,8 +131,27 @@ jobs:
         uses: ./.github/actions/jupyter/convert
         with:
           list_notebooks: ${{ steps.list_notebooks.outputs.list_notebooks }}
+      - name: Store converted notebooks as artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: converted-notebooks-${{ matrix.backend }}
+          path: _build/html
+          retention-days: 1
+
+  publish_notebooks:
+    runs-on: ubuntu-latest
+    needs: [test]
+    if: github.repository == 'FEMlium/FEMlium' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Download converted notebooks from artifacts
+        uses: actions/download-artifact@v2
+        with:
+          path: _build/html
+      - name: Flatten the artifacts hierarchy
+        run: |
+          rsync -avh --remove-source-files _build/html/converted-notebooks-*/ _build/html/
+          find _build/html/ -type d -empty -delete
       - name: Upload notebooks to website
-        if: github.repository == 'FEMlium/FEMlium' && github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v3
         with:
           personal_token: ${{ secrets.REPO_ACCESS_TOKEN }}
