@@ -6,7 +6,7 @@ on:
       - "**"
   pull_request:
     branches:
-      - master
+      - main
   schedule:
     - cron: "0 21 * * SUN"
   workflow_dispatch:
