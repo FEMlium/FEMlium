@@ -13,7 +13,9 @@ runs:
       run: |
         INPUT_FOLDER=$PWD
         git clone https://github.com/FEMlium/femlium.github.io.git
-        cp -rf femlium.github.io/share/jupyter/nbconvert/templates/html/femlium /usr/local/share/jupyter/nbconvert/templates/
+        jupyter --paths --json > /tmp/jupyter-paths
+        JUPYTER_SHARE=$(python3 -c 'import json; data = json.loads(open("/tmp/jupyter-paths", "r").read()); print(data["data"][1])')
+        cp -rf femlium.github.io/share/jupyter/nbconvert/templates/html/femlium $JUPYTER_SHARE/nbconvert/templates/
         OUTPUT_FOLDER=$PWD/_build/html
         mkdir -p $OUTPUT_FOLDER
         readarray -d ' ' SRCS < <(echo ${{ inputs.list_notebooks }})
