@@ -98,9 +98,11 @@ class TutorialItem(pytest.Item):
         with open(self.parent.fspath) as f:
             nb = nbformat.read(f, as_version=4)
         execute_preprocessor = ExecutePreprocessor()
-        execute_preprocessor.preprocess(nb)
-        with open(self.parent.fspath, "w") as f:
-            nbformat.write(nb, f)
+        try:
+            execute_preprocessor.preprocess(nb)
+        finally:
+            with open(self.parent.fspath, "w") as f:
+                nbformat.write(nb, f)
 
     def _import_backend_or_skip(self):
         if self.name.endswith("dolfin.ipynb"):

@@ -125,13 +125,16 @@ jobs:
         run: pytest -n auto tutorials
       - name: Get notebooks to be converted
         id: list_notebooks
+        if: always()
         run: ${{ matrix.list_notebooks }}
         shell: bash
       - name: Convert notebooks
+        if: always()
         uses: ./.github/actions/jupyter/convert
         with:
           list_notebooks: ${{ steps.list_notebooks.outputs.list_notebooks }}
       - name: Store converted notebooks as artifacts
+        if: always()
         uses: actions/upload-artifact@v2
         with:
           name: converted-notebooks-${{ matrix.backend }}
