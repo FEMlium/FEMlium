@@ -142,7 +142,13 @@ class BaseSolutionPlotter(BasePlotter):
             multiline_coordinates = dict()
             multiline_properties = dict()
             for lev in range(levels.shape[0]):
-                for curve in countour_generator.create_contour(levels[lev]):
+                curves = countour_generator.create_contour(levels[lev])
+                if isinstance(curves, tuple):  # non backward compatible change in matplotlib commit 178012
+                    assert len(curves) == 2
+                    curves = curves[0]
+                assert isinstance(curves, list)
+                for curve in curves:
+                    assert len(curve.shape) == 2
                     if curve.shape[0] > 1:
                         coordinates = [self.transformer(*curve[p, :]) for p in range(curve.shape[0])]
                         # Store current curve coordinates
@@ -174,6 +180,14 @@ class BaseSolutionPlotter(BasePlotter):
             multipolygon_properties = dict()
             for lev in range(levels.shape[0] - 1):
                 filled_contour = countour_generator.create_filled_contour(levels[lev], levels[lev + 1])
+                assert len(filled_contour) == 2
+                if isinstance(filled_contour[0], list):  # non backward compatible change in matplotlib commit 178012
+                    assert isinstance(filled_contour[1], list)
+                    assert len(filled_contour[0]) == 1
+                    assert len(filled_contour[1]) == 1
+                    filled_contour = (np.array(filled_contour[0][0]), np.array(filled_contour[1][0]))
+                assert len(filled_contour[0].shape) == 2
+                assert len(filled_contour[1].shape) == 1
                 filled_contour_split = np.split(filled_contour[0], np.where(filled_contour[1] == 1)[0][1:])
                 for i in range(len(filled_contour_split)):
                     filled_contour_split[i] = np.vstack((filled_contour_split[i], filled_contour_split[i][0, :]))
