@@ -37,8 +37,7 @@ jobs:
               apt-get -qq install git-lfs
             setup_dependencies: |
               export DEBIAN_FRONTEND="noninteractive"
-              apt-get install -qq `apt-cache depends gmsh | awk '/Depends:/{print$2}'`
-              apt-get install -qq python3-pip
+              apt-get install -qq python3-pip xorg
               pip3 -q install --upgrade matplotlib meshio numpy
             list_notebooks: |
               readarray -d '' GENERATE_MESH < <(find . -type f -name "generate_mesh*.ipynb" -print0)
@@ -54,7 +53,7 @@ jobs:
               apt-get -qq install git-lfs
             setup_dependencies: |
               export DEBIAN_FRONTEND="noninteractive"
-              apt-get install -qq `apt-cache depends gmsh | awk '/Depends:/{print$2}'`
+              apt-get install -qq xorg
               pip3 -q install --upgrade meshio nbclient
               CC="mpicc" HDF5_MPI="ON" pip3 install --no-binary=h5py h5py==2.10.0
             list_notebooks: |
