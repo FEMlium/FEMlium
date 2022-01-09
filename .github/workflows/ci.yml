@@ -140,6 +140,12 @@ jobs:
           name: converted-notebooks-${{ matrix.backend }}
           path: _build/html
           retention-days: 1
+      - name: Warn if scheduled workflow is about to be disabled
+        if: github.repository == 'FEMlium/FEMlium' && github.ref == 'refs/heads/main' && github.event_name == 'schedule'
+        uses: fem-on-colab/warn-workflow-about-to-be-disabled-action@main
+        with:
+          workflow-filename: ci.yml
+          days-elapsed: 50
 
   publish_notebooks:
     runs-on: ubuntu-latest
