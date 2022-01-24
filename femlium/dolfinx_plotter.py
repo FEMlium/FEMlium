@@ -5,6 +5,8 @@
 # SPDX-License-Identifier: MIT
 
 import numpy as np
+import dolfinx.fem
+import dolfinx.plot
 from femlium.base_mesh_plotter import BaseMeshPlotter
 from femlium.base_solution_plotter import BaseSolutionPlotter
 
@@ -129,13 +131,11 @@ class DolfinxPlotter(BaseMeshPlotter, BaseSolutionPlotter):
             If not provided, the name "scalar field" will be used.
         """
 
-        mesh = scalar_field.function_space.mesh
-        vertices = mesh.geometry.x[:, :mesh.topology.dim]
-        cells = mesh.geometry.dofmap.array.reshape((-1, mesh.topology.dim + 1))
-        scalar_field_values = scalar_field.compute_point_values()
-        assert scalar_field_values.shape[1] == 1
-        scalar_field_values = scalar_field_values.reshape(-1)
-
+        scalar_function_space_p1 = dolfinx.fem.FunctionSpace(scalar_field.function_space.mesh, ("CG", 1))
+        vertices, cells = self._get_vertices_cells_of_linear_function_space(scalar_function_space_p1)
+        scalar_field_p1 = dolfinx.fem.Function(scalar_function_space_p1)
+        scalar_field_p1.interpolate(scalar_field)
+        scalar_field_values = scalar_field_p1.x.array
         return BaseSolutionPlotter.add_scalar_field_to(
             self, geo_map, vertices, cells, scalar_field_values, mode, levels, cmap, name)
 
@@ -170,10 +170,18 @@ class DolfinxPlotter(BaseMeshPlotter, BaseSolutionPlotter):
             If not provided, the name "vector field" will be used.
         """
 
-        mesh = vector_field.function_space.mesh
-        vertices = mesh.geometry.x[:, :mesh.topology.dim]
-        cells = mesh.geometry.dofmap.array.reshape((-1, mesh.topology.dim + 1))
-        vector_field_values = vector_field.compute_point_values()
-
+        vector_function_space_p1 = dolfinx.fem.VectorFunctionSpace(vector_field.function_space.mesh, ("CG", 1))
+        vertices, cells = self._get_vertices_cells_of_linear_function_space(vector_function_space_p1)
+        vector_field_p1 = dolfinx.fem.Function(vector_function_space_p1)
+        vector_field_p1.interpolate(vector_field)
+        vector_field_values = vector_field_p1.x.array.reshape(
+            vertices.shape[0], vector_function_space_p1.dofmap.index_map_bs)
         return BaseSolutionPlotter.add_vector_field_to(
             self, geo_map, vertices, cells, vector_field_values, mode, levels, scale, cmap, name)
+
+    def _get_vertices_cells_of_linear_function_space(self, function_space):
+        """Postprocess the output of dolfinx.plot.create_vtk_mesh and return vertices and cells for matplotlib."""
+        cells, _, vertices = dolfinx.plot.create_vtk_mesh(function_space)
+        cells = cells.reshape((-1, 4))
+        assert np.all(cells[:, 0] == 3)  # first colum contains the number of vertices of a triangular cell
+        return vertices[:, :function_space.mesh.topology.dim], cells[:, 1:]
