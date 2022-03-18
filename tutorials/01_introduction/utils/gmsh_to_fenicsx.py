@@ -12,7 +12,7 @@ from dolfinx.io import extract_gmsh_geometry, extract_gmsh_topology_and_markers,
 from dolfinx.cpp.io import distribute_entity_data, perm_gmsh
 from dolfinx.cpp.mesh import cell_entity_type, to_type
 from dolfinx.cpp.graph import AdjacencyList_int32
-from dolfinx.mesh import create_mesh, create_meshtags
+from dolfinx.mesh import create_mesh, meshtags_from_entities
 
 
 def gmsh_to_fenicsx(msh_path):
@@ -94,8 +94,7 @@ def gmsh_model_to_mesh(model, gdim):
         mesh, mesh.topology.dim, cells, cell_values)
     mesh.topology.create_connectivity(mesh.topology.dim, 0)
     adj = AdjacencyList_int32(entities)
-    ct = create_meshtags(mesh, mesh.topology.dim,
-                         adj, np.int32(values))
+    ct = meshtags_from_entities(mesh, mesh.topology.dim, adj, np.int32(values))
     ct.name = "Cell tags"
 
     # Create MeshTags for facets
@@ -109,8 +108,7 @@ def gmsh_model_to_mesh(model, gdim):
     mesh.topology.create_connectivity(
         mesh.topology.dim - 1, mesh.topology.dim)
     adj = AdjacencyList_int32(entities)
-    ft = create_meshtags(mesh, mesh.topology.dim - 1,
-                         adj, np.int32(values))
+    ft = meshtags_from_entities(mesh, mesh.topology.dim - 1, adj, np.int32(values))
     ft.name = "Facet tags"
 
     return mesh, ct, ft
