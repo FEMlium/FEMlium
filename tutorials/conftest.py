@@ -52,7 +52,7 @@ def pytest_collect_file(path, parent):
             with open(path.new(ext=".py"), "w", encoding="utf-8") as f:
                 f.write(code)
             # Collect the corresponding .py file
-            return pytest_flake8.pytest_collect_file(path.new(ext=".py"), parent)
+            return pytest_flake8.pytest_collect_file(path.new(ext=".py"), None, parent)
         else:
             if not path.basename.startswith("x"):
                 return TutorialFile.from_parent(parent=parent, fspath=path)
