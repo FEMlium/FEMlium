@@ -15,19 +15,20 @@ from nbconvert.preprocessors import ExecutePreprocessor
 import nbconvert.filters
 
 
-def pytest_ignore_collect(path, config):
-    if path.ext == ".py" and path.new(ext=".ipynb").exists():  # ignore .py files obtained from previous runs
+def pytest_ignore_collect(collection_path, path, config):
+    if collection_path.suffix == ".py" and collection_path.with_suffix(".ipynb").exists():
+        # ignore .py files obtained from previous runs
         return True
     else:
         return False
 
 
-def pytest_collect_file(path, parent):
+def pytest_collect_file(file_path, path, parent):
     """
     Collect tutorial files.
     """
 
-    if path.ext == ".ipynb":
+    if file_path.suffix == ".ipynb":
         config = parent.config
         if config.getoption("--flake8"):
             # Convert .ipynb notebooks to plain .py files
@@ -47,30 +48,32 @@ def pytest_collect_file(path, parent):
             }
             exporter = PythonExporter(filters=filters)
             exporter.exclude_input_prompt = True
-            code, _ = exporter.from_filename(path)
+            code, _ = exporter.from_filename(file_path)
             code = code.rstrip("\n") + "\n"
-            with open(path.new(ext=".py"), "w", encoding="utf-8") as f:
+            with open(file_path.with_suffix(".py"), "w", encoding="utf-8") as f:
                 f.write(code)
             # Collect the corresponding .py file
-            return pytest_flake8.pytest_collect_file(path.new(ext=".py"), None, parent)
+            return pytest_flake8.pytest_collect_file(file_path.with_suffix(".py"), None, parent)
         else:
-            if not path.basename.startswith("x"):
-                return TutorialFile.from_parent(parent=parent, fspath=path)
+            if not file_path.name.startswith("x"):
+                return TutorialFile.from_parent(parent=parent, path=file_path)
             else:
-                return DoNothingFile.from_parent(parent=parent, fspath=path)
-    elif path.ext == ".py":
-        assert not path.new(ext=".ipynb").exists(), "Please run pytest on jupyter notebooks, not plain python files."
-        return DoNothingFile.from_parent(parent=parent, fspath=path)
+                return DoNothingFile.from_parent(parent=parent, path=file_path)
+    elif file_path.suffix == ".py":
+        assert not file_path.with_suffix(".ipynb").exists(), (
+            "Please run pytest on jupyter notebooks, not plain python files.")
+        return DoNothingFile.from_parent(parent=parent, path=file_path)
 
 
-def pytest_pycollect_makemodule(path, parent):
+def pytest_pycollect_makemodule(module_path, path, parent):
     """
     Disable running .py files produced by previous runs, as they may get out of sync with the corresponding .ipynb file.
     """
 
-    if path.ext == ".py":
-        assert not path.new(ext=".ipynb").exists(), "Please run pytest on jupyter notebooks, not plain python files."
-        return DoNothingFile.from_parent(parent=parent, fspath=path)
+    if module_path.suffix == ".py":
+        assert not module_path.with_suffix(".ipynb").exists(), (
+            "Please run pytest on jupyter notebooks, not plain python files.")
+        return DoNothingFile.from_parent(parent=parent, path=module_path)
 
 
 class TutorialFile(pytest.File):
@@ -80,7 +83,7 @@ class TutorialFile(pytest.File):
 
     def collect(self):
         yield TutorialItem.from_parent(
-            parent=self, name="run_tutorial -> " + os.path.relpath(str(self.fspath), str(self.parent.fspath)))
+            parent=self, name="run_tutorial -> " + os.path.relpath(str(self.path), str(self.parent.path)))
 
 
 class TutorialItem(pytest.Item):
@@ -93,15 +96,15 @@ class TutorialItem(pytest.Item):
 
     def runtest(self):
         self._import_backend_or_skip()
-        os.chdir(self.parent.fspath.dirname)
-        sys.path.append(self.parent.fspath.dirname)
-        with open(self.parent.fspath) as f:
+        os.chdir(self.parent.path.parent)
+        sys.path.append(str(self.parent.path.parent))
+        with open(self.parent.path) as f:
             nb = nbformat.read(f, as_version=4)
         execute_preprocessor = ExecutePreprocessor()
         try:
             execute_preprocessor.preprocess(nb)
         finally:
-            with open(self.parent.fspath, "w") as f:
+            with open(self.parent.path, "w") as f:
                 nbformat.write(nb, f)
 
     def _import_backend_or_skip(self):
@@ -119,7 +122,7 @@ class TutorialItem(pytest.Item):
             raise ValueError("Invalid name " + self.name)
 
     def reportinfo(self):
-        return self.fspath, 0, self.name
+        return self.path, 0, self.name
 
 
 class DoNothingFile(pytest.File):
