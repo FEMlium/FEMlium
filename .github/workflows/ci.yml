@@ -62,7 +62,7 @@ jobs:
               list_notebooks+=("${DOLFIN[@]}")
               echo "::set-output name=list_notebooks::${list_notebooks[@]}"
           - backend: dolfinx
-            container: dolfinx/dolfinx
+            container: dolfinx/dolfinx:nightly
             setup_container: |
               apt-get -qq update
               apt-get -qq install git-lfs
