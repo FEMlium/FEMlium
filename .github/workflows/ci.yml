@@ -37,7 +37,10 @@ jobs:
               apt install -y -qq git-lfs
             setup_dependencies: |
               export DEBIAN_FRONTEND="noninteractive"
-              apt install -y -qq python3-pip xorg
+              apt install -y -qq python3-mpi4py python3-pip
+              echo "OMPI_ALLOW_RUN_AS_ROOT=1" >> $GITHUB_ENV
+              echo "OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1" >> $GITHUB_ENV
+              apt install -y -qq xorg
               python3 -m pip -q install --upgrade gmsh matplotlib meshio numpy
             list_notebooks: |
               readarray -d '' GENERATE_MESH < <(find . -type f -name "generate_mesh*.ipynb" -print0)
