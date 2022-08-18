@@ -58,7 +58,6 @@ jobs:
               export DEBIAN_FRONTEND="noninteractive"
               apt install -y -qq xorg
               python3 -m pip -q install --upgrade gmsh==4.8.4 meshio nbclient
-              CC="mpicc" HDF5_MPI="ON" python3 -m pip install --no-binary=h5py h5py==2.10.0
             list_notebooks: |
               readarray -d '' DOLFIN < <(find . -type f -name "tutorial_*_dolfin.ipynb" -print0)
               list_notebooks=()
