@@ -33,11 +33,9 @@ jobs:
           - backend: none
             container: ubuntu
             setup_container: |
-              apt -y -qq update
-              apt install -y -qq git-lfs
-            setup_dependencies: |
               export DEBIAN_FRONTEND="noninteractive"
-              apt install -y -qq python3-mpi4py python3-numpy python3-pip
+              apt -y -qq update
+              apt install -y -qq git python3-mpi4py python3-numpy python3-pip
               echo "OMPI_ALLOW_RUN_AS_ROOT=1" >> $GITHUB_ENV
               echo "OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1" >> $GITHUB_ENV
               apt install -y -qq xorg
@@ -52,10 +50,8 @@ jobs:
           - backend: dolfin
             container: numericalpdes/base_images:fenics
             setup_container: |
-              apt -y -qq update
-              apt install -y -qq git-lfs
-            setup_dependencies: |
               export DEBIAN_FRONTEND="noninteractive"
+              apt -y -qq update
               apt install -y -qq xorg
               python3 -m pip -q install --upgrade gmsh==4.8.4 nbclient
             list_notebooks: |
@@ -66,9 +62,6 @@ jobs:
           - backend: dolfinx
             container: dolfinx/dolfinx:nightly
             setup_container: |
-              apt -y -qq update
-              apt install -y -qq git-lfs
-            setup_dependencies: |
               python3 -m pip -q install --upgrade https://dmf.unicatt.it/ballarin/public/zstandard-0.19.0.dev0-cp310-cp310-linux_x86_64.whl
               python3 -m pip -q install --upgrade https://dmf.unicatt.it/ballarin/public/itkwidgets-0.33.0.dev0-py2.py3-none-any.whl
               python3 -m pip -q install --upgrade gmsh itkwidgets pyvista
@@ -80,13 +73,11 @@ jobs:
           - backend: firedrake
             container: firedrakeproject/firedrake
             setup_container: |
-              apt -y -qq update
-              apt install -y -qq git-lfs
-              echo "/home/firedrake/firedrake/bin" >> $GITHUB_PATH
-            setup_dependencies: |
               export DEBIAN_FRONTEND="noninteractive"
+              apt -y -qq update
               apt install -y -qq xorg
               python3 -m pip -q install --upgrade gmsh pip
+              echo "/home/firedrake/firedrake/bin" >> $GITHUB_PATH
             list_notebooks: |
               readarray -d '' FIREDRAKE < <(find . -type f -name "tutorial_*_firedrake.ipynb" -print0)
               list_notebooks=()
@@ -97,11 +88,9 @@ jobs:
       image: ${{ matrix.container }}
       options: --user root
     steps:
+      - uses: actions/checkout@v2
       - name: Setup container
         run: ${{ matrix.setup_container }}
-      - uses: actions/checkout@v1
-        with:
-          lfs: true
       - name: Install dependencies
         run: |
           ${{ matrix.setup_dependencies }}
