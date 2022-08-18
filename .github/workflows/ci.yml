@@ -39,7 +39,6 @@ jobs:
               echo "OMPI_ALLOW_RUN_AS_ROOT=1" >> $GITHUB_ENV
               echo "OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1" >> $GITHUB_ENV
               apt install -y -qq xorg
-              python3 -m pip -q install --upgrade gmsh
             list_notebooks: |
               readarray -d '' GENERATE_MESH < <(find . -type f -name "generate_mesh*.ipynb" -print0)
               readarray -d '' MESHIO < <(find . -type f -name "tutorial_*_meshio.ipynb" -print0)
@@ -53,7 +52,7 @@ jobs:
               export DEBIAN_FRONTEND="noninteractive"
               apt -y -qq update
               apt install -y -qq xorg
-              python3 -m pip -q install --upgrade gmsh==4.8.4 nbclient
+              python3 -m pip -q install --upgrade nbclient
             list_notebooks: |
               readarray -d '' DOLFIN < <(find . -type f -name "tutorial_*_dolfin.ipynb" -print0)
               list_notebooks=()
@@ -64,7 +63,7 @@ jobs:
             setup_container: |
               python3 -m pip -q install --upgrade https://dmf.unicatt.it/ballarin/public/zstandard-0.19.0.dev0-cp310-cp310-linux_x86_64.whl
               python3 -m pip -q install --upgrade https://dmf.unicatt.it/ballarin/public/itkwidgets-0.33.0.dev0-py2.py3-none-any.whl
-              python3 -m pip -q install --upgrade gmsh itkwidgets pyvista
+              python3 -m pip -q install --upgrade itkwidgets pyvista
             list_notebooks: |
               readarray -d '' DOLFINX < <(find . -type f -name "tutorial_*_dolfinx.ipynb" -print0)
               list_notebooks=()
@@ -76,7 +75,7 @@ jobs:
               export DEBIAN_FRONTEND="noninteractive"
               apt -y -qq update
               apt install -y -qq xorg
-              python3 -m pip -q install --upgrade gmsh pip
+              python3 -m pip -q install --upgrade pip
               echo "/home/firedrake/firedrake/bin" >> $GITHUB_PATH
             list_notebooks: |
               readarray -d '' FIREDRAKE < <(find . -type f -name "tutorial_*_firedrake.ipynb" -print0)
@@ -98,9 +97,6 @@ jobs:
           python3 -m pip -q install --upgrade "flake8<5" pytest pytest-flake8 pytest-xdist
           echo "Tutorial dependencies"
           python3 -m pip -q install --upgrade jupyter nbconvert
-          PYTHON_VERSION=$(python3 -c 'import sys; print("python" + str(sys.version_info.major) + "." + str(sys.version_info.minor))')
-          rm -rf /usr/local/lib/${PYTHON_VERSION}/site-packages/gmsh-*-Linux64-sdk/lib/__pycache__
-          ln -s /usr/local/lib/${PYTHON_VERSION}/site-packages/gmsh-*-Linux64-sdk/lib/* /usr/local/lib/${PYTHON_VERSION}/dist-packages/
       - name: Install FEMlium
         run: python3 -m pip install .[docs,lint,tests,tutorials]
       - name: Run flake8 checks
