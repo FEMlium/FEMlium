@@ -35,10 +35,7 @@ jobs:
             setup_container: |
               export DEBIAN_FRONTEND="noninteractive"
               apt -y -qq update
-              apt install -y -qq git python3-mpi4py python3-numpy python3-pip
-              echo "OMPI_ALLOW_RUN_AS_ROOT=1" >> $GITHUB_ENV
-              echo "OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1" >> $GITHUB_ENV
-              apt install -y -qq xorg
+              apt install -y -qq git python3-mpi4py python3-numpy python3-pip xorg
             list_notebooks: |
               readarray -d '' GENERATE_MESH < <(find . -type f -name "generate_mesh*.ipynb" -print0)
               readarray -d '' MESHIO < <(find . -type f -name "tutorial_*_meshio.ipynb" -print0)
