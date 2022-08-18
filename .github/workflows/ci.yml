@@ -31,7 +31,7 @@ jobs:
       matrix:
         include:
           - backend: none
-            container: ubuntu
+            container: ubuntu:rolling
             setup_container: |
               export DEBIAN_FRONTEND="noninteractive"
               apt -y -qq update
