@@ -85,9 +85,6 @@ jobs:
       - uses: actions/checkout@v2
       - name: Setup container
         run: ${{ matrix.setup_container }}
-      - name: Install dependencies
-        run: |
-          python3 -m pip -q install --upgrade nbconvert
       - name: Install FEMlium
         run: python3 -m pip install .[docs,lint,tests,tutorials]
       - name: Run flake8 checks
@@ -100,7 +97,9 @@ jobs:
       - name: Run unit tests
         run: pytest tests/unit
       - name: Run tutorials
-        run: pytest tutorials
+        run: |
+          python3 -m pip -q install --upgrade nbconvert
+          pytest tutorials
       - name: Get notebooks to be converted
         id: list_notebooks
         if: always()
