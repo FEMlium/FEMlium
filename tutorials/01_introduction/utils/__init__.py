@@ -3,13 +3,11 @@
 # This file is part of FEMlium.
 #
 # SPDX-License-Identifier: MIT
-
-__all__ = []
+"""Utils module for tutorial 01."""
 
 try:
     import dolfin  # noqa: F401
 except ImportError:
     pass
 else:
-    from .gmsh_to_fenics import gmsh_to_fenics
-    __all__ += ["gmsh_to_fenics"]
+    from .gmsh_to_fenics import gmsh_to_fenics  # noqa: F401, I2041, I2045

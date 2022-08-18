@@ -3,18 +3,26 @@
 # This file is part of FEMlium.
 #
 # SPDX-License-Identifier: MIT
+"""Interface of a geographic plotter for mesh-related plots for meshes read in with meshio."""
 
+import typing
+
+import folium
+import meshio
 import numpy as np
+
 from femlium.base_mesh_plotter import BaseMeshPlotter
 
 
 class MeshioPlotter(BaseMeshPlotter):
-    """
-    This class contains the interface of a geographic plotter for mesh-related plots for meshes read in with meshio.
-    """
+    """Interface of a geographic plotter for mesh-related plots for meshes read in with meshio."""
 
-    def add_mesh_to(self, geo_map, mesh, unmarked_face_marker=None,
-                    cell_colors=None, face_colors=None, face_weights=None):
+    def add_mesh_to(
+        self, geo_map: folium.Map, mesh: meshio.Mesh, unmarked_face_marker: typing.Optional[int] = None,
+        cell_colors: typing.Optional[typing.Union[str, typing.Dict[int, str]]] = None,
+        face_colors: typing.Optional[typing.Union[str, typing.Dict[int, str]]] = None,
+        face_weights: typing.Optional[typing.Union[int, typing.Dict[int, int]]] = None
+    ) -> None:
         """
         Add a triangular mesh imported from meshio to a folium map.
 
@@ -45,7 +53,6 @@ class MeshioPlotter(BaseMeshPlotter):
             the face_colors argument.
             If not provided, a unit weight will be used.
         """
-
         if unmarked_face_marker is None:
             unmarked_face_marker = 0
 
@@ -68,7 +75,7 @@ class MeshioPlotter(BaseMeshPlotter):
                 else:
                     key = (faces[f, 1], faces[f, 0])
                 face_data_dict[key] = face_data[f]
-            face_markers = np.zeros(cells.shape, dtype=np.dtype(int))
+            face_markers = np.zeros(cells.shape, dtype=np.int64)
             for c in range(cells.shape[0]):
                 for (f, pair) in enumerate(((0, 1), (1, 2), (0, 2))):
                     if cells[c, pair[0]] < cells[c, pair[1]]:

@@ -3,19 +3,24 @@
 # This file is part of FEMlium.
 #
 # SPDX-License-Identifier: MIT
+"""Wrap a branca.colormap.LinearColormap."""
 
 import branca
+import numpy as np
+import numpy.typing
 
 
-def ColorbarWrapper(colors, values, caption):
+def ColorbarWrapper(
+    colors: np.typing.NDArray[str], values: np.typing.NDArray[np.float64], caption: str
+) -> branca.colormap.LinearColormap:
     """
-    This class contains a wrapper to a branca.colormap.LinearColormap.
+    Wrap a branca.colormap.LinearColormap.
 
     Parameters
     ----------
     colors: 1d numpy array
         Vector containing the colors.
-    colors: 1d numpy array
+    values: 1d numpy array
         Vector containing the values associated to each color.
     caption: str
         Colorbar caption.
@@ -25,6 +30,5 @@ def ColorbarWrapper(colors, values, caption):
     branca.colormap.LinearColormap
         Colorbar to be attached to the plot.
     """
-
     return branca.colormap.LinearColormap(
         colors=colors, index=values, vmin=values[0], vmax=values[-1], caption=caption)

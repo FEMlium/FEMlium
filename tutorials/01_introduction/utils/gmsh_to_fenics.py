@@ -3,14 +3,19 @@
 # This file is part of FEMlium.
 #
 # SPDX-License-Identifier: MIT
+"""Utility to convert a mesh from gmsh to FEniCS."""
 
 import os
-import numpy as np
-import meshio
+import typing
+
 import dolfin
+import meshio
+import numpy as np
 
 
-def gmsh_to_fenics(msh_path):
+def gmsh_to_fenics(msh_path: str) -> typing.Tuple[
+        dolfin.Mesh, dolfin.cpp.mesh.MeshFunctionSizet, dolfin.cpp.mesh.MeshFunctionSizet]:
+    """Convert a mesh from gmsh to FEniCS."""
     assert msh_path.endswith(".msh")
     base_path = msh_path[:-4]
 

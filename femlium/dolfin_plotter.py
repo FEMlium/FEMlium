@@ -3,20 +3,29 @@
 # This file is part of FEMlium.
 #
 # SPDX-License-Identifier: MIT
+"""Interface of a geographic plotter for dolfin meshes and solutions."""
 
+import typing
+
+import dolfin
+import folium
 import numpy as np
+
 from femlium.base_mesh_plotter import BaseMeshPlotter
 from femlium.base_solution_plotter import BaseSolutionPlotter
 
 
 class DolfinPlotter(BaseMeshPlotter, BaseSolutionPlotter):
-    """
-    This class contains the interface of a geographic plotter for dolfin meshes and solutions.
-    """
+    """Interface of a geographic plotter for dolfin meshes and solutions."""
 
-    def add_mesh_to(self, geo_map, mesh,
-                    cell_mesh_function=None, face_mesh_function=None,
-                    cell_colors=None, face_colors=None, face_weights=None):
+    def add_mesh_to(
+        self, geo_map: folium.Map, mesh: dolfin.Mesh,
+        cell_mesh_function: typing.Optional[dolfin.MeshFunction] = None,
+        face_mesh_function: typing.Optional[dolfin.MeshFunction] = None,
+        cell_colors: typing.Optional[typing.Union[str, typing.Dict[int, str]]] = None,
+        face_colors: typing.Optional[typing.Union[str, typing.Dict[int, str]]] = None,
+        face_weights: typing.Optional[typing.Union[int, typing.Dict[int, int]]] = None
+    ) -> None:
         """
         Add a triangular mesh stored in a dolfin.Mesh to a folium map.
 
@@ -49,7 +58,6 @@ class DolfinPlotter(BaseMeshPlotter, BaseSolutionPlotter):
             the face_colors argument.
             If not provided, a unit weight will be used.
         """
-
         vertices = mesh.coordinates()
         cells = mesh.cells()
 
@@ -68,7 +76,7 @@ class DolfinPlotter(BaseMeshPlotter, BaseSolutionPlotter):
             # 0: (0, 1), 1: (1, 2), 2: (0, 2)
             fiat_to_femlium = {0: 1, 1: 2, 2: 0}
 
-            face_markers = np.zeros(cells.shape, dtype=np.dtype(int))
+            face_markers = np.zeros(cells.shape, dtype=np.int64)
             for c in range(cells.shape[0]):
                 for (f, global_face_number) in enumerate(cell_to_faces_connectivity(c)):
                     face_markers[c, fiat_to_femlium[f]] = face_mesh_function[global_face_number]
@@ -78,7 +86,11 @@ class DolfinPlotter(BaseMeshPlotter, BaseSolutionPlotter):
         return BaseMeshPlotter.add_mesh_to(
             self, geo_map, vertices, cells, cell_markers, face_markers, cell_colors, face_colors, face_weights)
 
-    def add_scalar_field_to(self, geo_map, scalar_field, mode=None, levels=None, cmap=None, name=None):
+    def add_scalar_field_to(
+        self, geo_map: folium.Map, scalar_field: dolfin.Function, mode: typing.Optional[str] = None,
+        levels: typing.Optional[typing.Union[int, typing.List[float]]] = None,
+        cmap: typing.Optional[str] = None, name: typing.Optional[str] = None
+    ) -> None:
         """
         Add a scalar field to a folium map.
 
@@ -104,7 +116,6 @@ class DolfinPlotter(BaseMeshPlotter, BaseSolutionPlotter):
             Name of the field, to be used in the creation of the color bar.
             If not provided, the name "scalar field" will be used.
         """
-
         mesh = scalar_field.function_space().mesh()
         vertices = mesh.coordinates()
         cells = mesh.cells()
@@ -113,7 +124,11 @@ class DolfinPlotter(BaseMeshPlotter, BaseSolutionPlotter):
         return BaseSolutionPlotter.add_scalar_field_to(
             self, geo_map, vertices, cells, scalar_field_values, mode, levels, cmap, name)
 
-    def add_vector_field_to(self, geo_map, vector_field, mode=None, levels=None, scale=None, cmap=None, name=None):
+    def add_vector_field_to(
+        self, geo_map: folium.Map, vector_field: dolfin.Function, mode: typing.Optional[str] = None,
+        levels: typing.Optional[typing.Union[int, typing.List[float]]] = None, scale: typing.Optional[float] = None,
+        cmap: typing.Optional[str] = None, name: typing.Optional[str] = None
+    ) -> None:
         """
         Add a vector field to a folium map.
 
@@ -143,7 +158,6 @@ class DolfinPlotter(BaseMeshPlotter, BaseSolutionPlotter):
             Name of the field, to be used in the creation of the color bar.
             If not provided, the name "vector field" will be used.
         """
-
         mesh = vector_field.function_space().mesh()
         vertices = mesh.coordinates()
         cells = mesh.cells()

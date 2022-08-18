@@ -3,10 +3,18 @@
 # This file is part of FEMlium.
 #
 # SPDX-License-Identifier: MIT
+"""Wrap a pyproj.Transformer object."""
+
+import typing
+
+import numpy as np
+import numpy.typing
+import pyproj
+
 
 class TransformerWrapper(object):
     """
-    This class contains a wrapper to a pyproj.Transformer object, or None.
+    Wrap a pyproj.Transformer object, or None.
 
     Parameters
     ----------
@@ -21,10 +29,10 @@ class TransformerWrapper(object):
         The first input parameter.
     """
 
-    def __init__(self, transformer):
+    def __init__(self, transformer: typing.Optional[pyproj.Transformer]) -> None:
         self.transformer = transformer
 
-    def __call__(self, *args):
+    def __call__(self, *args: np.float64) -> np.typing.NDArray[np.float64]:
         """
         Apply the transformation. If no transformer has been provided this method implements the identity map.
 
@@ -38,7 +46,6 @@ class TransformerWrapper(object):
         tuple
             Output coordinates after transformation.
         """
-
         if self.transformer is None:
             return args
         else:

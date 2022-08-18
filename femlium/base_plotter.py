@@ -3,14 +3,20 @@
 # This file is part of FEMlium.
 #
 # SPDX-License-Identifier: MIT
+"""Interface of a geographic plotter."""
+
+import typing
 
 import numpy as np
+import numpy.typing
+import pyproj
+
 from femlium.utils import TransformerWrapper
 
 
 class BasePlotter(object):
     """
-    This class contains the interface of a geographic plotter.
+    Interface of a geographic plotter.
 
     Parameters
     ----------
@@ -25,11 +31,14 @@ class BasePlotter(object):
         Wrapper to the transformer object provided as first input parameter.
     """
 
-    def __init__(self, transformer=None):
+    def __init__(self, transformer: typing.Optional[pyproj.Transformer] = None) -> None:
         self.transformer = TransformerWrapper(transformer)
 
     @staticmethod
-    def _process_optional_argument_on_markers(argument, default, unique_markers):
+    def _process_optional_argument_on_markers(
+        argument: typing.Any, default: typing.Any, unique_markers: np.typing.NDArray[typing.Any]  # noqa: ANN401
+    ) -> np.typing.NDArray[typing.Any]:
+        """Fill optinal arguments related to markers with default value."""
         expected_type = type(default)
         assert isinstance(argument, (expected_type, dict)) or argument is None
         if isinstance(argument, dict):

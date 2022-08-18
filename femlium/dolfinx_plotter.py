@@ -3,23 +3,34 @@
 # This file is part of FEMlium.
 #
 # SPDX-License-Identifier: MIT
+"""Interface of a geographic plotter for dolfinx meshes and solutions."""
 
-import numpy as np
+import typing
+
+import dolfinx.cpp
 import dolfinx.fem
+import dolfinx.mesh
 import dolfinx.plot
+import folium
+import numpy as np
+import numpy.typing
+
 from femlium.base_mesh_plotter import BaseMeshPlotter
 from femlium.base_solution_plotter import BaseSolutionPlotter
 
 
 class DolfinxPlotter(BaseMeshPlotter, BaseSolutionPlotter):
-    """
-    This class contains the interface of a geographic plotter for dolfinx meshes and solutions.
-    """
+    """Interface of a geographic plotter for dolfinx meshes and solutions."""
 
-    def add_mesh_to(self, geo_map, mesh,
-                    cell_mesh_tags=None, face_mesh_tags=None,
-                    unmarked_cell_marker=None, unmarked_face_marker=None,
-                    cell_colors=None, face_colors=None, face_weights=None):
+    def add_mesh_to(
+        self, geo_map: folium.Map, mesh: dolfinx.mesh.Mesh,
+        cell_mesh_tags: typing.Optional[dolfinx.cpp.mesh.MeshTags_int32] = None,
+        face_mesh_tags: typing.Optional[dolfinx.cpp.mesh.MeshTags_int32] = None,
+        unmarked_cell_marker: typing.Optional[int] = None, unmarked_face_marker: typing.Optional[int] = None,
+        cell_colors: typing.Optional[typing.Union[str, typing.Dict[int, str]]] = None,
+        face_colors: typing.Optional[typing.Union[str, typing.Dict[int, str]]] = None,
+        face_weights: typing.Optional[typing.Union[int, typing.Dict[int, int]]] = None
+    ) -> None:
         """
         Add a triangular mesh stored in a dolfinx.Mesh to a folium map.
 
@@ -27,12 +38,12 @@ class DolfinxPlotter(BaseMeshPlotter, BaseSolutionPlotter):
         ----------
         geo_map : folium.Map
             Map to which the mesh plot should be added.
-        mesh: dolfinx.Mesh
+        mesh: dolfinx.mesh.Mesh
             A dolfinx mesh.
-        cell_mesh_tags: dolfinx.MeshTags, optional
+        cell_mesh_tags: dolfinx.cpp.mesh.MeshTags_int32, optional
             A dolfinx mesh tags of topological dimension 2 that stores cell markers.
             If not provided, the marker will be set to 0 everywhere.
-        face_mesh_tags: dolfinx.MeshTags, optional
+        face_mesh_tags: dolfinx.cpp.mesh.MeshTags_int32, optional
             A dolfinx mesh tags of topological dimension 1 that stores face markers.
             If not provided, the marker will be set to 0 everywhere.
         unmarked_cell_marker: int, optional
@@ -60,7 +71,6 @@ class DolfinxPlotter(BaseMeshPlotter, BaseSolutionPlotter):
             the face_colors argument.
             If not provided, a unit weight will be used.
         """
-
         if unmarked_cell_marker is None:
             unmarked_cell_marker = 0
 
@@ -71,7 +81,7 @@ class DolfinxPlotter(BaseMeshPlotter, BaseSolutionPlotter):
         cells = mesh.geometry.dofmap.array.reshape((-1, mesh.topology.dim + 1))
 
         if cell_mesh_tags is not None:
-            cell_markers = np.full((cells.shape[0], ), unmarked_cell_marker, dtype=np.dtype(int))
+            cell_markers = np.full((cells.shape[0], ), unmarked_cell_marker, dtype=np.int64)
             cell_markers[cell_mesh_tags.indices] = cell_mesh_tags.values
         else:
             cell_markers = None
@@ -88,7 +98,7 @@ class DolfinxPlotter(BaseMeshPlotter, BaseSolutionPlotter):
             # 0: (0, 1), 1: (1, 2), 2: (0, 2)
             basix_to_femlium = {0: 1, 1: 2, 2: 0}
 
-            face_markers = np.full(cells.shape, unmarked_face_marker, dtype=np.dtype(int))
+            face_markers = np.full(cells.shape, unmarked_face_marker, dtype=np.int64)
             for (global_face_number, face_mesh_tag) in zip(face_mesh_tags.indices, face_mesh_tags.values):
                 cells_ = face_to_cells_connectivity.links(global_face_number)
                 basix_face_numbers = np.array([
@@ -104,7 +114,11 @@ class DolfinxPlotter(BaseMeshPlotter, BaseSolutionPlotter):
         return BaseMeshPlotter.add_mesh_to(
             self, geo_map, vertices, cells, cell_markers, face_markers, cell_colors, face_colors, face_weights)
 
-    def add_scalar_field_to(self, geo_map, scalar_field, mode=None, levels=None, cmap=None, name=None):
+    def add_scalar_field_to(
+        self, geo_map: folium.Map, scalar_field: dolfinx.fem.Function, mode: typing.Optional[str] = None,
+        levels: typing.Optional[typing.Union[int, typing.List[float]]] = None,
+        cmap: typing.Optional[str] = None, name: typing.Optional[str] = None
+    ) -> None:
         """
         Add a scalar field to a folium map.
 
@@ -112,7 +126,7 @@ class DolfinxPlotter(BaseMeshPlotter, BaseSolutionPlotter):
         ----------
         geo_map : folium.Map
             Map to which the mesh plot should be added.
-        scalar_field: dolfinx.Function
+        scalar_field: dolfinx.fem.Function
             A dolfinx Function representing the scalar field.
         mode: str, optional
             Plot to be generated, either contourf or contour.
@@ -130,7 +144,6 @@ class DolfinxPlotter(BaseMeshPlotter, BaseSolutionPlotter):
             Name of the field, to be used in the creation of the color bar.
             If not provided, the name "scalar field" will be used.
         """
-
         scalar_function_space_p1 = dolfinx.fem.FunctionSpace(scalar_field.function_space.mesh, ("CG", 1))
         vertices, cells = self._get_vertices_cells_of_linear_function_space(scalar_function_space_p1)
         scalar_field_p1 = dolfinx.fem.Function(scalar_function_space_p1)
@@ -139,7 +152,11 @@ class DolfinxPlotter(BaseMeshPlotter, BaseSolutionPlotter):
         return BaseSolutionPlotter.add_scalar_field_to(
             self, geo_map, vertices, cells, scalar_field_values, mode, levels, cmap, name)
 
-    def add_vector_field_to(self, geo_map, vector_field, mode=None, levels=None, scale=None, cmap=None, name=None):
+    def add_vector_field_to(
+        self, geo_map: folium.Map, vector_field: dolfinx.fem.Function, mode: typing.Optional[str] = None,
+        levels: typing.Optional[typing.Union[int, typing.List[float]]] = None, scale: typing.Optional[float] = None,
+        cmap: typing.Optional[str] = None, name: typing.Optional[str] = None
+    ) -> None:
         """
         Add a vector field to a folium map.
 
@@ -147,7 +164,7 @@ class DolfinxPlotter(BaseMeshPlotter, BaseSolutionPlotter):
         ----------
         geo_map : folium.Map
             Map to which the mesh plot should be added.
-        vector_field: dolfinx.Function
+        vector_field: dolfinx.fem.Function
             A dolfinx Function representing the vector field.
         mode: str, optional
             Plot to be generated, either contourf, contour or quiver.
@@ -169,7 +186,6 @@ class DolfinxPlotter(BaseMeshPlotter, BaseSolutionPlotter):
             Name of the field, to be used in the creation of the color bar.
             If not provided, the name "vector field" will be used.
         """
-
         vector_function_space_p1 = dolfinx.fem.VectorFunctionSpace(vector_field.function_space.mesh, ("CG", 1))
         vertices, cells = self._get_vertices_cells_of_linear_function_space(vector_function_space_p1)
         vector_field_p1 = dolfinx.fem.Function(vector_function_space_p1)
@@ -179,7 +195,9 @@ class DolfinxPlotter(BaseMeshPlotter, BaseSolutionPlotter):
         return BaseSolutionPlotter.add_vector_field_to(
             self, geo_map, vertices, cells, vector_field_values, mode, levels, scale, cmap, name)
 
-    def _get_vertices_cells_of_linear_function_space(self, function_space):
+    def _get_vertices_cells_of_linear_function_space(
+        self, function_space: dolfinx.fem.FunctionSpace
+    ) -> typing.Tuple[np.typing.NDArray[np.float64], np.typing.NDArray[np.int64]]:
         """Postprocess the output of dolfinx.plot.create_vtk_mesh and return vertices and cells for matplotlib."""
         cells, _, vertices = dolfinx.plot.create_vtk_mesh(function_space)
         cells = cells.reshape((-1, 4))

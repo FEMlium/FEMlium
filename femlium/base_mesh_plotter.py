@@ -3,22 +3,30 @@
 # This file is part of FEMlium.
 #
 # SPDX-License-Identifier: MIT
+"""Base interface of a geographic plotter for mesh-related plots."""
 
-import numpy as np
-import geojson
+import typing
+
 import folium
+import geojson
+import numpy as np
+import numpy.typing
+
 from femlium.base_plotter import BasePlotter
 from femlium.utils import ColorbarWrapper
 
 
 class BaseMeshPlotter(BasePlotter):
-    """
-    This class contains the base interface of a geographic plotter for mesh-related plots.
-    """
+    """Base interface of a geographic plotter for mesh-related plots."""
 
-    def add_mesh_to(self, geo_map, vertices, cells,
-                    cell_markers=None, face_markers=None,
-                    cell_colors=None, face_colors=None, face_weights=None):
+    def add_mesh_to(
+        self, geo_map: folium.Map, vertices: np.typing.NDArray[np.float64], cells: np.typing.NDArray[np.int64],
+        cell_markers: typing.Optional[np.typing.NDArray[np.int64]] = None,
+        face_markers: typing.Optional[np.typing.NDArray[np.int64]] = None,
+        cell_colors: typing.Optional[typing.Union[str, typing.Dict[int, str]]] = None,
+        face_colors: typing.Optional[typing.Union[str, typing.Dict[int, str]]] = None,
+        face_weights: typing.Optional[typing.Union[int, typing.Dict[int, int]]] = None
+    ) -> None:
         """
         Add a triangular mesh to a folium map.
 
@@ -63,14 +71,13 @@ class BaseMeshPlotter(BasePlotter):
             the face_colors argument.
             If not provided, a unit weight will be used.
         """
-
         if cell_markers is None:
-            cell_markers = np.zeros((cells.shape[0], ), dtype=np.dtype(int))
+            cell_markers = np.zeros((cells.shape[0], ), dtype=np.int64)
         else:
             assert cell_markers.shape[0] == cells.shape[0]
 
         if face_markers is None:
-            face_markers = np.zeros(cells.shape, dtype=np.dtype(int))
+            face_markers = np.zeros(cells.shape, dtype=np.int64)
         else:
             assert face_markers.shape == cells.shape
 
@@ -80,7 +87,7 @@ class BaseMeshPlotter(BasePlotter):
         face_colors = self._process_optional_argument_on_markers(face_colors, "black", unique_face_markers)
         face_weights = self._process_optional_argument_on_markers(face_weights, 1, unique_face_markers)
 
-        def style_function(x):
+        def style_function(x: typing.Dict[str, typing.Dict[str, typing.Any]]) -> typing.Dict[str, typing.Any]:
             if x["geometry"]["type"] == "MultiPolygon":
                 return {
                     # Boundary properties
@@ -130,8 +137,12 @@ class BaseMeshPlotter(BasePlotter):
                 colors=face_colors_in_figure, values=face_colors_values_in_figure, caption="Face markers")
             colorbar.add_to(geo_map)
 
-    def _convert_mesh_to_geojson(self, vertices, cells, cell_markers, face_markers,
-                                 cell_colors, face_colors, face_weights):
+    def _convert_mesh_to_geojson(
+        self, vertices: np.typing.NDArray[np.float64], cells: np.typing.NDArray[np.int64],
+        cell_markers: np.typing.NDArray[np.int64], face_markers: np.typing.NDArray[np.int64],
+        cell_colors: typing.Union[str, typing.Dict[int, str]], face_colors: typing.Union[str, typing.Dict[int, str]],
+        face_weights: typing.Union[int, typing.Dict[int, int]]
+    ) -> geojson.FeatureCollection:
         """
         Convert a mesh to a geojson FeatureCollection.
 
@@ -164,7 +175,6 @@ class BaseMeshPlotter(BasePlotter):
         geojson.FeatureCollection
             A geojson FeatureCollection representing the mesh.
         """
-
         multipolygon_coordinates = dict()
         multipolygon_properties = dict()
         multiline_coordinates = dict()
@@ -172,7 +182,7 @@ class BaseMeshPlotter(BasePlotter):
         for c in range(cells.shape[0]):
             coordinates = [self.transformer(*vertices[cells[c, v], :]) for v in range(3)]
             coordinates.append(coordinates[0])
-            cell_face_markers = np.unique([face_markers[c, f] for f in range(3)]).astype(int)
+            cell_face_markers = np.unique([face_markers[c, f] for f in range(3)]).astype(np.int64)
             if cell_face_markers.shape[0] == 1:
                 cell_key = (cell_markers[c], True)
                 cell_properties = {

@@ -87,15 +87,15 @@ jobs:
         run: ${{ matrix.setup_container }}
       - name: Install FEMlium
         run: python3 -m pip install .[docs,lint,tests,tutorials]
-      - name: Run flake8 checks
+      - name: Run flake8 checks on python files
         run: |
-          echo pytest --flake8 -m flake8 .
+          python3 -m flake8 .
+      - name: Run unit tests
+        run: pytest tests/unit
       - name: Check for stray outputs, counts and metadata in ipynb files
         uses: RBniCS/check-jupyter-metadata-action@main
         with:
           pattern: "tutorials/**/*.ipynb"
-      - name: Run unit tests
-        run: pytest tests/unit
       - name: Run tutorials
         run: |
           python3 -m pip -q install --upgrade nbconvert

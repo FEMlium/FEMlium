@@ -3,24 +3,31 @@
 # This file is part of FEMlium.
 #
 # SPDX-License-Identifier: MIT
+"""Base interface of a geographic plotter for solution-related plots."""
 
-import numpy as np
+import typing
+
+import folium
+import geojson
 import matplotlib
 import matplotlib._tri
 import matplotlib.pyplot as plt
-import geojson
-import folium
+import numpy as np
+import numpy.typing
+
 from femlium.base_plotter import BasePlotter
 from femlium.utils import ColorbarWrapper, GeoJsonWithArrows
 
 
 class BaseSolutionPlotter(BasePlotter):
-    """
-    This class contains the base interface of a geographic plotter for solution-related plots.
-    """
+    """Base interface of a geographic plotter for solution-related plots."""
 
-    def add_scalar_field_to(self, geo_map, vertices, cells, scalar_field,
-                            mode=None, levels=None, cmap=None, name=None):
+    def add_scalar_field_to(
+        self, geo_map: folium.Map, vertices: np.typing.NDArray[np.float64], cells: np.typing.NDArray[np.int64],
+        scalar_field: np.typing.NDArray[np.float64], mode: typing.Optional[str] = None,
+        levels: typing.Optional[typing.Union[int, typing.List[float]]] = None,
+        cmap: typing.Optional[str] = None, name: typing.Optional[str] = None
+    ) -> None:
         """
         Add a scalar field to a folium map.
 
@@ -53,7 +60,6 @@ class BaseSolutionPlotter(BasePlotter):
             Name of the field, to be used in the creation of the color bar.
             If not provided, the name "scalar field" will be used.
         """
-
         if mode is None:
             mode = "contourf"
         assert mode in ("contourf", "contour")
@@ -80,7 +86,7 @@ class BaseSolutionPlotter(BasePlotter):
         if name is None:
             name = "Scalar field"
 
-        def style_function(x):
+        def style_function(x: typing.Dict[str, typing.Dict[str, typing.Any]]) -> typing.Dict[str, typing.Any]:
             if x["geometry"]["type"] == "MultiPolygon":
                 assert mode == "contourf"
                 return {
@@ -105,7 +111,11 @@ class BaseSolutionPlotter(BasePlotter):
         colorbar = ColorbarWrapper(colors=colors, values=levels, caption=name)
         colorbar.add_to(geo_map)
 
-    def _convert_scalar_field_to_geojson(self, vertices, cells, scalar_field, mode, levels, colors):
+    def _convert_scalar_field_to_geojson(
+        self, vertices: np.typing.NDArray[np.float64], cells: np.typing.NDArray[np.int64],
+        scalar_field: np.typing.NDArray[np.float64], mode: str, levels: typing.Union[int, typing.List[float]],
+        colors: typing.List[str]
+    ) -> geojson.FeatureCollection:
         """
         Convert a scalar field to a geojson FeatureCollection.
 
@@ -134,7 +144,6 @@ class BaseSolutionPlotter(BasePlotter):
         geojson.FeatureCollection
             A geojson FeatureCollection representing the scalar field.
         """
-
         tri = matplotlib.tri.Triangulation(vertices[:, 0], vertices[:, 1], cells)
         countour_generator = matplotlib._tri.TriContourGenerator(tri.get_cpp_triangulation(), scalar_field)
 
@@ -221,8 +230,12 @@ class BaseSolutionPlotter(BasePlotter):
         else:
             raise ValueError("Invalid mode")
 
-    def add_vector_field_to(self, geo_map, vertices, cells, vector_field,
-                            mode=None, levels=None, scale=None, cmap=None, name=None):
+    def add_vector_field_to(
+        self, geo_map: folium.Map, vertices: np.typing.NDArray[np.float64], cells: np.typing.NDArray[np.int64],
+        vector_field: np.typing.NDArray[np.float64], mode: typing.Optional[str] = None,
+        levels: typing.Optional[typing.Union[int, typing.List[float]]] = None, scale: typing.Optional[float] = None,
+        cmap: typing.Optional[str] = None, name: typing.Optional[str] = None
+    ) -> None:
         """
         Add a vector field to a folium map.
 
@@ -259,7 +272,6 @@ class BaseSolutionPlotter(BasePlotter):
             Name of the field, to be used in the creation of the color bar.
             If not provided, the name "vector field" will be used.
         """
-
         if mode is None:
             mode = "contourf"
         assert mode in ("contourf", "contour", "quiver")
@@ -295,7 +307,7 @@ class BaseSolutionPlotter(BasePlotter):
                 vertices, vector_field_magnitude, vector_field, scale,
                 lambda lev: matplotlib.colors.to_hex(cmap(cnorm(lev))))
 
-            def style_function(x):
+            def style_function(x: typing.Dict[str, typing.Dict[str, typing.Any]]) -> typing.Dict[str, typing.Any]:
                 return {
                     "color": x["properties"]["color"],
                     "weight": x["properties"]["weight"]
@@ -309,7 +321,10 @@ class BaseSolutionPlotter(BasePlotter):
         else:
             raise ValueError("Invalid mode")
 
-    def _convert_vector_field_to_geojson(self, vertices, vector_field_magnitude, vector_field, scale, cmap):
+    def _convert_vector_field_to_geojson(
+        self, vertices: np.typing.NDArray[np.float64], vector_field_magnitude: np.typing.NDArray[np.float64],
+        vector_field: np.typing.NDArray[np.float64], scale: float, cmap: typing.Callable[[float], str]
+    ) -> geojson.FeatureCollection:
         """
         Convert a scalar field to a geojson FeatureCollection.
 
@@ -336,7 +351,6 @@ class BaseSolutionPlotter(BasePlotter):
         geojson.FeatureCollection
             A geojson FeatureCollection representing the scalar field.
         """
-
         multiline_coordinates = dict()
         multiline_properties = dict()
         for v in range(vertices.shape[0]):

@@ -3,21 +3,28 @@
 # This file is part of FEMlium.
 #
 # SPDX-License-Identifier: MIT
+"""Interface of a geographic plotter for firedrake meshes and solutions."""
 
-import numpy as np
+import typing
+
 import firedrake
-from firedrake.cython.dmcommon import CELL_SETS_LABEL, FACE_SETS_LABEL
+import folium
+import numpy as np
+
 from femlium.base_mesh_plotter import BaseMeshPlotter
 from femlium.base_solution_plotter import BaseSolutionPlotter
 
 
 class FiredrakePlotter(BaseMeshPlotter, BaseSolutionPlotter):
-    """
-    This class contains the interface of a geographic plotter for firedrake meshes and solutions.
-    """
+    """Interface of a geographic plotter for firedrake meshes and solutions."""
 
-    def add_mesh_to(self, geo_map, mesh, unmarked_cell_marker=None, unmarked_face_marker=None,
-                    cell_colors=None, face_colors=None, face_weights=None):
+    def add_mesh_to(
+        self, geo_map: folium.Map, mesh: firedrake.Mesh,
+        unmarked_cell_marker: typing.Optional[int] = None, unmarked_face_marker: typing.Optional[int] = None,
+        cell_colors: typing.Optional[typing.Union[str, typing.Dict[int, str]]] = None,
+        face_colors: typing.Optional[typing.Union[str, typing.Dict[int, str]]] = None,
+        face_weights: typing.Optional[typing.Union[int, typing.Dict[int, int]]] = None
+    ) -> None:
         """
         Add a triangular mesh stored in a firedrake.Mesh to a folium map.
 
@@ -52,7 +59,6 @@ class FiredrakePlotter(BaseMeshPlotter, BaseSolutionPlotter):
             the face_colors argument.
             If not provided, a unit weight will be used.
         """
-
         if unmarked_cell_marker is None:
             unmarked_cell_marker = 0
 
@@ -62,22 +68,24 @@ class FiredrakePlotter(BaseMeshPlotter, BaseSolutionPlotter):
         vertices = mesh.coordinates.dat.data_ro
         cells = mesh.coordinates.cell_node_map().values
 
-        unique_cell_markers = tuple(mesh.topology_dm.getLabelIdIS(CELL_SETS_LABEL).indices.tolist())
-        unique_face_markers = tuple(mesh.topology_dm.getLabelIdIS(FACE_SETS_LABEL).indices.tolist())
+        unique_cell_markers = tuple(mesh.topology_dm.getLabelIdIS(
+            firedrake.cython.dmcommon.CELL_SETS_LABEL).indices.tolist())
+        unique_face_markers = tuple(mesh.topology_dm.getLabelIdIS(
+            firedrake.cython.dmcommon.FACE_SETS_LABEL).indices.tolist())
 
-        cell_markers = np.full((cells.shape[0], ), unmarked_cell_marker, dtype=np.dtype(int))
+        cell_markers = np.full((cells.shape[0], ), unmarked_cell_marker, dtype=np.int64)
         for cm in unique_cell_markers:
             cell_markers[mesh.cell_subset(cm).indices] = cm
 
         exterior_facet_size = mesh.exterior_facets.measure_set("exterior_facet", "everywhere").size
-        exterior_facet_markers = np.full((exterior_facet_size, ), unmarked_face_marker, dtype=np.dtype(int))
+        exterior_facet_markers = np.full((exterior_facet_size, ), unmarked_face_marker, dtype=np.int64)
         interior_facet_size = mesh.interior_facets.measure_set("interior_facet", "everywhere").size
-        interior_facet_markers = np.full((interior_facet_size, ), unmarked_face_marker, dtype=np.dtype(int))
+        interior_facet_markers = np.full((interior_facet_size, ), unmarked_face_marker, dtype=np.int64)
         for fm in unique_face_markers:
             exterior_facet_markers[mesh.exterior_facets.measure_set("exterior_facet", fm).indices] = fm
             interior_facet_markers[mesh.interior_facets.measure_set("interior_facet", fm).indices] = fm
 
-        face_markers = np.full(cells.shape, unmarked_face_marker, dtype=np.dtype(int))
+        face_markers = np.full(cells.shape, unmarked_face_marker, dtype=np.int64)
         # The local face to vertex connectivity in FInAT is
         # 0: (1, 2), 1: (0, 2), 2: (0, 1)
         # while in FEMlium we assume
@@ -108,7 +116,11 @@ class FiredrakePlotter(BaseMeshPlotter, BaseSolutionPlotter):
         return BaseMeshPlotter.add_mesh_to(
             self, geo_map, vertices, cells, cell_markers, face_markers, cell_colors, face_colors, face_weights)
 
-    def add_scalar_field_to(self, geo_map, scalar_field, mode=None, levels=None, cmap=None, name=None):
+    def add_scalar_field_to(
+        self, geo_map: folium.Map, scalar_field: firedrake.Function, mode: typing.Optional[str] = None,
+        levels: typing.Optional[typing.Union[int, typing.List[float]]] = None,
+        cmap: typing.Optional[str] = None, name: typing.Optional[str] = None
+    ) -> None:
         """
         Add a scalar field to a folium map.
 
@@ -134,7 +146,6 @@ class FiredrakePlotter(BaseMeshPlotter, BaseSolutionPlotter):
             Name of the field, to be used in the creation of the color bar.
             If not provided, the name "scalar field" will be used.
         """
-
         mesh = scalar_field.function_space().mesh()
         scalar_function_space = firedrake.FunctionSpace(mesh, "CG", 1)
         vertices = mesh.coordinates.dat.data_ro
@@ -144,7 +155,11 @@ class FiredrakePlotter(BaseMeshPlotter, BaseSolutionPlotter):
         return BaseSolutionPlotter.add_scalar_field_to(
             self, geo_map, vertices, cells, scalar_field_values, mode, levels, cmap, name)
 
-    def add_vector_field_to(self, geo_map, vector_field, mode=None, levels=None, scale=None, cmap=None, name=None):
+    def add_vector_field_to(
+        self, geo_map: folium.Map, vector_field: firedrake.Function, mode: typing.Optional[str] = None,
+        levels: typing.Optional[typing.Union[int, typing.List[float]]] = None, scale: typing.Optional[float] = None,
+        cmap: typing.Optional[str] = None, name: typing.Optional[str] = None
+    ) -> None:
         """
         Add a vector field to a folium map.
 
@@ -174,7 +189,6 @@ class FiredrakePlotter(BaseMeshPlotter, BaseSolutionPlotter):
             Name of the field, to be used in the creation of the color bar.
             If not provided, the name "vector field" will be used.
         """
-
         mesh = vector_field.function_space().mesh()
         vector_function_space = firedrake.VectorFunctionSpace(mesh, "CG", 1)
         vertices = mesh.coordinates.dat.data_ro

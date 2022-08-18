@@ -3,17 +3,21 @@
 # This file is part of FEMlium.
 #
 # SPDX-License-Identifier: MIT
+"""A GeoJson object with arrows for plotting into a Map."""
 
 import json
-from folium.elements import JSCSSMixin
-from folium.features import GeoJson
-from folium.utilities import parse_options
+import typing
+
+import folium.elements
+import folium.features
+import folium.utilities
 
 
-class GeoJsonWithArrows(JSCSSMixin, GeoJson):
+class GeoJsonWithArrows(folium.elements.JSCSSMixin, folium.features.GeoJson):
     """
-    Creates a GeoJson object for plotting into a Map. The GeoJson object is patched
-    to add arrows from the leaflet-arrowheads project.
+    A GeoJson object with arrows for plotting into a Map.
+
+    The GeoJson object is patched to add arrows from the leaflet-arrowheads project.
 
     Parameters
     ----------
@@ -41,20 +45,22 @@ class GeoJsonWithArrows(JSCSSMixin, GeoJson):
          "https://cdn.jsdelivr.net/npm/leaflet-arrowheads@1.2.2/src/leaflet-arrowheads.js")
     ]
 
-    def __init__(self, data, yawn=60, size="15%", frequency="allvertices", proportionalToTotal=False, **kwargs):
+    def __init__(
+        self, data: typing.Any, yawn: typing.Optional[int] = 60, size: typing.Optional[str] = "15%",  # noqa: ANN401
+        frequency: typing.Optional[str] = "allvertices", proportionalToTotal: typing.Optional[bool] = False,
+        **kwargs: typing.Any  # noqa: ANN401
+    ) -> None:
         super(GeoJsonWithArrows, self).__init__(data, **kwargs)
-        self._name = 'GeoJsonWithArrows'
-        self.arrows_options = parse_options(
+        self._name = "GeoJsonWithArrows"
+        self.arrows_options = folium.utilities.parse_options(
             yawn=yawn,
             size=size,
             frequency=frequency,
             proportionalToTotal=proportionalToTotal
         )
 
-    def render(self, **kwargs):
-        """
-        Renders the GeoJson object, adding arrowheads options among L.geoJson properties.
-        """
+    def render(self, **kwargs: typing.Any) -> None:  # noqa: ANN401
+        """Render the GeoJson object, adding arrowheads options among L.geoJson properties."""
         original_script = self._template.module.__dict__.get("script", None)
         assert original_script is not None
         patched_script = PatchedScript(original_script, self.arrows_options)
@@ -63,16 +69,14 @@ class GeoJsonWithArrows(JSCSSMixin, GeoJson):
 
 
 class PatchedScript(object):
-    """
-    Patch a jinja2.runtime.Macro object associated to the script part of a jinja2 template
-    to add arrowheads to the geojson script.
-    """
+    """Patch a jinja2.runtime.Macro object associated to the script part of a jinja2 template to add arrowheads."""
 
-    def __init__(self, original_script, options):
+    def __init__(self, original_script: typing.Callable[..., str], options: typing.Dict[str, typing.Any]) -> None:
         self.original_script = original_script
         self.options = options
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args: typing.Any, **kwargs: typing.Any) -> str:  # noqa: ANN401
+        """Apply patch."""
         output = self.original_script(*args, **kwargs)
         assert "L.geoJson(null, {" in output
         if "arrowheads:" not in output:

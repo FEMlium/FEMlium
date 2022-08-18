@@ -3,20 +3,28 @@
 # This file is part of FEMlium.
 #
 # SPDX-License-Identifier: MIT
+"""Geographic plotter for the computational domain."""
 
-import numpy as np
-import geojson
+import typing
+
 import folium
+import geojson
+import numpy as np
+import numpy.typing
+
 from femlium.base_plotter import BasePlotter
 from femlium.utils import ColorbarWrapper
 
 
 class DomainPlotter(BasePlotter):
-    """
-    This class contains a geographic plotter for the computational domain.
-    """
+    """Geographic plotter for the computational domain."""
 
-    def add_domain_to(self, geo_map, vertices, segment_markers=None, colors=None, weights=None):
+    def add_domain_to(
+        self, geo_map: folium.Map, vertices: np.typing.NDArray[np.float64],
+        segment_markers: typing.Optional[np.typing.NDArray[np.int64]] = None,
+        colors: typing.Optional[typing.Union[str, typing.Dict[int, str]]] = None,
+        weights: typing.Optional[typing.Union[int, typing.Dict[int, int]]] = None
+    ) -> None:
         """
         Add a domain to a folium map.
 
@@ -46,17 +54,16 @@ class DomainPlotter(BasePlotter):
             the colors argument.
             If not provided, a unit weight will be used.
         """
-
         if segment_markers is None:
-            segment_markers = np.zeros((vertices.shape[0] - 1, ), dtype=np.dtype(int))
+            segment_markers = np.zeros((vertices.shape[0] - 1, ), dtype=np.int64)
         else:
             assert segment_markers.shape[0] == vertices.shape[0] - 1
 
-        unique_markers = np.unique(segment_markers).astype(int)
+        unique_markers = np.unique(segment_markers).astype(np.int64)
         colors = self._process_optional_argument_on_markers(colors, "black", unique_markers)
         weights = self._process_optional_argument_on_markers(weights, 1, unique_markers)
 
-        def style_function(x):
+        def style_function(x: typing.Dict[str, typing.Dict[str, typing.Any]]) -> typing.Dict[str, typing.Any]:
             return {
                 "color": x["properties"]["color"],
                 "weight": x["properties"]["weight"]
@@ -74,7 +81,10 @@ class DomainPlotter(BasePlotter):
                 colors=colors_in_figure, values=colors_values_in_figure, caption="Segment markers")
             colorbar.add_to(geo_map)
 
-    def _convert_domain_to_geojson(self, vertices, segment_markers, colors, weights):
+    def _convert_domain_to_geojson(
+        self, vertices: np.typing.NDArray[np.float64], segment_markers: np.typing.NDArray[np.int64],
+        colors: typing.Union[str, typing.Dict[int, str]], weights: typing.Union[int, typing.Dict[int, int]]
+    ) -> geojson.FeatureCollection:
         """
         Convert a domain to a geojson FeatureCollection.
 
@@ -99,7 +109,6 @@ class DomainPlotter(BasePlotter):
         geojson.FeatureCollection
             A geojson FeatureCollection representing the domain.
         """
-
         multiline_coordinates = dict()
         multiline_properties = dict()
         previous_marker = segment_markers[0]
