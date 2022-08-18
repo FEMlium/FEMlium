@@ -33,12 +33,12 @@ jobs:
           - backend: none
             container: ubuntu
             setup_container: |
-              apt-get -qq update
-              apt-get -qq install git-lfs
+              apt -y -qq update
+              apt install -y -qq git-lfs
             setup_dependencies: |
               export DEBIAN_FRONTEND="noninteractive"
-              apt-get install -qq python3-pip xorg
-              pip3 -q install --upgrade gmsh matplotlib meshio numpy
+              apt install -y -qq python3-pip xorg
+              python3 -m pip -q install --upgrade gmsh matplotlib meshio numpy
             list_notebooks: |
               readarray -d '' GENERATE_MESH < <(find . -type f -name "generate_mesh*.ipynb" -print0)
               readarray -d '' MESHIO < <(find . -type f -name "tutorial_*_meshio.ipynb" -print0)
@@ -49,13 +49,13 @@ jobs:
           - backend: dolfin
             container: quay.io/fenicsproject/dev
             setup_container: |
-              apt-get -qq update
-              apt-get -qq install git-lfs
+              apt -y -qq update
+              apt install -y -qq git-lfs
             setup_dependencies: |
               export DEBIAN_FRONTEND="noninteractive"
-              apt-get install -qq xorg
-              pip3 -q install --upgrade gmsh==4.8.4 meshio nbclient
-              CC="mpicc" HDF5_MPI="ON" pip3 install --no-binary=h5py h5py==2.10.0
+              apt install -y -qq xorg
+              python3 -m pip -q install --upgrade gmsh==4.8.4 meshio nbclient
+              CC="mpicc" HDF5_MPI="ON" python3 -m pip install --no-binary=h5py h5py==2.10.0
             list_notebooks: |
               readarray -d '' DOLFIN < <(find . -type f -name "tutorial_*_dolfin.ipynb" -print0)
               list_notebooks=()
@@ -64,12 +64,12 @@ jobs:
           - backend: dolfinx
             container: dolfinx/dolfinx:nightly
             setup_container: |
-              apt-get -qq update
-              apt-get -qq install git-lfs
+              apt -y -qq update
+              apt install -y -qq git-lfs
             setup_dependencies: |
-              pip3 -q install --upgrade https://dmf.unicatt.it/ballarin/public/zstandard-0.19.0.dev0-cp310-cp310-linux_x86_64.whl
-              pip3 -q install --upgrade https://dmf.unicatt.it/ballarin/public/itkwidgets-0.33.0.dev0-py2.py3-none-any.whl
-              pip3 -q install --upgrade gmsh itkwidgets meshio pyvista
+              python3 -m pip -q install --upgrade https://dmf.unicatt.it/ballarin/public/zstandard-0.19.0.dev0-cp310-cp310-linux_x86_64.whl
+              python3 -m pip -q install --upgrade https://dmf.unicatt.it/ballarin/public/itkwidgets-0.33.0.dev0-py2.py3-none-any.whl
+              python3 -m pip -q install --upgrade gmsh itkwidgets meshio pyvista
             list_notebooks: |
               readarray -d '' DOLFINX < <(find . -type f -name "tutorial_*_dolfinx.ipynb" -print0)
               list_notebooks=()
@@ -78,13 +78,13 @@ jobs:
           - backend: firedrake
             container: firedrakeproject/firedrake
             setup_container: |
-              apt-get -qq update
-              apt-get -qq install git-lfs
+              apt -y -qq update
+              apt install -y -qq git-lfs
               echo "/home/firedrake/firedrake/bin" >> $GITHUB_PATH
             setup_dependencies: |
               export DEBIAN_FRONTEND="noninteractive"
-              apt-get install -qq xorg
-              pip3 -q install --upgrade gmsh pip
+              apt install -y -qq xorg
+              python3 -m pip -q install --upgrade gmsh pip
             list_notebooks: |
               readarray -d '' FIREDRAKE < <(find . -type f -name "tutorial_*_firedrake.ipynb" -print0)
               list_notebooks=()
@@ -104,14 +104,14 @@ jobs:
         run: |
           ${{ matrix.setup_dependencies }}
           echo "Test dependencies"
-          pip3 -q install --upgrade "flake8<5" pytest pytest-flake8 pytest-xdist
+          python3 -m pip -q install --upgrade "flake8<5" pytest pytest-flake8 pytest-xdist
           echo "Tutorial dependencies"
-          pip3 -q install --upgrade jupyter nbconvert
+          python3 -m pip -q install --upgrade jupyter nbconvert
           PYTHON_VERSION=$(python3 -c 'import sys; print("python" + str(sys.version_info.major) + "." + str(sys.version_info.minor))')
           rm -rf /usr/local/lib/${PYTHON_VERSION}/site-packages/gmsh-*-Linux64-sdk/lib/__pycache__
           ln -s /usr/local/lib/${PYTHON_VERSION}/site-packages/gmsh-*-Linux64-sdk/lib/* /usr/local/lib/${PYTHON_VERSION}/dist-packages/
       - name: Install FEMlium
-        run: pip3 install .
+        run: python3 -m pip install .[docs,lint,tests,tutorials]
       - name: Run flake8 checks
         run: |
           pytest --flake8 -m flake8 .
