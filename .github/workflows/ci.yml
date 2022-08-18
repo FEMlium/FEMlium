@@ -90,10 +90,6 @@ jobs:
         run: ${{ matrix.setup_container }}
       - name: Install dependencies
         run: |
-          ${{ matrix.setup_dependencies }}
-          echo "Test dependencies"
-          python3 -m pip -q install --upgrade "flake8<5" pytest pytest-flake8 pytest-xdist
-          echo "Tutorial dependencies"
           python3 -m pip -q install --upgrade nbconvert
       - name: Install FEMlium
         run: python3 -m pip install .[docs,lint,tests,tutorials]
@@ -105,9 +101,9 @@ jobs:
         with:
           pattern: "tutorials/**/*.ipynb"
       - name: Run unit tests
-        run: pytest -n auto tests/unit
+        run: pytest tests/unit
       - name: Run tutorials
-        run: pytest -n auto tutorials
+        run: pytest tutorials
       - name: Get notebooks to be converted
         id: list_notebooks
         if: always()

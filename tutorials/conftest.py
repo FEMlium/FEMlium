@@ -8,7 +8,6 @@ import os
 import re
 import sys
 import pytest
-import pytest_flake8
 import nbformat
 from nbconvert.exporters import PythonExporter
 from nbconvert.preprocessors import ExecutePreprocessor
@@ -29,36 +28,10 @@ def pytest_collect_file(file_path, path, parent):
     """
 
     if file_path.suffix == ".ipynb":
-        config = parent.config
-        if config.getoption("--flake8"):
-            # Convert .ipynb notebooks to plain .py files
-            def comment_lines(text, prefix="# "):
-                regex = re.compile(r".{1,80}(?:\s+|$)")
-                input_lines = text.split("\n")
-                output_lines = [split_line.rstrip() for line in input_lines for split_line in regex.findall(line)]
-                output = prefix + ("\n" + prefix).join(output_lines)
-                return output.replace(prefix + "\n", prefix.rstrip(" ") + "\n")
-
-            def ipython2python(code):
-                return nbconvert.filters.ipython2python(code).rstrip("\n") + "\n"
-
-            filters = {
-                "comment_lines": comment_lines,
-                "ipython2python": ipython2python
-            }
-            exporter = PythonExporter(filters=filters)
-            exporter.exclude_input_prompt = True
-            code, _ = exporter.from_filename(file_path)
-            code = code.rstrip("\n") + "\n"
-            with open(file_path.with_suffix(".py"), "w", encoding="utf-8") as f:
-                f.write(code)
-            # Collect the corresponding .py file
-            return pytest_flake8.pytest_collect_file(file_path.with_suffix(".py"), None, parent)
+        if not file_path.name.startswith("x"):
+            return TutorialFile.from_parent(parent=parent, path=file_path)
         else:
-            if not file_path.name.startswith("x"):
-                return TutorialFile.from_parent(parent=parent, path=file_path)
-            else:
-                return DoNothingFile.from_parent(parent=parent, path=file_path)
+            return DoNothingFile.from_parent(parent=parent, path=file_path)
     elif file_path.suffix == ".py":
         assert not file_path.with_suffix(".ipynb").exists(), (
             "Please run pytest on jupyter notebooks, not plain python files.")
