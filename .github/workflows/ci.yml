@@ -144,6 +144,15 @@ jobs:
     needs: [test]
     if: github.repository == 'FEMlium/FEMlium' && github.ref == 'refs/heads/main'
     steps:
+      - uses: actions/checkout@v3
+      - name: Clone website repository
+        uses: actions/checkout@v3
+        with:
+          repository: FEMlium/femlium.github.io
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          ref: gh-pages
+          fetch-depth: 0
+          path: _build/html
       - name: Download converted notebooks from artifacts
         uses: actions/download-artifact@v2
         with:
@@ -152,12 +161,15 @@ jobs:
         run: |
           rsync -avh --remove-source-files _build/html/converted-notebooks-*/ _build/html/
           find _build/html/ -type d -empty -delete
-      - name: Upload notebooks to website
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          personal_token: ${{ secrets.REPO_ACCESS_TOKEN }}
-          external_repository: FEMlium/femlium.github.io
-          publish_dir: _build/html
-          keep_files: true
-          user_name: 'GitHub Actions'
-          user_email: '41898282+github-actions[bot]@users.noreply.github.com'
+      - name: Upload release file to website
+        run: |
+          SHA_SHORT=$(git rev-parse --short HEAD)
+          pushd _build/html
+          git config user.name "GitHub Actions"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          git pull origin gh-pages
+          [ -n "$(git status --porcelain=v1 2>/dev/null)" ] && git commit -m "deploy: ${GITHUB_REPOSITORY}@${SHA_SHORT}"
+          git push origin gh-pages
+          popd
+        shell: bash
