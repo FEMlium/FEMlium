@@ -52,7 +52,6 @@ jobs:
               export DEBIAN_FRONTEND="noninteractive"
               apt -y -qq update
               apt install -y -qq xorg
-              python3 -m pip -q install --upgrade nbclient
             list_notebooks: |
               readarray -d '' DOLFIN < <(find . -type f -name "tutorial_*_dolfin.ipynb" -print0)
               list_notebooks=()
@@ -95,7 +94,7 @@ jobs:
           echo "Test dependencies"
           python3 -m pip -q install --upgrade "flake8<5" pytest pytest-flake8 pytest-xdist
           echo "Tutorial dependencies"
-          python3 -m pip -q install --upgrade jupyter nbconvert
+          python3 -m pip -q install --upgrade nbconvert
       - name: Install FEMlium
         run: python3 -m pip install .[docs,lint,tests,tutorials]
       - name: Run flake8 checks
