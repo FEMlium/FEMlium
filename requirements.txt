@@ -1,6 +1,0 @@
-branca
-folium>=0.12.0
-geojson
-matplotlib
-numpy
-pyproj
