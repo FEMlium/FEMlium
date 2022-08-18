@@ -47,7 +47,7 @@ jobs:
               list_notebooks+=("${MESHIO[@]}")
               echo "::set-output name=list_notebooks::${list_notebooks[@]}"
           - backend: dolfin
-            container: quay.io/fenicsproject/dev
+            container: numericalpdes/base_images:fenics
             setup_container: |
               apt -y -qq update
               apt install -y -qq git-lfs
