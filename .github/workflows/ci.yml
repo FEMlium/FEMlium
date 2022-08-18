@@ -41,7 +41,7 @@ jobs:
               echo "OMPI_ALLOW_RUN_AS_ROOT=1" >> $GITHUB_ENV
               echo "OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1" >> $GITHUB_ENV
               apt install -y -qq xorg
-              python3 -m pip -q install --upgrade gmsh matplotlib meshio
+              python3 -m pip -q install --upgrade gmsh meshio
             list_notebooks: |
               readarray -d '' GENERATE_MESH < <(find . -type f -name "generate_mesh*.ipynb" -print0)
               readarray -d '' MESHIO < <(find . -type f -name "tutorial_*_meshio.ipynb" -print0)
