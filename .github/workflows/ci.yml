@@ -37,12 +37,10 @@ jobs:
               apt -y -qq update
               apt install -y -qq git python3-mpi4py python3-numpy python3-pip xorg
             list_notebooks: |
-              readarray -d '' GENERATE_MESH < <(find . -type f -name "generate_mesh*.ipynb" -print0)
-              readarray -d '' MESHIO < <(find . -type f -name "tutorial_*_meshio.ipynb" -print0)
-              list_notebooks=()
-              list_notebooks+=("${GENERATE_MESH[@]}")
-              list_notebooks+=("${MESHIO[@]}")
-              echo "::set-output name=list_notebooks::${list_notebooks[@]}"
+              readarray -d '' GENERATE_MESH < <(find . -type f -not -path "*.ipynb_pytest*" -name "generate_mesh*.ipynb" -print0)
+              readarray -d '' MESHIO < <(find . -type f -not -path "*.ipynb_pytest*" -name "tutorial_*_meshio.ipynb" -print0)
+              LIST_NOTEBOOKS+=("${GENERATE_MESH[@]}")
+              LIST_NOTEBOOKS+=("${MESHIO[@]}")
           - backend: dolfin
             container: numericalpdes/base_images:fenics
             setup_container: |
@@ -50,20 +48,16 @@ jobs:
               apt -y -qq update
               apt install -y -qq xorg
             list_notebooks: |
-              readarray -d '' DOLFIN < <(find . -type f -name "tutorial_*_dolfin.ipynb" -print0)
-              list_notebooks=()
-              list_notebooks+=("${DOLFIN[@]}")
-              echo "::set-output name=list_notebooks::${list_notebooks[@]}"
+              readarray -d '' DOLFIN < <(find . -type f -not -path "*.ipynb_pytest*" -name "tutorial_*_dolfin.ipynb" -print0)
+              LIST_NOTEBOOKS+=("${DOLFIN[@]}")
           - backend: dolfinx
             container: dolfinx/dolfinx:nightly
             setup_container: |
               python3 -m pip -q install --upgrade https://dmf.unicatt.it/ballarin/public/zstandard-0.19.0.dev0-cp310-cp310-linux_x86_64.whl
               python3 -m pip -q install --upgrade https://dmf.unicatt.it/ballarin/public/itkwidgets-0.33.0.dev0-py2.py3-none-any.whl
             list_notebooks: |
-              readarray -d '' DOLFINX < <(find . -type f -name "tutorial_*_dolfinx.ipynb" -print0)
-              list_notebooks=()
-              list_notebooks+=("${DOLFINX[@]}")
-              echo "::set-output name=list_notebooks::${list_notebooks[@]}"
+              readarray -d '' DOLFINX < <(find . -type f -not -path "*.ipynb_pytest*" -name "tutorial_*_dolfinx.ipynb" -print0)
+              LIST_NOTEBOOKS+=("${DOLFINX[@]}")
           - backend: firedrake
             container: firedrakeproject/firedrake
             setup_container: |
@@ -73,10 +67,8 @@ jobs:
               python3 -m pip -q install --upgrade pip
               echo "/home/firedrake/firedrake/bin" >> $GITHUB_PATH
             list_notebooks: |
-              readarray -d '' FIREDRAKE < <(find . -type f -name "tutorial_*_firedrake.ipynb" -print0)
-              list_notebooks=()
-              list_notebooks+=("${FIREDRAKE[@]}")
-              echo "::set-output name=list_notebooks::${list_notebooks[@]}"
+              readarray -d '' FIREDRAKE < <(find . -type f -not -path "*.ipynb_pytest*" -name "tutorial_*_firedrake.ipynb" -print0)
+              LIST_NOTEBOOKS+=("${FIREDRAKE[@]}")
       fail-fast: false
     container:
       image: ${{ matrix.container }}
@@ -104,18 +96,37 @@ jobs:
           pattern: "tutorials/**/*.ipynb"
       - name: Run tutorials
         run: pytest tutorials
-      - name: Get notebooks to be converted
-        id: list_notebooks
-        if: always()
-        run: ${{ matrix.list_notebooks }}
-        shell: bash
-      - name: Convert notebooks
-        if: always()
-        uses: ./.github/actions/jupyter/convert
+      - name: Upload tutorials logs as an artifact in case of failure
+        if: failure() || cancelled()
+        uses: actions/upload-artifact@v2
         with:
-          list_notebooks: ${{ steps.list_notebooks.outputs.list_notebooks }}
+          name: "tutorials-logs-${{ matrix.backend }}"
+          path: |
+            tutorials/**/.ipynb_pytest/**/*.log*
+      - name: Clone website repository
+        uses: actions/checkout@v3
+        with:
+          repository: FEMlium/femlium.github.io
+          path: _website
+      - name: Copy jupyter template from website repository
+        run: |
+          jupyter --paths --json > /tmp/jupyter-paths
+          JUPYTER_SHARE=$(python3 -c 'import json; data = json.loads(open("/tmp/jupyter-paths", "r").read()); print(data["data"][1])')
+          python3 -m pip -q install nbconvert
+          cp -rf _website/share/jupyter/nbconvert/templates/html/femlium $JUPYTER_SHARE/nbconvert/templates/
+          rm /tmp/jupyter-paths
+      - name: Convert notebooks to html
+        run: |
+          LIST_NOTEBOOKS=()
+          ${{ matrix.list_notebooks }}
+          mkdir -p _build/html
+          for SRC in "${LIST_NOTEBOOKS[@]}"; do
+              pushd $(dirname "$SRC")
+              jupyter nbconvert --to html --template femlium --execute --output-dir $GITHUB_WORKSPACE/_build/html/$(dirname "$SRC") $(basename "$SRC")
+              popd
+          done
+        shell: bash
       - name: Store converted notebooks as artifacts
-        if: always()
         uses: actions/upload-artifact@v2
         with:
           name: converted-notebooks-${{ matrix.backend }}
