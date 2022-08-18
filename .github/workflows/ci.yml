@@ -74,7 +74,7 @@ jobs:
       image: ${{ matrix.container }}
       options: --user root
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup container
         run: ${{ matrix.setup_container }}
       - name: Install FEMlium
@@ -83,7 +83,14 @@ jobs:
         run: |
           python3 -m flake8 .
       - name: Run unit tests
-        run: pytest tests/unit
+        run: |
+          COVERAGE_FILE=.coverage_unit_${{ matrix.backend }} python3 -m coverage run --source=femlium -m pytest tests/unit
+      - name: Store coverage report as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-${{ matrix.backend }}
+          path: .coverage_unit_${{ matrix.backend }}
+          retention-days: 1
       - name: Run flake8 checks on tutorial files
         run: |
           NO_TESTS_COLLECTED=5
@@ -95,7 +102,8 @@ jobs:
         with:
           pattern: "tutorials/**/*.ipynb"
       - name: Run tutorials
-        run: pytest tutorials
+        run: |
+          python3 -m pytest tutorials
       - name: Upload tutorials logs as an artifact in case of failure
         if: failure() || cancelled()
         uses: actions/upload-artifact@v2
@@ -139,6 +147,31 @@ jobs:
           workflow-filename: ci.yml
           days-elapsed: 50
 
+  combine_coverage:
+    runs-on: ubuntu-latest
+    container: ubuntu
+    needs: [test]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup container
+        run: |
+          export DEBIAN_FRONTEND="noninteractive"
+          apt -y -qq update
+          apt install -y -qq python3-pip rsync
+          python3 -m pip -q install coverage
+      - name: Download coverage reports from artifacts
+        uses: actions/download-artifact@v2
+        with:
+          path: _coverage
+      - name: Flatten the artifacts hierarchy
+        run: |
+          rm -rf _coverage/converted-notebooks-*
+          rsync -avh --remove-source-files _coverage/coverage-*/ _coverage
+      - name: Combine coverage reports
+        run: |
+          python3 -m coverage combine _coverage/.coverage*
+          python3 -m coverage report --fail-under=100 --show-missing --skip-covered
+
   publish_notebooks:
     runs-on: ubuntu-latest
     needs: [test]
@@ -159,6 +192,7 @@ jobs:
           path: _build/html
       - name: Flatten the artifacts hierarchy
         run: |
+          rm -rf _build/html/coverage-*
           rsync -avh --remove-source-files _build/html/converted-notebooks-*/ _build/html/
           find _build/html/ -type d -empty -delete
       - name: Upload release file to website
