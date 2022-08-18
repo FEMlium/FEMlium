@@ -92,14 +92,18 @@ jobs:
           python3 -m flake8 .
       - name: Run unit tests
         run: pytest tests/unit
+      - name: Run flake8 checks on tutorial files
+        run: |
+          NO_TESTS_COLLECTED=5
+          python3 -m pytest --ipynb-action=create-notebooks tutorials || (($?==$NO_TESTS_COLLECTED))
+          python3 -m nbqa flake8 .
+        shell: bash
       - name: Check for stray outputs, counts and metadata in ipynb files
         uses: RBniCS/check-jupyter-metadata-action@main
         with:
           pattern: "tutorials/**/*.ipynb"
       - name: Run tutorials
-        run: |
-          python3 -m pip -q install --upgrade nbconvert
-          pytest tutorials
+        run: pytest tutorials
       - name: Get notebooks to be converted
         id: list_notebooks
         if: always()
