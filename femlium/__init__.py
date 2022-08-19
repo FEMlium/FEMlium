@@ -13,7 +13,7 @@ from femlium.numpy_plotter import NumpyPlotter
 
 try:
     import meshio  # noqa: F401
-except ImportError:
+except ImportError:  # pragma: no cover
     pass
 else:
     from femlium.meshio_plotter import MeshioPlotter
