@@ -84,13 +84,7 @@ jobs:
           python3 -m flake8 .
       - name: Run unit tests
         run: |
-          COVERAGE_FILE=.coverage_unit_${{ matrix.backend }} python3 -m coverage run --source=femlium -m pytest tests/unit
-      - name: Store coverage report as artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: coverage-${{ matrix.backend }}
-          path: .coverage_unit_${{ matrix.backend }}
-          retention-days: 1
+          COVERAGE_FILE=.coverage_unit_${{ matrix.backend }} python3 -m pytest --cov=femlium --cov-report= tests/unit
       - name: Run flake8 checks on tutorial files
         run: |
           NO_TESTS_COLLECTED=5
@@ -103,7 +97,15 @@ jobs:
           pattern: "tutorials/**/*.ipynb"
       - name: Run tutorials
         run: |
-          python3 -m pytest tutorials
+          COVERAGE_FILE=.coverage_tutorials_${{ matrix.backend }} python3 -m pytest --cov=femlium --cov-report= tutorials
+      - name: Store coverage reports as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-${{ matrix.backend }}
+          path: |
+            .coverage_unit_${{ matrix.backend }}
+            .coverage_tutorials_${{ matrix.backend }}
+          retention-days: 1
       - name: Upload tutorials logs as an artifact in case of failure
         if: failure() || cancelled()
         uses: actions/upload-artifact@v2
@@ -170,7 +172,7 @@ jobs:
       - name: Combine coverage reports
         run: |
           python3 -m coverage combine _coverage/.coverage*
-          python3 -m coverage report --show-missing --skip-covered
+          python3 -m coverage report --fail-under=100 --show-missing --skip-covered
 
   publish_notebooks:
     runs-on: ubuntu-latest
