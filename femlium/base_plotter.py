@@ -59,6 +59,6 @@ class BasePlotter(object):
             elif isinstance(argument, dict):
                 if m in argument:
                     output[m] = argument[m]
-            else:
+            else:  # pragma: no cover
                 raise ValueError("Invalid argument provided")
         return output

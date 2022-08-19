@@ -105,7 +105,7 @@ class BaseMeshPlotter(BasePlotter):
                     "color": x["properties"]["color"],
                     "weight": x["properties"]["weight"]
                 }
-            else:
+            else:  # pragma: no cover
                 raise ValueError("Invalid type")
 
         json = self._convert_mesh_to_geojson(

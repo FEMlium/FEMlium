@@ -73,7 +73,7 @@ class BaseSolutionPlotter(BasePlotter):
             levels = np.array(levels)
         elif isinstance(levels, np.ndarray):
             pass
-        else:
+        else:  # pragma: no cover
             raise ValueError("Invalid levels")
 
         if cmap is None:
@@ -102,7 +102,7 @@ class BaseSolutionPlotter(BasePlotter):
                     "color": x["properties"]["color"],
                     "weight": x["properties"]["weight"]
                 }
-            else:
+            else:  # pragma: no cover
                 raise ValueError("Invalid type")
 
         json = self._convert_scalar_field_to_geojson(vertices, cells, scalar_field, mode, levels, colors)
@@ -227,7 +227,7 @@ class BaseSolutionPlotter(BasePlotter):
                 multipolygon_features.append(feature)
 
             return geojson.FeatureCollection(multipolygon_features)
-        else:
+        else:  # pragma: no cover
             raise ValueError("Invalid mode")
 
     def add_vector_field_to(
@@ -287,7 +287,7 @@ class BaseSolutionPlotter(BasePlotter):
             levels = np.array(levels)
         elif isinstance(levels, np.ndarray):
             pass
-        else:
+        else:  # pragma: no cover
             raise ValueError("Invalid levels")
 
         if cmap is None:
@@ -318,7 +318,7 @@ class BaseSolutionPlotter(BasePlotter):
             colors = [matplotlib.colors.to_hex(cmap(cnorm(lev))) for lev in levels]
             colorbar = ColorbarWrapper(colors=colors, values=levels, caption=name)
             colorbar.add_to(geo_map)
-        else:
+        else:  # pragma: no cover
             raise ValueError("Invalid mode")
 
     def _convert_vector_field_to_geojson(
