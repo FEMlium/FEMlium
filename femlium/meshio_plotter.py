@@ -61,7 +61,7 @@ class MeshioPlotter(BaseMeshPlotter):
 
         if "gmsh:physical" in mesh.cell_data_dict and "triangle" in mesh.cell_data_dict["gmsh:physical"]:
             cell_markers = mesh.cell_data_dict["gmsh:physical"]["triangle"]
-        else:
+        else:  # pragma: no cover
             cell_markers = None
 
         if "gmsh:physical" in mesh.cell_data_dict and "line" in mesh.cell_data_dict["gmsh:physical"]:
@@ -83,7 +83,7 @@ class MeshioPlotter(BaseMeshPlotter):
                     else:
                         key = (cells[c, pair[1]], cells[c, pair[0]])
                     face_markers[c, f] = face_data_dict.get(key, unmarked_face_marker)
-        else:
+        else:  # pragma: no cover
             face_markers = None
 
         return BaseMeshPlotter.add_mesh_to(
