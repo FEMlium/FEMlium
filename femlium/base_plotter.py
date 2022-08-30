@@ -20,14 +20,14 @@ class BasePlotter(object):
 
     Parameters
     ----------
-    transformer : pyproj.Transformer, optional
+    transformer
         Defines an optional transformation between coordinate reference systems (CRS) if
         the input data use a different CRS than the output plot.
         If not provided, the identity map is used.
 
     Attributes
     ----------
-    transformer : femlium.TransformerWrapper
+    transformer
         Wrapper to the transformer object provided as first input parameter.
     """
 

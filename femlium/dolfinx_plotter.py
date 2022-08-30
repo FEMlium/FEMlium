@@ -36,37 +36,37 @@ class DolfinxPlotter(BaseMeshPlotter, BaseSolutionPlotter):
 
         Parameters
         ----------
-        geo_map : folium.Map
+        geo_map
             Map to which the mesh plot should be added.
-        mesh: dolfinx.mesh.Mesh
+        mesh
             A dolfinx mesh.
-        cell_mesh_tags: dolfinx.cpp.mesh.MeshTags_int32, optional
+        cell_mesh_tags
             A dolfinx mesh tags of topological dimension 2 that stores cell markers.
             If not provided, the marker will be set to 0 everywhere.
-        face_mesh_tags: dolfinx.cpp.mesh.MeshTags_int32, optional
+        face_mesh_tags
             A dolfinx mesh tags of topological dimension 1 that stores face markers.
             If not provided, the marker will be set to 0 everywhere.
-        unmarked_cell_marker: int, optional
+        unmarked_cell_marker
             Marker to be assigned to any unmarked cell (e.g. in problems which do not require the definition
             of subdomains).
             If not provided, it is set to 0.
-        unmarked_face_marker: int, optional
+        unmarked_face_marker
             Marker to be assigned to any unmarked face (e.g., internal faces in a typical scenario
             in which only boundary faces are marked).
             If not provided, it is set to 0.
-        cell_colors: str or dict of str, optional
+        cell_colors
             If a dictionary is provided, it should contain key: value pairs defining the mapping
             marker: color for cells.
             If a string is provided instead of a dictionary, the same color will be used for all
             cell markers.
             If not provided, the cells will not be colored.
-        face_colors: str or dict of str, optional
+        face_colors
             If a dictionary is provided, it should contain key: value pairs defining the mapping
             marker: color for faces.
             If a string is provided instead of a dictionary, the same color will be used for all
             face markers.
             If not provided, a default black color will be used for faces.
-        face_weights: int or dict of int, optional
+        face_weights
             Line weight of each face. Input should be provided following a similar convention for
             the face_colors argument.
             If not provided, a unit weight will be used.
@@ -124,23 +124,23 @@ class DolfinxPlotter(BaseMeshPlotter, BaseSolutionPlotter):
 
         Parameters
         ----------
-        geo_map : folium.Map
+        geo_map
             Map to which the mesh plot should be added.
-        scalar_field: dolfinx.fem.Function
+        scalar_field
             A dolfinx Function representing the scalar field.
-        mode: str, optional
+        mode
             Plot to be generated, either contourf or contour.
             If not provided, contourf is used.
-        levels: int or list of numbers, optional
+        levels
             Values of the contour lines.
             If integer, it will determine the number of equispaced values to be used between
             the minimum and maximum entry of the scalar field.
             If list, it will determine the values to be used.
             If not provided, 10 levels are used by default.
-        cmap: str, optional
+        cmap
             matplotlib color map to be used.
             If not provided, the jet colormap is used.
-        name: str, optional
+        name
             Name of the field, to be used in the creation of the color bar.
             If not provided, the name "scalar field" will be used.
         """
@@ -162,27 +162,27 @@ class DolfinxPlotter(BaseMeshPlotter, BaseSolutionPlotter):
 
         Parameters
         ----------
-        geo_map : folium.Map
+        geo_map
             Map to which the mesh plot should be added.
-        vector_field: dolfinx.fem.Function
+        vector_field
             A dolfinx Function representing the vector field.
-        mode: str, optional
+        mode
             Plot to be generated, either contourf, contour or quiver.
             If not provided, contourf is used.
-        levels: int or list of numbers, optional
+        levels
             In contourf or contour mode: values of the contour lines.
             In quiver mode: number of ticks to be added to the color bar.
             If integer, it will determine the number of equispaced values to be used between
             the minimum and maximum entry of the scalar field.
             If list, it will determine the values to be used.
             If not provided, 10 levels are used by default.
-        scale: number, optional
+        scale
             This is only applicable for quiver mode: scaling to be applied before drawing arrows.
             If not provided, no scaling will be applied.
-        cmap: str, optional
+        cmap
             matplotlib color map to be used.
             If not provided, the jet colormap is used.
-        name: str, optional
+        name
             Name of the field, to be used in the creation of the color bar.
             If not provided, the name "vector field" will be used.
         """

@@ -30,26 +30,26 @@ class DomainPlotter(BasePlotter):
 
         Parameters
         ----------
-        geo_map : folium.Map
+        geo_map
             Map to which the domain plot should be added.
-        vertices: 2d numpy array
+        vertices
             Matrix containing the coordinates of the vertices.
             The matrix should have as many rows as vertices in the domain, and two columns.
             The domain will be constructed connecting vertices at two consecutive rows.
             Note that, since the domain is enclosed by a closed curve, the first and last row
             should be equal (i.e., the start/end point of the closed curve should be repeated twice).
-        segment_markers: 1d numpy array, optional
+        segment_markers
             Vector containing a marker (i.e., an integer number) for each face.
             The vector should have a number of entries equal to the number of vertices in the domain
             minus 1. The i-th segment is defined as the segment connecting the i-th vertex to the
             (i+1)-th vertex.
             If not provided, the marker will be set to 0 everywhere.
-        colors: str or dict of str, optional
+        colors
             If a dictionary is provided, it should contain key: value pairs defining the mapping
             marker: color.
             If a string is provided instead of a dictionary, the same color will be used for all markers.
             If not provided, a default black color will be used.
-        weights: int or dict of int, optional
+        weights
             Line weight of each segment. Input should be provided following a similar convention for
             the colors argument.
             If not provided, a unit weight will be used.
@@ -90,23 +90,23 @@ class DomainPlotter(BasePlotter):
 
         Parameters
         ----------
-        vertices: 2d numpy array
+        vertices
             Matrix containing the coordinates of the vertices.
             The matrix should have as many rows as vertices in the mesh, and two columns.
-        segment_markers: 1d numpy array
+        segment_markers
             Vector containing a marker (i.e., an integer number) for each segment.
             The vector should have a number of entries equal to the number of vertices in the domain
             minus 1.
-        colors: 1d numpy array
+        colors
             Vector associating a marker to its color (i.e., a string).
             The vector should have as many entries as the number of markers.
-        weights: 1d numpy array
+        weights
             Vector associating a marker to its weight (i.e., a int).
             The vector should have as many entries as the number of markers.
 
         Returns
         -------
-        geojson.FeatureCollection
+        :
             A geojson FeatureCollection representing the domain.
         """
         multiline_coordinates = dict()

@@ -21,15 +21,15 @@ class GeoJsonWithArrows(folium.elements.JSCSSMixin, folium.features.GeoJson):
 
     Parameters
     ----------
-    data: file, dict or str.
+    data
         The GeoJSON data you want to plot.
-    yawn: int, default 60
+    yawn
         Defines the width of the opening of the arrowhead, given in degrees.
-    size: number or str, default "15%"
+    size
         Determines the size of the arrowhead.
-    frequency: str, default "allvertices"
+    frequency
         How many arrowheads are rendered on a polyline.
-    proportionalToTotal: bool, default False
+    proportionalToTotal
         If True, render the arrowhead(s) with a size proportional to the entire length of the
         multi-segmented polyline. If False, size is proportional to the average length of all the segments.
     **kwargs

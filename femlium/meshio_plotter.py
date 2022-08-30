@@ -28,27 +28,27 @@ class MeshioPlotter(BaseMeshPlotter):
 
         Parameters
         ----------
-        geo_map : folium.Map
+        geo_map
             Map to which the mesh plot should be added.
-        mesh: meshio.Mesh
+        mesh
             A meshio mesh.
-        unmarked_face_marker: int, optional
+        unmarked_face_marker
             Marker to be assigned to any unmarked face (e.g., internal faces in a typical scenario
             in which only boundary faces are marked).
             If not provided, it is set to 0.
-        cell_colors: str or dict of str, optional
+        cell_colors
             If a dictionary is provided, it should contain key: value pairs defining the mapping
             marker: color for cells.
             If a string is provided instead of a dictionary, the same color will be used for all
             cell markers.
             If not provided, the cells will not be colored.
-        face_colors: str or dict of str, optional
+        face_colors
             If a dictionary is provided, it should contain key: value pairs defining the mapping
             marker: color for faces.
             If a string is provided instead of a dictionary, the same color will be used for all
             face markers.
             If not provided, a default black color will be used for faces.
-        face_weights: int or dict of int, optional
+        face_weights
             Line weight of each face. Input should be provided following a similar convention for
             the face_colors argument.
             If not provided, a unit weight will be used.

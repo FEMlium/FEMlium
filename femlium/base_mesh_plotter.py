@@ -32,20 +32,20 @@ class BaseMeshPlotter(BasePlotter):
 
         Parameters
         ----------
-        geo_map : folium.Map
+        geo_map
             Map to which the mesh plot should be added.
-        vertices: 2d numpy array
+        vertices
             Matrix containing the coordinates of the vertices.
             The matrix should have as many rows as vertices in the mesh, and two columns.
-        cells: 2d numpy array
+        cells
             Matrix containing the connectivity of the cells.
             The matrix should have as many rows as cells in the mesh, and three columns.
-        cell_markers: 1d numpy array, optional
+        cell_markers
             Vector containing a marker (i.e., an integer number) for each cell.
             The vector should have as many entries as cells in the mesh.
             If not provided, the marker will be set to 0 everywhere.
-        face_markers: 2d numpy array, optional
-            Vector containing a marker (i.e., an integer number) for each face.
+        face_markers
+            Matrix containing a marker (i.e., an integer number) for each face.
             The matrix should have the same shape of the cells argument.
             Given a row index r, the entry face_markers[r, 0] is the marker of the
             face connecting the first and second vertex of the r-th cell.
@@ -54,19 +54,19 @@ class BaseMeshPlotter(BasePlotter):
             the marker associated to the face connecting the first and third vertex of the
             r-th cell.
             If not provided, the marker will be set to 0 everywhere.
-        cell_colors: str or dict of str, optional
+        cell_colors
             If a dictionary is provided, it should contain key: value pairs defining the mapping
             marker: color for cells.
             If a string is provided instead of a dictionary, the same color will be used for all
             cell markers.
             If not provided, the cells will not be colored.
-        face_colors: str or dict of str, optional
+        face_colors
             If a dictionary is provided, it should contain key: value pairs defining the mapping
             marker: color for faces.
             If a string is provided instead of a dictionary, the same color will be used for all
             face markers.
             If not provided, a default black color will be used for faces.
-        face_weights: int or dict of int, optional
+        face_weights
             Line weight of each face. Input should be provided following a similar convention for
             the face_colors argument.
             If not provided, a unit weight will be used.
@@ -148,31 +148,31 @@ class BaseMeshPlotter(BasePlotter):
 
         Parameters
         ----------
-        vertices: 2d numpy array
+        vertices
             Matrix containing the coordinates of the vertices.
             The matrix should have as many rows as vertices in the mesh, and two columns.
-        cells: 2d numpy array
+        cells
             Matrix containing the connectivity of the cells.
             The matrix should have as many rows as cells in the mesh, and three columns.
-        cell_markers: 1d numpy array
+        cell_markers
             Vector containing a marker (i.e., an integer number) for each cell.
             The vector should have as many entries as cells in the mesh.
-        face_markers: 2d numpy array
+        face_markers
             Vector containing a marker (i.e., an integer number) for each face.
             The matrix should have the same shape of the cells argument.
-        cell_colors: 1d numpy array
+        cell_colors
             Vector associating a cell marker to its color (i.e., a string).
             The vector should have as many entries as the number of cell markers.
-        face_colors: 1d numpy array
+        face_colors
             Vector associating a face marker to its color (i.e., a string).
             The vector should have as many entries as the number of face markers.
-        face_weights: 1d numpy array
+        face_weights
             Vector associating a face marker to its weight (i.e., a int).
             The vector should have as many entries as the number of face markers.
 
         Returns
         -------
-        geojson.FeatureCollection
+        :
             A geojson FeatureCollection representing the mesh.
         """
         multipolygon_coordinates = dict()

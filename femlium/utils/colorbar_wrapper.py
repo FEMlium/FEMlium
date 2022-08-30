@@ -18,16 +18,16 @@ def ColorbarWrapper(
 
     Parameters
     ----------
-    colors: 1d numpy array
+    colors
         Vector containing the colors.
-    values: 1d numpy array
+    values
         Vector containing the values associated to each color.
-    caption: str
+    caption
         Colorbar caption.
 
     Returns
     -------
-    branca.colormap.LinearColormap
+    :
         Colorbar to be attached to the plot.
     """
     return branca.colormap.LinearColormap(

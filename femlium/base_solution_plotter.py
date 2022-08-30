@@ -33,30 +33,30 @@ class BaseSolutionPlotter(BasePlotter):
 
         Parameters
         ----------
-        geo_map : folium.Map
+        geo_map
             Map to which the mesh plot should be added.
-        vertices: 2d numpy array
+        vertices
             Matrix containing the coordinates of the vertices.
             The matrix should have as many rows as vertices in the mesh, and two columns.
-        cells: 2d numpy array
+        cells
             Matrix containing the connectivity of the cells.
             The matrix should have as many rows as cells in the mesh, and three columns.
-        scalar_field: 1d numpy array
+        scalar_field
             Vector containing the value of the field at each vertex.
             The vector should have as many entries as vertices in the mesh.
-        mode: str, optional
+        mode
             Plot to be generated, either contourf or contour.
             If not provided, contourf is used.
-        levels: int or list of numbers, optional
+        levels
             Values of the contour lines.
             If integer, it will determine the number of equispaced values to be used between
             the minimum and maximum entry of the scalar field.
             If list, it will determine the values to be used.
             If not provided, 10 levels are used by default.
-        cmap: str, optional
+        cmap
             matplotlib color map to be used.
             If not provided, the jet colormap is used.
-        name: str, optional
+        name
             Name of the field, to be used in the creation of the color bar.
             If not provided, the name "scalar field" will be used.
         """
@@ -121,27 +121,27 @@ class BaseSolutionPlotter(BasePlotter):
 
         Parameters
         ----------
-        geo_map : folium.Map
+        geo_map
             Map to which the mesh plot should be added.
-        vertices: 2d numpy array
+        vertices
             Matrix containing the coordinates of the vertices.
             The matrix should have as many rows as vertices in the mesh, and two columns.
-        cells: 2d numpy array
+        cells
             Matrix containing the connectivity of the cells.
             The matrix should have as many rows as cells in the mesh, and three columns.
-        scalar_field: 1d numpy array
+        scalar_field
             Vector containing the value of the field at each vertex.
             The vector should have as many entries as vertices in the mesh.
-        mode: str
+        mode
             Plot to be generated, either contourf or contour.
-        levels: 1d numpy array
+        levels
             Values of the contour lines.
-        colors: list of str
+        colors
             Color associated to each level.
 
         Returns
         -------
-        geojson.FeatureCollection
+        :
             A geojson FeatureCollection representing the scalar field.
         """
         tri = matplotlib.tri.Triangulation(vertices[:, 0], vertices[:, 1], cells)
@@ -241,34 +241,34 @@ class BaseSolutionPlotter(BasePlotter):
 
         Parameters
         ----------
-        geo_map : folium.Map
+        geo_map
             Map to which the mesh plot should be added.
-        vertices: 2d numpy array
+        vertices
             Matrix containing the coordinates of the vertices.
             The matrix should have as many rows as vertices in the mesh, and two columns.
-        cells: 2d numpy array
+        cells
             Matrix containing the connectivity of the cells.
             The matrix should have as many rows as cells in the mesh, and three columns.
-        vector_field: 2d numpy array
+        vector_field
             Matrix containing the value of the field at each vertex.
             The matrix should have as many rows as vertices in the mesh, and two columns.
-        mode: str, optional
+        mode
             Plot to be generated, either contourf, contour or quiver.
             If not provided, contourf is used.
-        levels: int or list of numbers, optional
+        levels
             In contourf or contour mode: values of the contour lines.
             In quiver mode: number of ticks to be added to the color bar.
             If integer, it will determine the number of equispaced values to be used between
             the minimum and maximum entry of the scalar field.
             If list, it will determine the values to be used.
             If not provided, 10 levels are used by default.
-        scale: number, optional
+        scale
             This is only applicable for quiver mode: scaling to be applied before drawing arrows.
             If not provided, no scaling will be applied.
-        cmap: str, optional
+        cmap
             matplotlib color map to be used.
             If not provided, the jet colormap is used.
-        name: str, optional
+        name
             Name of the field, to be used in the creation of the color bar.
             If not provided, the name "vector field" will be used.
         """
@@ -330,25 +330,25 @@ class BaseSolutionPlotter(BasePlotter):
 
         Parameters
         ----------
-        geo_map : folium.Map
+        geo_map
             Map to which the mesh plot should be added.
-        vertices: 2d numpy array
+        vertices
             Matrix containing the coordinates of the vertices.
             The matrix should have as many rows as vertices in the mesh, and two columns.
-        vector_field_magnitude: 1d numpy array
+        vector_field_magnitude
             Vector containing the magnitude of the field at each vertex.
             The vector should have as many entries as vertices in the mesh.
-        vector_field: 2d numpy array
+        vector_field
             Matrix containing the value of the field at each vertex.
             The matrix should have as many rows as vertices in the mesh, and two columns.
-        scale: number
+        scale
             Scaling to be applied before drawing arrows.
-        cmap: function
+        cmap
             Color map to be used.
 
         Returns
         -------
-        geojson.FeatureCollection
+        :
             A geojson FeatureCollection representing the scalar field.
         """
         multiline_coordinates = dict()

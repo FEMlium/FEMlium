@@ -18,14 +18,14 @@ class TransformerWrapper(object):
 
     Parameters
     ----------
-    transformer : pyproj.Transformer, optional
+    transformer
         Defines an optional transformation between coordinate reference systems (CRS) if
         the input data use a different CRS than the output plot.
         If not provided, the identity map is used.
 
     Attributes
     ----------
-    transformer : pyproj.Transformer, or None
+    transformer
         The first input parameter.
     """
 
@@ -38,12 +38,12 @@ class TransformerWrapper(object):
 
         Parameters
         ----------
-        *args : tuple
+        *args
             Input coordinates to be transformed.
 
         Returns
         -------
-        tuple
+        :
             Output coordinates after transformation.
         """
         if self.transformer is None:
