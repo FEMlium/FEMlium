@@ -125,6 +125,7 @@ jobs:
           jupyter --paths --json > /tmp/jupyter-paths
           JUPYTER_SHARE=$(python3 -c 'import json; data = json.loads(open("/tmp/jupyter-paths", "r").read()); print(data["data"][1])')
           python3 -m pip -q install nbconvert
+          mkdir -p $JUPYTER_SHARE/nbconvert/templates
           cp -rf _website/share/jupyter/nbconvert/templates/html/femlium $JUPYTER_SHARE/nbconvert/templates/
           rm /tmp/jupyter-paths
       - name: Convert notebooks to html
