@@ -101,7 +101,7 @@ jobs:
         run: |
           COVERAGE_FILE=.coverage_tutorials_${{ matrix.backend }} python3 -m pytest --cov=femlium --cov-report= tutorials
       - name: Store coverage reports as artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: coverage-${{ matrix.backend }}
           path: |
@@ -110,7 +110,7 @@ jobs:
           retention-days: 1
       - name: Upload tutorials logs as an artifact in case of failure
         if: failure() || cancelled()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: "tutorials-logs-${{ matrix.backend }}"
           path: |
@@ -140,7 +140,7 @@ jobs:
           done
         shell: bash
       - name: Store converted notebooks as artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: converted-notebooks-${{ matrix.backend }}
           path: _build/html
@@ -165,7 +165,7 @@ jobs:
           apt install -y -qq python3-pip rsync
           python3 -m pip -q install coverage
       - name: Download coverage reports from artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           path: _coverage
       - name: Flatten the artifacts hierarchy
@@ -192,7 +192,7 @@ jobs:
           fetch-depth: 0
           path: _build/html
       - name: Download converted notebooks from artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           path: _build/html
       - name: Flatten the artifacts hierarchy
