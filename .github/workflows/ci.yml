@@ -133,7 +133,7 @@ jobs:
           mkdir -p _build/html
           for SRC in "${LIST_NOTEBOOKS[@]}"; do
               pushd $(dirname "$SRC")
-              jupyter nbconvert --to html --template femlium --execute --output-dir $GITHUB_WORKSPACE/_build/html/$(dirname "$SRC") $(basename "$SRC")
+              VISKEX_PYVISTA_BACKEND="panel" jupyter nbconvert --to html --template femlium --execute --output-dir $GITHUB_WORKSPACE/_build/html/$(dirname "$SRC") $(basename "$SRC")
               popd
           done
         shell: bash
