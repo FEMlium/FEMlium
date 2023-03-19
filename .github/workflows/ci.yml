@@ -52,8 +52,7 @@ jobs:
               LIST_NOTEBOOKS+=("${DOLFIN[@]}")
           - backend: dolfinx
             container: dolfinx/dolfinx:nightly
-            setup_container: |
-              python3 -m pip -q install --upgrade https://dmf.unicatt.it/ballarin/public/itkwidgets-0.33.0.dev0-py2.py3-none-any.whl
+            setup_container:
             list_notebooks: |
               readarray -d '' DOLFINX < <(find . -type f -not -path "*.ipynb_pytest*" -name "tutorial_*_dolfinx.ipynb" -print0)
               LIST_NOTEBOOKS+=("${DOLFINX[@]}")
@@ -63,7 +62,6 @@ jobs:
               export DEBIAN_FRONTEND="noninteractive"
               apt -y -qq update
               apt install -y -qq xorg
-              python3 -m pip -q install --upgrade pip
               echo "/home/firedrake/firedrake/bin" >> $GITHUB_PATH
             list_notebooks: |
               readarray -d '' FIREDRAKE < <(find . -type f -not -path "*.ipynb_pytest*" -name "tutorial_*_firedrake.ipynb" -print0)
