@@ -52,7 +52,10 @@ jobs:
               LIST_NOTEBOOKS+=("${DOLFIN[@]}")
           - backend: dolfinx
             container: dolfinx/dolfinx:nightly
-            setup_container:
+            setup_container: |
+              export DEBIAN_FRONTEND="noninteractive"
+              apt -y -qq update
+              apt install -y -qq libgl1-mesa-glx xvfb
             list_notebooks: |
               readarray -d '' DOLFINX < <(find . -type f -not -path "*.ipynb_pytest*" -name "tutorial_*_dolfinx.ipynb" -print0)
               LIST_NOTEBOOKS+=("${DOLFINX[@]}")
@@ -61,7 +64,7 @@ jobs:
             setup_container: |
               export DEBIAN_FRONTEND="noninteractive"
               apt -y -qq update
-              apt install -y -qq xorg
+              apt install -y -qq libgl1-mesa-glx xorg xvfb
               echo "/home/firedrake/firedrake/bin" >> $GITHUB_PATH
             list_notebooks: |
               readarray -d '' FIREDRAKE < <(find . -type f -not -path "*.ipynb_pytest*" -name "tutorial_*_firedrake.ipynb" -print0)
@@ -130,6 +133,8 @@ jobs:
         run: |
           LIST_NOTEBOOKS=()
           ${{ matrix.list_notebooks }}
+          export DISPLAY=":99"
+          Xvfb $DISPLAY -screen 0 1024x768x24 > /dev/null 2>&1 &
           mkdir -p _build/html
           for SRC in "${LIST_NOTEBOOKS[@]}"; do
               pushd $(dirname "$SRC")
