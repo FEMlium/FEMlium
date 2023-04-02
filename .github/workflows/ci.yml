@@ -36,29 +36,18 @@ jobs:
               export DEBIAN_FRONTEND="noninteractive"
               apt -y -qq update
               apt install -y -qq git python3-mpi4py python3-numpy python3-pip xorg
-            list_notebooks: |
-              readarray -d '' GENERATE_MESH < <(find . -type f -not -path "*.ipynb_pytest*" -name "generate_mesh*.ipynb" -print0)
-              readarray -d '' MESHIO < <(find . -type f -not -path "*.ipynb_pytest*" -name "tutorial_*_meshio.ipynb" -print0)
-              LIST_NOTEBOOKS+=("${GENERATE_MESH[@]}")
-              LIST_NOTEBOOKS+=("${MESHIO[@]}")
           - backend: dolfin
             container: numericalpdes/base_images:fenics
             setup_container: |
               export DEBIAN_FRONTEND="noninteractive"
               apt -y -qq update
               apt install -y -qq xorg
-            list_notebooks: |
-              readarray -d '' DOLFIN < <(find . -type f -not -path "*.ipynb_pytest*" -name "tutorial_*_dolfin.ipynb" -print0)
-              LIST_NOTEBOOKS+=("${DOLFIN[@]}")
           - backend: dolfinx
             container: dolfinx/dolfinx:nightly
             setup_container: |
               export DEBIAN_FRONTEND="noninteractive"
               apt -y -qq update
               apt install -y -qq libgl1-mesa-glx xvfb
-            list_notebooks: |
-              readarray -d '' DOLFINX < <(find . -type f -not -path "*.ipynb_pytest*" -name "tutorial_*_dolfinx.ipynb" -print0)
-              LIST_NOTEBOOKS+=("${DOLFINX[@]}")
           - backend: firedrake
             container: firedrakeproject/firedrake
             setup_container: |
@@ -66,9 +55,6 @@ jobs:
               apt -y -qq update
               apt install -y -qq libgl1-mesa-glx xorg xvfb
               echo "/home/firedrake/firedrake/bin" >> $GITHUB_PATH
-            list_notebooks: |
-              readarray -d '' FIREDRAKE < <(find . -type f -not -path "*.ipynb_pytest*" -name "tutorial_*_firedrake.ipynb" -print0)
-              LIST_NOTEBOOKS+=("${FIREDRAKE[@]}")
       fail-fast: false
     container:
       image: ${{ matrix.container }}
@@ -116,44 +102,6 @@ jobs:
           name: "tutorials-logs-${{ matrix.backend }}"
           path: |
             tutorials/**/.ipynb_pytest/**/*.log*
-      - name: Clone website repository
-        uses: actions/checkout@v3
-        with:
-          repository: FEMlium/femlium.github.io
-          path: _website
-      - name: Copy jupyter template from website repository
-        run: |
-          jupyter --paths --json > /tmp/jupyter-paths
-          JUPYTER_SHARE=$(python3 -c 'import json; data = json.loads(open("/tmp/jupyter-paths", "r").read()); print(data["data"][1])')
-          python3 -m pip -q install nbconvert
-          mkdir -p $JUPYTER_SHARE/nbconvert/templates
-          cp -rf _website/share/jupyter/nbconvert/templates/html/femlium $JUPYTER_SHARE/nbconvert/templates/
-          rm /tmp/jupyter-paths
-      - name: Convert notebooks to html
-        run: |
-          LIST_NOTEBOOKS=()
-          ${{ matrix.list_notebooks }}
-          export DISPLAY=":99"
-          Xvfb $DISPLAY -screen 0 1024x768x24 > /dev/null 2>&1 &
-          mkdir -p _build/html
-          for SRC in "${LIST_NOTEBOOKS[@]}"; do
-              pushd $(dirname "$SRC")
-              VISKEX_PYVISTA_BACKEND="panel" jupyter nbconvert --to html --template femlium --execute --output-dir $GITHUB_WORKSPACE/_build/html/$(dirname "$SRC") $(basename "$SRC")
-              popd
-          done
-        shell: bash
-      - name: Store converted notebooks as artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: converted-notebooks-${{ matrix.backend }}
-          path: _build/html
-          retention-days: 1
-      - name: Warn if scheduled workflow is about to be disabled
-        if: github.repository == 'FEMlium/FEMlium' && github.ref == 'refs/heads/main' && github.event_name == 'schedule'
-        uses: fem-on-colab/warn-workflow-about-to-be-disabled-action@main
-        with:
-          workflow-filename: ci.yml
-          days-elapsed: 50
 
   combine_coverage:
     runs-on: ubuntu-latest
@@ -169,49 +117,18 @@ jobs:
           python3 -m pip -q install coverage
       - name: Download coverage reports from artifacts
         uses: actions/download-artifact@v3
-        with:
-          path: _coverage
-      - name: Flatten the artifacts hierarchy
-        run: |
-          rm -rf _coverage/converted-notebooks-*
-          rsync -avh --remove-source-files _coverage/coverage-*/ _coverage
       - name: Combine coverage reports
         run: |
-          python3 -m coverage combine _coverage/.coverage*
+          python3 -m coverage combine coverage-*/.coverage*
           python3 -m coverage report --fail-under=100 --show-missing --skip-covered
 
-  publish_notebooks:
+  warn:
     runs-on: ubuntu-latest
-    needs: [test]
-    if: github.repository == 'FEMlium/FEMlium' && github.ref == 'refs/heads/main'
+    if: github.repository == 'FEMlium/FEMlium' && github.ref == 'refs/heads/main' && github.event_name == 'schedule'
     steps:
       - uses: actions/checkout@v3
-      - name: Clone website repository
-        uses: actions/checkout@v3
+      - name: Warn if scheduled workflow is about to be disabled
+        uses: fem-on-colab/warn-workflow-about-to-be-disabled-action@main
         with:
-          repository: FEMlium/femlium.github.io
-          token: ${{ secrets.REPO_ACCESS_TOKEN }}
-          ref: gh-pages
-          fetch-depth: 0
-          path: _build/html
-      - name: Download converted notebooks from artifacts
-        uses: actions/download-artifact@v3
-        with:
-          path: _build/html
-      - name: Flatten the artifacts hierarchy
-        run: |
-          rm -rf _build/html/coverage-*
-          rsync -avh --remove-source-files _build/html/converted-notebooks-*/ _build/html/
-          find _build/html/ -type d -empty -delete
-      - name: Upload release file to website
-        run: |
-          SHA_SHORT=$(git rev-parse --short HEAD)
-          pushd _build/html
-          git config user.name "GitHub Actions"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .
-          git pull origin gh-pages
-          [ -n "$(git status --porcelain=v1 2>/dev/null)" ] && git commit -m "deploy: ${GITHUB_REPOSITORY}@${SHA_SHORT}"
-          git push origin gh-pages
-          popd
-        shell: bash
+          workflow-filename: ci.yml
+          days-elapsed: 50
