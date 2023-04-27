@@ -78,7 +78,7 @@ class DolfinxPlotter(BaseMeshPlotter, BaseSolutionPlotter):
             unmarked_face_marker = 0
 
         vertices = mesh.geometry.x[:, :mesh.topology.dim]
-        cells = mesh.geometry.dofmap.array.reshape((-1, mesh.topology.dim + 1))
+        cells = mesh.geometry.dofmap
 
         if cell_mesh_tags is not None:
             cell_markers = np.full((cells.shape[0], ), unmarked_cell_marker, dtype=np.int64)
