@@ -198,8 +198,8 @@ class DolfinxPlotter(BaseMeshPlotter, BaseSolutionPlotter):
     def _get_vertices_cells_of_linear_function_space(
         self, function_space: dolfinx.fem.FunctionSpace
     ) -> typing.Tuple[np.typing.NDArray[np.float64], np.typing.NDArray[np.int64]]:
-        """Postprocess the output of dolfinx.plot.create_vtk_mesh and return vertices and cells for matplotlib."""
-        cells, _, vertices = dolfinx.plot.create_vtk_mesh(function_space)
+        """Postprocess the output of dolfinx.plot.vtk_mesh and return vertices and cells for matplotlib."""
+        cells, _, vertices = dolfinx.plot.vtk_mesh(function_space)
         cells = cells.reshape((-1, 4))
         assert np.all(cells[:, 0] == 3)  # first colum contains the number of vertices of a triangular cell
         return vertices[:, :function_space.mesh.topology.dim], cells[:, 1:]
