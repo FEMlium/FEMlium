@@ -144,7 +144,7 @@ class DolfinxPlotter(BaseMeshPlotter, BaseSolutionPlotter):
             Name of the field, to be used in the creation of the color bar.
             If not provided, the name "scalar field" will be used.
         """
-        scalar_function_space_p1 = dolfinx.fem.FunctionSpace(scalar_field.function_space.mesh, ("CG", 1))
+        scalar_function_space_p1 = dolfinx.fem.functionspace(scalar_field.function_space.mesh, ("CG", 1))
         vertices, cells = self._get_vertices_cells_of_linear_function_space(scalar_function_space_p1)
         scalar_field_p1 = dolfinx.fem.Function(scalar_function_space_p1)
         scalar_field_p1.interpolate(scalar_field)
@@ -186,7 +186,8 @@ class DolfinxPlotter(BaseMeshPlotter, BaseSolutionPlotter):
             Name of the field, to be used in the creation of the color bar.
             If not provided, the name "vector field" will be used.
         """
-        vector_function_space_p1 = dolfinx.fem.VectorFunctionSpace(vector_field.function_space.mesh, ("CG", 1))
+        mesh = vector_field.function_space.mesh
+        vector_function_space_p1 = dolfinx.fem.functionspace(mesh, ("CG", 1, (mesh.geometry.dim, )))
         vertices, cells = self._get_vertices_cells_of_linear_function_space(vector_function_space_p1)
         vector_field_p1 = dolfinx.fem.Function(vector_function_space_p1)
         vector_field_p1.interpolate(vector_field)
@@ -196,7 +197,7 @@ class DolfinxPlotter(BaseMeshPlotter, BaseSolutionPlotter):
             self, geo_map, vertices, cells, vector_field_values, mode, levels, scale, cmap, name)
 
     def _get_vertices_cells_of_linear_function_space(
-        self, function_space: dolfinx.fem.FunctionSpace
+        self, function_space: dolfinx.fem.FunctionSpaceBase
     ) -> typing.Tuple[np.typing.NDArray[np.float64], np.typing.NDArray[np.int64]]:
         """Postprocess the output of dolfinx.plot.vtk_mesh and return vertices and cells for matplotlib."""
         cells, _, vertices = dolfinx.plot.vtk_mesh(function_space)
