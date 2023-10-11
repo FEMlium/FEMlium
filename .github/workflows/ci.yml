@@ -34,26 +34,26 @@ jobs:
             container: ubuntu:rolling
             setup_container: |
               export DEBIAN_FRONTEND="noninteractive"
-              apt -y -qq update
+              apt update -y -q
               apt install -y -qq git python3-mpi4py python3-numpy python3-pip xorg
               rm /usr/lib/python3.*/EXTERNALLY-MANAGED
           - backend: dolfin
             container: numericalpdes/base_images:fenics
             setup_container: |
               export DEBIAN_FRONTEND="noninteractive"
-              apt -y -qq update
+              apt update -y -q
               apt install -y -qq xorg
           - backend: dolfinx
             container: dolfinx/dolfinx:nightly
             setup_container: |
               export DEBIAN_FRONTEND="noninteractive"
-              apt -y -qq update
+              apt update -y -q
               apt install -y -qq libgl1-mesa-glx xvfb
           - backend: firedrake
             container: firedrakeproject/firedrake
             setup_container: |
               export DEBIAN_FRONTEND="noninteractive"
-              apt -y -qq update
+              apt update -y -q
               apt install -y -qq libgl1-mesa-glx xorg xvfb
               echo "/home/firedrake/firedrake/bin" >> $GITHUB_PATH
       fail-fast: false
@@ -113,7 +113,7 @@ jobs:
       - name: Setup container
         run: |
           export DEBIAN_FRONTEND="noninteractive"
-          apt -y -qq update
+          apt update -y -q
           apt install -y -qq python3-pip rsync
           python3 -m pip -q install coverage
       - name: Download coverage reports from artifacts
