@@ -1,3 +1,110 @@
 [build-system]
-requires = ["setuptools>=58", "wheel"]
+requires = ["setuptools>=62", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "FEMlium"
+version = "0.0.dev1"
+authors = [
+    {name = "Francesco Ballarin (and contributors)", email = "francesco.ballarin@unicatt.it"},
+]
+maintainers = [
+    {name = "Francesco Ballarin", email = "francesco.ballarin@unicatt.it"},
+]
+description = "Interactive geographic plots of finite element data with folium"
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.6"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS :: MacOS X",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: GIS",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Visualization",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+dependencies = [
+    "branca",
+    "folium >= 0.12.0",
+    "geojson",
+    "matplotlib",
+    "numpy",
+    "pyproj"
+]
+
+[project.urls]
+homepage = "https://femlium.github.io"
+repository = "https://github.com/FEMlium/FEMlium"
+issues = "https://github.com/FEMlium/FEMlium/issues"
+funding = "https://github.com/sponsors/francesco-ballarin"
+
+[project.optional-dependencies]
+docs = [
+    "sphinx"
+]
+lint = [
+    "flake8",
+    "flake8-annotations",
+    "flake8-docstrings",
+    "flake8-import-restrictions",
+    "flake8-isort",
+    "Flake8-pyproject",
+    "flake8-quotes"
+]
+tests = [
+    "coverage[toml]",
+    "nbqa",
+    "nbvalx[unit_tests] @ git+https://github.com/multiphenics/nbvalx.git",
+    "pytest",
+    "pytest-cov"
+]
+tutorials = [
+    # "fenics-dolfin",
+    # "fenics-dolfinx",
+    # "firedrake",
+    "gmsh",
+    "meshio",
+    "nbvalx[notebooks] @ git+https://github.com/multiphenics/nbvalx.git",
+    "viskex @ git+https://github.com/viskex/viskex.git"
+]
+
+[tool.coverage.paths]
+source = ["femlium", "*/dist-packages/femlium", "*/site-packages/femlium"]
+
+[tool.flake8]
+max-line-length = 120
+show-source = true
+docstring-convention = "numpy"
+inline-quotes = "double"
+imr241_exclude = ["femlium", "femlium.*"]
+imr245_include = "*"
+imr245_exclude = ["femlium", "femlium.*"]
+ignore = ["ANN101", "W503"]
+exclude = [".eggs", "build", "dist"]
+per-file-ignores = [
+    "femlium/__init__.py: F401",
+    "femlium/**/__init__.py: F401",
+    "tutorials/**/tutorial_*.py: D100, I004",
+    "tutorials/**/generate_mesh*.py: D100, I004"
+]
+
+[tool.isort]
+line_length = 120
+multi_line_output = 4
+order_by_type = false
+
+[tool.setuptools.packages.find]
+namespaces = false
