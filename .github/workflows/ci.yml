@@ -44,7 +44,7 @@ jobs:
               apt update -y -q
               apt install -y -qq xorg
           - backend: dolfinx
-            container: dolfinx/dolfinx:nightly
+            container: ghcr.io/fenics/dolfinx/dolfinx:nightly
             setup_container: |
               export DEBIAN_FRONTEND="noninteractive"
               apt update -y -q
