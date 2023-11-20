@@ -61,7 +61,7 @@ jobs:
       image: ${{ matrix.container }}
       options: --user root
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup container
         run: ${{ matrix.setup_container }}
       - name: Install FEMlium
@@ -109,7 +109,7 @@ jobs:
     container: ubuntu
     needs: [test]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup container
         run: |
           export DEBIAN_FRONTEND="noninteractive"
@@ -127,7 +127,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.repository == 'FEMlium/FEMlium' && github.ref == 'refs/heads/main' && github.event_name == 'schedule'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Warn if scheduled workflow is about to be disabled
         uses: fem-on-colab/warn-workflow-about-to-be-disabled-action@main
         with:
