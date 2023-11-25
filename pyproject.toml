@@ -63,7 +63,8 @@ lint = [
     "flake8-import-restrictions",
     "flake8-isort",
     "Flake8-pyproject",
-    "flake8-quotes"
+    "flake8-quotes",
+    "yamllint"
 ]
 tests = [
     "coverage[toml]",
