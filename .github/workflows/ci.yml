@@ -32,25 +32,32 @@ jobs:
         include:
           - backend: none
             container: ubuntu:rolling
+            setup_git: |
+              export DEBIAN_FRONTEND="noninteractive"
+              apt update -y -q
+              apt install -y -qq git
             setup_container: |
               export DEBIAN_FRONTEND="noninteractive"
               apt update -y -q
-              apt install -y -qq git python3-mpi4py python3-numpy python3-pip xorg
+              apt install -y -qq python3-mpi4py python3-numpy python3-pip xorg
               rm /usr/lib/python3.*/EXTERNALLY-MANAGED
           - backend: dolfin
             container: numericalpdes/base_images:fenics
+            setup_git: ""
             setup_container: |
               export DEBIAN_FRONTEND="noninteractive"
               apt update -y -q
               apt install -y -qq xorg
           - backend: dolfinx
             container: ghcr.io/fenics/dolfinx/dolfinx:nightly
+            setup_git: ""
             setup_container: |
               export DEBIAN_FRONTEND="noninteractive"
               apt update -y -q
               apt install -y -qq libgl1-mesa-glx xvfb
           - backend: firedrake
             container: firedrakeproject/firedrake
+            setup_git: ""
             setup_container: |
               export DEBIAN_FRONTEND="noninteractive"
               apt update -y -q
@@ -61,6 +68,8 @@ jobs:
       image: ${{ matrix.container }}
       options: --user root
     steps:
+      - name: Setup git
+        run: ${{ matrix.setup_git }}
       - uses: actions/checkout@v4
       - name: Setup container
         run: ${{ matrix.setup_container }}
