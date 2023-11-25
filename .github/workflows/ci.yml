@@ -66,21 +66,29 @@ jobs:
         run: ${{ matrix.setup_container }}
       - name: Install FEMlium
         run: python3 -m pip install .[docs,lint,tests,tutorials]
-      - name: Run flake8 checks on python files
+      - name: Run flake8 on python files
         run: |
           python3 -m flake8 .
+      - name: Run isort on python files
+        run: |
+          python3 -m isort --check --diff .
       - name: Run documentation generation
         run: |
           cd docs && python3 -m sphinx -W -b html . build/html
       - name: Run unit tests
         run: |
           COVERAGE_FILE=.coverage_unit_${{ matrix.backend }} python3 -m pytest --cov=femlium --cov-report= tests/unit
-      - name: Run flake8 checks on tutorial files
+      - name: Generate tutorial files
         run: |
           NO_TESTS_COLLECTED=5
           python3 -m pytest --ipynb-action=create-notebooks tutorials || (($?==$NO_TESTS_COLLECTED))
-          python3 -m nbqa flake8 .
         shell: bash
+      - name: Run flake8 on tutorial files
+        run: |
+          python3 -m nbqa flake8 .
+      - name: Run isort on tutorial files
+        run: |
+          python3 -m nbqa isort --check --diff .
       - name: Check for stray outputs, counts and metadata in ipynb files
         uses: RBniCS/check-jupyter-metadata-action@main
         with:
