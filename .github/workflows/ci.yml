@@ -71,7 +71,7 @@ jobs:
           python3 -m flake8 .
       - name: Run documentation generation
         run: |
-          cd docs && make html
+          cd docs && python3 -m sphinx -W -b html . build/html
       - name: Run unit tests
         run: |
           COVERAGE_FILE=.coverage_unit_${{ matrix.backend }} python3 -m pytest --cov=femlium --cov-report= tests/unit
