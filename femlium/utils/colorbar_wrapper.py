@@ -10,7 +10,7 @@ import numpy as np
 import numpy.typing
 
 
-def ColorbarWrapper(
+def ColorbarWrapper(  # noqa: N802
     colors: np.typing.NDArray[str], values: np.typing.NDArray[np.float64], caption: str
 ) -> branca.colormap.LinearColormap:
     """

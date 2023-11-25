@@ -9,7 +9,7 @@ import typing
 
 import folium
 import geojson
-import matplotlib
+import matplotlib as mpl
 import matplotlib._tri
 import matplotlib.pyplot as plt
 import numpy as np
@@ -81,7 +81,7 @@ class BaseSolutionPlotter(BasePlotter):
         if isinstance(cmap, str):
             cmap = plt.get_cmap(cmap, lut=levels.shape[0])
         cnorm = plt.Normalize(vmin=levels[0], vmax=levels[-1])
-        colors = [matplotlib.colors.to_hex(cmap(cnorm(lev))) for lev in levels]
+        colors = [mpl.colors.to_hex(cmap(cnorm(lev))) for lev in levels]
 
         if name is None:
             name = "Scalar field"
@@ -144,8 +144,8 @@ class BaseSolutionPlotter(BasePlotter):
         :
             A geojson FeatureCollection representing the scalar field.
         """
-        tri = matplotlib.tri.Triangulation(vertices[:, 0], vertices[:, 1], cells)
-        countour_generator = matplotlib._tri.TriContourGenerator(tri.get_cpp_triangulation(), scalar_field)
+        tri = mpl.tri.Triangulation(vertices[:, 0], vertices[:, 1], cells)
+        countour_generator = mpl._tri.TriContourGenerator(tri.get_cpp_triangulation(), scalar_field)
 
         if mode == "contour":
             multiline_coordinates = dict()
@@ -305,7 +305,7 @@ class BaseSolutionPlotter(BasePlotter):
         elif mode == "quiver":
             json = self._convert_vector_field_to_geojson(
                 vertices, vector_field_magnitude, vector_field, scale,
-                lambda lev: matplotlib.colors.to_hex(cmap(cnorm(lev))))
+                lambda lev: mpl.colors.to_hex(cmap(cnorm(lev))))
 
             def style_function(x: typing.Dict[str, typing.Dict[str, typing.Any]]) -> typing.Dict[str, typing.Any]:
                 return {
@@ -315,7 +315,7 @@ class BaseSolutionPlotter(BasePlotter):
 
             GeoJsonWithArrows(json, style_function=style_function, frequency="endonly").add_to(geo_map)
 
-            colors = [matplotlib.colors.to_hex(cmap(cnorm(lev))) for lev in levels]
+            colors = [mpl.colors.to_hex(cmap(cnorm(lev))) for lev in levels]
             colorbar = ColorbarWrapper(colors=colors, values=levels, caption=name)
             colorbar.add_to(geo_map)
         else:  # pragma: no cover

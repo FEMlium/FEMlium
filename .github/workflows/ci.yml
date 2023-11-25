@@ -66,9 +66,9 @@ jobs:
         run: ${{ matrix.setup_container }}
       - name: Install FEMlium
         run: python3 -m pip install .[docs,lint,tests,tutorials]
-      - name: Run flake8 on python files
+      - name: Run ruff on python files
         run: |
-          python3 -m flake8 .
+          python3 -m ruff .
       - name: Run isort on python files
         run: |
           python3 -m isort --check --diff .
@@ -86,9 +86,9 @@ jobs:
           NO_TESTS_COLLECTED=5
           python3 -m pytest --ipynb-action=create-notebooks tutorials || (($?==$NO_TESTS_COLLECTED))
         shell: bash
-      - name: Run flake8 on tutorial files
+      - name: Run ruff on tutorial files
         run: |
-          python3 -m nbqa flake8 .
+          python3 -m nbqa ruff .
       - name: Run isort on tutorial files
         run: |
           python3 -m nbqa isort --check --diff .

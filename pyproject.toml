@@ -57,13 +57,9 @@ docs = [
     "sphinx"
 ]
 lint = [
-    "flake8",
-    "flake8-annotations",
-    "flake8-docstrings",
-    "flake8-import-restrictions",
-    "flake8-isort",
-    "Flake8-pyproject",
-    "flake8-quotes",
+    "isort",
+    "mypy",
+    "ruff",
     "yamllint"
 ]
 tests = [
@@ -86,27 +82,27 @@ tutorials = [
 [tool.coverage.paths]
 source = ["femlium", "*/dist-packages/femlium", "*/site-packages/femlium"]
 
-[tool.flake8]
-max-line-length = 120
-show-source = true
-docstring-convention = "numpy"
-inline-quotes = "double"
-imr241_exclude = ["femlium", "femlium.*"]
-imr245_include = "*"
-imr245_exclude = ["femlium", "femlium.*"]
-ignore = ["ANN101", "W503"]
-exclude = [".eggs", "build", "dist"]
-per-file-ignores = [
-    "femlium/__init__.py: F401",
-    "femlium/**/__init__.py: F401",
-    "tutorials/**/tutorial_*.py: D100, I004",
-    "tutorials/**/generate_mesh*.py: D100, I004"
-]
-
 [tool.isort]
 line_length = 120
 multi_line_output = 4
 order_by_type = false
+
+[tool.ruff]
+line-length = 120
+select = ["ANN", "D", "E", "F", "ICN", "N", "Q", "RUF", "W"]
+ignore = ["ANN101"]
+
+[tool.ruff.per-file-ignores]
+"femlium/__init__.py" = ["F401"]
+"femlium/**/__init__.py" = ["F401"]
+"tutorials/**/tutorial_*.py" = ["D100"]
+"tutorials/**/generate_mesh*.py" = ["D100"]
+
+[tool.ruff.pycodestyle]
+max-doc-length = 120
+
+[tool.ruff.pydocstyle]
+convention = "numpy"
 
 [tool.setuptools.packages.find]
 namespaces = false

@@ -38,7 +38,7 @@ class GeoJsonWithArrows(folium.elements.JSCSSMixin, folium.features.GeoJson):
     See https://github.com/slutske22/leaflet-arrowheads for more information.
     """
 
-    default_js = [
+    default_js: typing.ClassVar[typing.List[typing.Tuple[str, str]]] = [
         ("geometryutil",
          "https://cdn.jsdelivr.net/npm/leaflet-arrowheads@1.2.2/src/leaflet-geometryutil.js"),
         ("arrowheads",
@@ -46,8 +46,10 @@ class GeoJsonWithArrows(folium.elements.JSCSSMixin, folium.features.GeoJson):
     ]
 
     def __init__(
-        self, data: typing.Any, yawn: typing.Optional[int] = 60, size: typing.Optional[str] = "15%",  # noqa: ANN401
-        frequency: typing.Optional[str] = "allvertices", proportionalToTotal: typing.Optional[bool] = False,
+        self, data: typing.Any,  # noqa: ANN401
+        yawn: typing.Optional[int] = 60, size: typing.Optional[str] = "15%",
+        frequency: typing.Optional[str] = "allvertices",
+        proportionalToTotal: typing.Optional[bool] = False,   # noqa: N803
         **kwargs: typing.Any  # noqa: ANN401
     ) -> None:
         super(GeoJsonWithArrows, self).__init__(data, **kwargs)

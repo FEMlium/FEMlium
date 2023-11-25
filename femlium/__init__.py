@@ -12,28 +12,28 @@ from femlium.domain_plotter import DomainPlotter
 from femlium.numpy_plotter import NumpyPlotter
 
 try:
-    import meshio  # noqa: F401
+    import meshio
 except ImportError:  # pragma: no cover
     pass
 else:
     from femlium.meshio_plotter import MeshioPlotter
 
 try:
-    import dolfin  # noqa: F401
+    import dolfin
 except ImportError:
     pass
 else:
     from femlium.dolfin_plotter import DolfinPlotter
 
 try:
-    import dolfinx  # noqa: F401
+    import dolfinx
 except ImportError:
     pass
 else:
     from femlium.dolfinx_plotter import DolfinxPlotter
 
 try:
-    import firedrake  # noqa: F401
+    import firedrake
 except ImportError:
     pass
 else:
