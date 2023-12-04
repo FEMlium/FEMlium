@@ -8,7 +8,7 @@
 # Project information
 project = "FEMlium"
 copyright = "2021-2023, the FEMlium authors"
-author = "Francesco Ballarin (and contributors)"
+author = "Francesco Ballarin"
 
 # General configuration
 extensions = [

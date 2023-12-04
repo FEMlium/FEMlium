@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "FEMlium"
 version = "0.0.dev1"
 authors = [
-    {name = "Francesco Ballarin (and contributors)", email = "francesco.ballarin@unicatt.it"},
+    {name = "Francesco Ballarin", email = "francesco.ballarin@unicatt.it"},
 ]
 maintainers = [
     {name = "Francesco Ballarin", email = "francesco.ballarin@unicatt.it"},
