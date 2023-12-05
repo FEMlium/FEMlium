@@ -58,7 +58,6 @@ docs = [
 ]
 lint = [
     "isort",
-    "mypy",
     "ruff",
     "yamllint"
 ]
