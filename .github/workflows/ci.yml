@@ -74,7 +74,9 @@ jobs:
       - name: Setup container
         run: ${{ matrix.setup_container }}
       - name: Install FEMlium
-        run: python3 -m pip install .[docs,lint,tests,tutorials]
+        run: |
+          BACKEND=backend_${{ matrix.backend }}
+          python3 -m pip install .[${BACKEND},docs,lint,tests,tutorials]
       - name: Run ruff on python files
         run: |
           python3 -m ruff .

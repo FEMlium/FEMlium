@@ -53,6 +53,16 @@ issues = "https://github.com/FEMlium/FEMlium/issues"
 funding = "https://github.com/sponsors/francesco-ballarin"
 
 [project.optional-dependencies]
+backend_dolfin = [
+    "fenics-dolfin"
+]
+backend_dolfinx = [
+    "fenics-dolfinx"
+]
+backend_firedrake = [
+    "firedrake"
+]
+backend_none = []
 docs = [
     "sphinx"
 ]
@@ -69,9 +79,6 @@ tests = [
     "pytest-cov"
 ]
 tutorials = [
-    # "fenics-dolfin",
-    # "fenics-dolfinx",
-    # "firedrake",
     "gmsh",
     "meshio",
     "nbvalx[notebooks] @ git+https://github.com/multiphenics/nbvalx.git",
