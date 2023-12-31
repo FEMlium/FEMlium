@@ -74,14 +74,14 @@ lint = [
 tests = [
     "coverage[toml]",
     "nbqa",
-    "nbvalx[unit_tests] @ git+https://github.com/multiphenics/nbvalx.git",
+    "nbvalx[unit_tests]",
     "pytest",
     "pytest-cov"
 ]
 tutorials = [
     "gmsh",
     "meshio",
-    "nbvalx[notebooks] @ git+https://github.com/multiphenics/nbvalx.git",
+    "nbvalx[notebooks]",
     "viskex @ git+https://github.com/viskex/viskex.git"
 ]
 
