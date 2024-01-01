@@ -1,4 +1,4 @@
-# Copyright (C) 2021-2023 by the FEMlium authors
+# Copyright (C) 2021-2024 by the FEMlium authors
 #
 # This file is part of FEMlium.
 #
@@ -7,7 +7,7 @@
 
 # Project information
 project = "FEMlium"
-copyright = "2021-2023, the FEMlium authors"
+copyright = "2021-2024, the FEMlium authors"
 author = "Francesco Ballarin"
 
 # General configuration
