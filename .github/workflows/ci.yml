@@ -122,7 +122,7 @@ jobs:
         run: |
           export DEBIAN_FRONTEND="noninteractive"
           apt update -y -q
-          apt install -y -qq python3-pip rsync
+          apt install -y -qq python3-pip
           python3 -m pip -q install coverage[toml]
       - name: Download coverage reports from artifacts
         uses: actions/download-artifact@v3
