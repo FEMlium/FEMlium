@@ -33,7 +33,11 @@ def pytest_runtest_setup(item: pytest.File) -> None:
         for dir_entry in _pytest.pathlib.visit(notebook_original_dir, lambda _: True):
             if dir_entry.is_file():
                 source_path = str(dir_entry.path)
-                if fnmatch.fnmatch(source_path, "**/*.csv") or fnmatch.fnmatch(source_path, "**/*.msh"):
+                if (
+                    (fnmatch.fnmatch(source_path, "**/*.csv") or fnmatch.fnmatch(source_path, "**/*.msh"))
+                        and
+                    work_dir not in source_path
+                ):
                     destination_path = os.path.join(
                         notebook_original_dir, work_dir, os.path.relpath(source_path, notebook_original_dir))
                     if not os.path.exists(destination_path):
