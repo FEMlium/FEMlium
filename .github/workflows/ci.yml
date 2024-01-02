@@ -78,7 +78,7 @@ jobs:
           cd docs && python3 -m sphinx -W -b html . build/html
       - name: Run unit tests
         run: |
-          COVERAGE_FILE=.coverage_unit_${{ matrix.backend }} python3 -m pytest --cov=femlium --cov-report= tests/unit
+          COVERAGE_FILE=.coverage_unit_${{ matrix.backend }} python3 -m coverage run --source=femlium -m pytest tests/unit
       - name: Generate tutorial files
         run: |
           NO_TESTS_COLLECTED=5
@@ -96,14 +96,13 @@ jobs:
           pattern: "tutorials/**/*.ipynb"
       - name: Run tutorials
         run: |
-          COVERAGE_FILE=.coverage_tutorials_${{ matrix.backend }} python3 -m pytest --cov=femlium --cov-report= tutorials
+          COVERAGE_FILE=.coverage_tutorials_${{ matrix.backend }} python3 -m pytest --coverage-source=femlium tutorials
       - name: Store coverage reports as artifact
         uses: actions/upload-artifact@v3
         with:
           name: coverage-${{ matrix.backend }}
           path: |
-            .coverage_unit_${{ matrix.backend }}
-            .coverage_tutorials_${{ matrix.backend }}
+            .coverage*
           retention-days: 1
       - name: Upload tutorials logs as an artifact in case of failure
         if: failure() || cancelled()
