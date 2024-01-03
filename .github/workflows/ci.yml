@@ -31,24 +31,15 @@ jobs:
           - backend: dolfin
             container: numericalpdes/base_images:fenics
             setup_git: ""
-            setup_container: |
-              export DEBIAN_FRONTEND="noninteractive"
-              apt update -y -q
-              apt install -y -qq xorg
+            setup_container: ""
           - backend: dolfinx
             container: ghcr.io/fenics/dolfinx/dolfinx:nightly
             setup_git: ""
-            setup_container: |
-              export DEBIAN_FRONTEND="noninteractive"
-              apt update -y -q
-              apt install -y -qq libgl1-mesa-glx xvfb
+            setup_container: ""
           - backend: firedrake
             container: firedrakeproject/firedrake
             setup_git: ""
             setup_container: |
-              export DEBIAN_FRONTEND="noninteractive"
-              apt update -y -q
-              apt install -y -qq libgl1-mesa-glx xorg xvfb
               echo "/home/firedrake/firedrake/bin" >> $GITHUB_PATH
       fail-fast: false
     container:
