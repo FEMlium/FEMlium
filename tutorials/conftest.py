@@ -16,17 +16,17 @@ pytest_runtest_teardown = nbvalx.pytest_hooks_notebooks.runtest_teardown
 
 
 def pytest_sessionstart(session: pytest.Session) -> None:
-    """Automatically mark mesh files as data to be copied to the work directory."""
-    # Add mesh files as data to be copied
-    copy_data_to_work_dir = session.config.option.copy_data_to_work_dir
-    assert len(copy_data_to_work_dir) == 0
-    copy_data_to_work_dir.extend(["**/*.csv", "**/*.msh"])
+    """Automatically mark mesh files as data to be linked in the work directory."""
+    # Add mesh files as data to be linked
+    link_data_in_work_dir = session.config.option.link_data_in_work_dir
+    assert len(link_data_in_work_dir) == 0
+    link_data_in_work_dir.extend(["**/*.csv", "**/*.msh"])
     # Start session as in nbvalx
     nbvalx.pytest_hooks_notebooks.sessionstart(session)
 
 
 def pytest_runtest_setup(item: pytest.File) -> None:
-    """Copy data files to destination folder, and check backend availability."""
+    """Check backend availability."""
     # Do the setup as in nbvalx
     nbvalx.pytest_hooks_notebooks.runtest_setup(item)
     # Get notebook name
