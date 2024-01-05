@@ -92,6 +92,8 @@ line_length = 120
 multi_line_output = 4
 order_by_type = false
 
+[tool.pytest.ini_options]
+
 [tool.ruff]
 line-length = 120
 select = ["ANN", "D", "E", "F", "ICN", "N", "Q", "RUF", "W"]
