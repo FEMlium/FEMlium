@@ -11,8 +11,6 @@ import pytest
 pytest_addoption = nbvalx.pytest_hooks_notebooks.addoption
 pytest_sessionstart = nbvalx.pytest_hooks_notebooks.sessionstart
 pytest_collect_file = nbvalx.pytest_hooks_notebooks.collect_file
-pytest_runtest_makereport = nbvalx.pytest_hooks_notebooks.runtest_makereport
-pytest_runtest_teardown = nbvalx.pytest_hooks_notebooks.runtest_teardown
 
 
 def pytest_sessionstart(session: pytest.Session) -> None:
@@ -27,8 +25,6 @@ def pytest_sessionstart(session: pytest.Session) -> None:
 
 def pytest_runtest_setup(item: pytest.File) -> None:
     """Check backend availability."""
-    # Do the setup as in nbvalx
-    nbvalx.pytest_hooks_notebooks.runtest_setup(item)
     # Get notebook name
     notebook_name = item.parent.name
     # Check backend availability depending on the item name
