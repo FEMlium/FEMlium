@@ -68,12 +68,12 @@ docs = [
 ]
 lint = [
     "isort",
+    "nbqa",
     "ruff",
     "yamllint"
 ]
 tests = [
     "coverage[toml]",
-    "nbqa",
     "nbvalx[unit_tests]",
     "pytest"
 ]
