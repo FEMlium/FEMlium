@@ -19,9 +19,9 @@ class MeshioPlotter(BaseMeshPlotter):
 
     def add_mesh_to(
         self, geo_map: folium.Map, mesh: meshio.Mesh, unmarked_face_marker: typing.Optional[int] = None,
-        cell_colors: typing.Optional[typing.Union[str, typing.Dict[int, str]]] = None,
-        face_colors: typing.Optional[typing.Union[str, typing.Dict[int, str]]] = None,
-        face_weights: typing.Optional[typing.Union[int, typing.Dict[int, int]]] = None
+        cell_colors: typing.Optional[typing.Union[str, dict[int, str]]] = None,
+        face_colors: typing.Optional[typing.Union[str, dict[int, str]]] = None,
+        face_weights: typing.Optional[typing.Union[int, dict[int, int]]] = None
     ) -> None:
         """
         Add a triangular mesh imported from meshio to a folium map.

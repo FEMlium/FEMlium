@@ -25,7 +25,7 @@ class BaseSolutionPlotter(BasePlotter):
     def add_scalar_field_to(
         self, geo_map: folium.Map, vertices: np.typing.NDArray[np.float64], cells: np.typing.NDArray[np.int64],
         scalar_field: np.typing.NDArray[np.float64], mode: typing.Optional[str] = None,
-        levels: typing.Optional[typing.Union[int, typing.List[float]]] = None,
+        levels: typing.Optional[typing.Union[int, list[float]]] = None,
         cmap: typing.Optional[str] = None, name: typing.Optional[str] = None
     ) -> None:
         """
@@ -86,7 +86,7 @@ class BaseSolutionPlotter(BasePlotter):
         if name is None:
             name = "Scalar field"
 
-        def style_function(x: typing.Dict[str, typing.Dict[str, typing.Any]]) -> typing.Dict[str, typing.Any]:
+        def style_function(x: dict[str, dict[str, typing.Any]]) -> dict[str, typing.Any]:
             if x["geometry"]["type"] == "MultiPolygon":
                 assert mode == "contourf"
                 return {
@@ -113,8 +113,8 @@ class BaseSolutionPlotter(BasePlotter):
 
     def _convert_scalar_field_to_geojson(
         self, vertices: np.typing.NDArray[np.float64], cells: np.typing.NDArray[np.int64],
-        scalar_field: np.typing.NDArray[np.float64], mode: str, levels: typing.Union[int, typing.List[float]],
-        colors: typing.List[str]
+        scalar_field: np.typing.NDArray[np.float64], mode: str, levels: typing.Union[int, list[float]],
+        colors: list[str]
     ) -> geojson.FeatureCollection:
         """
         Convert a scalar field to a geojson FeatureCollection.
@@ -233,7 +233,7 @@ class BaseSolutionPlotter(BasePlotter):
     def add_vector_field_to(
         self, geo_map: folium.Map, vertices: np.typing.NDArray[np.float64], cells: np.typing.NDArray[np.int64],
         vector_field: np.typing.NDArray[np.float64], mode: typing.Optional[str] = None,
-        levels: typing.Optional[typing.Union[int, typing.List[float]]] = None, scale: typing.Optional[float] = None,
+        levels: typing.Optional[typing.Union[int, list[float]]] = None, scale: typing.Optional[float] = None,
         cmap: typing.Optional[str] = None, name: typing.Optional[str] = None
     ) -> None:
         """
@@ -307,7 +307,7 @@ class BaseSolutionPlotter(BasePlotter):
                 vertices, vector_field_magnitude, vector_field, scale,
                 lambda lev: mpl.colors.to_hex(cmap(cnorm(lev))))
 
-            def style_function(x: typing.Dict[str, typing.Dict[str, typing.Any]]) -> typing.Dict[str, typing.Any]:
+            def style_function(x: dict[str, dict[str, typing.Any]]) -> dict[str, typing.Any]:
                 return {
                     "color": x["properties"]["color"],
                     "weight": x["properties"]["weight"]

@@ -23,9 +23,9 @@ class BaseMeshPlotter(BasePlotter):
         self, geo_map: folium.Map, vertices: np.typing.NDArray[np.float64], cells: np.typing.NDArray[np.int64],
         cell_markers: typing.Optional[np.typing.NDArray[np.int64]] = None,
         face_markers: typing.Optional[np.typing.NDArray[np.int64]] = None,
-        cell_colors: typing.Optional[typing.Union[str, typing.Dict[int, str]]] = None,
-        face_colors: typing.Optional[typing.Union[str, typing.Dict[int, str]]] = None,
-        face_weights: typing.Optional[typing.Union[int, typing.Dict[int, int]]] = None
+        cell_colors: typing.Optional[typing.Union[str, dict[int, str]]] = None,
+        face_colors: typing.Optional[typing.Union[str, dict[int, str]]] = None,
+        face_weights: typing.Optional[typing.Union[int, dict[int, int]]] = None
     ) -> None:
         """
         Add a triangular mesh to a folium map.
@@ -87,7 +87,7 @@ class BaseMeshPlotter(BasePlotter):
         face_colors = self._process_optional_argument_on_markers(face_colors, "black", unique_face_markers)
         face_weights = self._process_optional_argument_on_markers(face_weights, 1, unique_face_markers)
 
-        def style_function(x: typing.Dict[str, typing.Dict[str, typing.Any]]) -> typing.Dict[str, typing.Any]:
+        def style_function(x: dict[str, dict[str, typing.Any]]) -> dict[str, typing.Any]:
             if x["geometry"]["type"] == "MultiPolygon":
                 return {
                     # Boundary properties
@@ -140,8 +140,8 @@ class BaseMeshPlotter(BasePlotter):
     def _convert_mesh_to_geojson(
         self, vertices: np.typing.NDArray[np.float64], cells: np.typing.NDArray[np.int64],
         cell_markers: np.typing.NDArray[np.int64], face_markers: np.typing.NDArray[np.int64],
-        cell_colors: typing.Union[str, typing.Dict[int, str]], face_colors: typing.Union[str, typing.Dict[int, str]],
-        face_weights: typing.Union[int, typing.Dict[int, int]]
+        cell_colors: typing.Union[str, dict[int, str]], face_colors: typing.Union[str, dict[int, str]],
+        face_weights: typing.Union[int, dict[int, int]]
     ) -> geojson.FeatureCollection:
         """
         Convert a mesh to a geojson FeatureCollection.

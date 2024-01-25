@@ -27,9 +27,9 @@ class DolfinxPlotter(BaseMeshPlotter, BaseSolutionPlotter):
         cell_mesh_tags: typing.Optional[dolfinx.cpp.mesh.MeshTags_int32] = None,
         face_mesh_tags: typing.Optional[dolfinx.cpp.mesh.MeshTags_int32] = None,
         unmarked_cell_marker: typing.Optional[int] = None, unmarked_face_marker: typing.Optional[int] = None,
-        cell_colors: typing.Optional[typing.Union[str, typing.Dict[int, str]]] = None,
-        face_colors: typing.Optional[typing.Union[str, typing.Dict[int, str]]] = None,
-        face_weights: typing.Optional[typing.Union[int, typing.Dict[int, int]]] = None
+        cell_colors: typing.Optional[typing.Union[str, dict[int, str]]] = None,
+        face_colors: typing.Optional[typing.Union[str, dict[int, str]]] = None,
+        face_weights: typing.Optional[typing.Union[int, dict[int, int]]] = None
     ) -> None:
         """
         Add a triangular mesh stored in a dolfinx.Mesh to a folium map.
@@ -116,7 +116,7 @@ class DolfinxPlotter(BaseMeshPlotter, BaseSolutionPlotter):
 
     def add_scalar_field_to(
         self, geo_map: folium.Map, scalar_field: dolfinx.fem.Function, mode: typing.Optional[str] = None,
-        levels: typing.Optional[typing.Union[int, typing.List[float]]] = None,
+        levels: typing.Optional[typing.Union[int, list[float]]] = None,
         cmap: typing.Optional[str] = None, name: typing.Optional[str] = None
     ) -> None:
         """
@@ -154,7 +154,7 @@ class DolfinxPlotter(BaseMeshPlotter, BaseSolutionPlotter):
 
     def add_vector_field_to(
         self, geo_map: folium.Map, vector_field: dolfinx.fem.Function, mode: typing.Optional[str] = None,
-        levels: typing.Optional[typing.Union[int, typing.List[float]]] = None, scale: typing.Optional[float] = None,
+        levels: typing.Optional[typing.Union[int, list[float]]] = None, scale: typing.Optional[float] = None,
         cmap: typing.Optional[str] = None, name: typing.Optional[str] = None
     ) -> None:
         """
@@ -198,7 +198,7 @@ class DolfinxPlotter(BaseMeshPlotter, BaseSolutionPlotter):
 
     def _get_vertices_cells_of_linear_function_space(
         self, function_space: dolfinx.fem.FunctionSpace
-    ) -> typing.Tuple[np.typing.NDArray[np.float64], np.typing.NDArray[np.int64]]:
+    ) -> tuple[np.typing.NDArray[np.float64], np.typing.NDArray[np.int64]]:
         """Postprocess the output of dolfinx.plot.vtk_mesh and return vertices and cells for matplotlib."""
         cells, _, vertices = dolfinx.plot.vtk_mesh(function_space)
         cells = cells.reshape((-1, 4))

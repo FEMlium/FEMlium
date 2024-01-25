@@ -14,7 +14,7 @@ import pyproj
 from femlium.utils import TransformerWrapper
 
 
-class BasePlotter(object):
+class BasePlotter:
     """
     Interface of a geographic plotter.
 

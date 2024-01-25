@@ -21,9 +21,9 @@ class FiredrakePlotter(BaseMeshPlotter, BaseSolutionPlotter):
     def add_mesh_to(
         self, geo_map: folium.Map, mesh: firedrake.Mesh,
         unmarked_cell_marker: typing.Optional[int] = None, unmarked_face_marker: typing.Optional[int] = None,
-        cell_colors: typing.Optional[typing.Union[str, typing.Dict[int, str]]] = None,
-        face_colors: typing.Optional[typing.Union[str, typing.Dict[int, str]]] = None,
-        face_weights: typing.Optional[typing.Union[int, typing.Dict[int, int]]] = None
+        cell_colors: typing.Optional[typing.Union[str, dict[int, str]]] = None,
+        face_colors: typing.Optional[typing.Union[str, dict[int, str]]] = None,
+        face_weights: typing.Optional[typing.Union[int, dict[int, int]]] = None
     ) -> None:
         """
         Add a triangular mesh stored in a firedrake.Mesh to a folium map.
@@ -118,7 +118,7 @@ class FiredrakePlotter(BaseMeshPlotter, BaseSolutionPlotter):
 
     def add_scalar_field_to(
         self, geo_map: folium.Map, scalar_field: firedrake.Function, mode: typing.Optional[str] = None,
-        levels: typing.Optional[typing.Union[int, typing.List[float]]] = None,
+        levels: typing.Optional[typing.Union[int, list[float]]] = None,
         cmap: typing.Optional[str] = None, name: typing.Optional[str] = None
     ) -> None:
         """
@@ -157,7 +157,7 @@ class FiredrakePlotter(BaseMeshPlotter, BaseSolutionPlotter):
 
     def add_vector_field_to(
         self, geo_map: folium.Map, vector_field: firedrake.Function, mode: typing.Optional[str] = None,
-        levels: typing.Optional[typing.Union[int, typing.List[float]]] = None, scale: typing.Optional[float] = None,
+        levels: typing.Optional[typing.Union[int, list[float]]] = None, scale: typing.Optional[float] = None,
         cmap: typing.Optional[str] = None, name: typing.Optional[str] = None
     ) -> None:
         """

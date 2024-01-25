@@ -12,7 +12,7 @@ import numpy.typing
 import pyproj
 
 
-class TransformerWrapper(object):
+class TransformerWrapper:
     """
     Wrap a pyproj.Transformer object, or None.
 

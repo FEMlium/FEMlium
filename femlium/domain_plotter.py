@@ -22,8 +22,8 @@ class DomainPlotter(BasePlotter):
     def add_domain_to(
         self, geo_map: folium.Map, vertices: np.typing.NDArray[np.float64],
         segment_markers: typing.Optional[np.typing.NDArray[np.int64]] = None,
-        colors: typing.Optional[typing.Union[str, typing.Dict[int, str]]] = None,
-        weights: typing.Optional[typing.Union[int, typing.Dict[int, int]]] = None
+        colors: typing.Optional[typing.Union[str, dict[int, str]]] = None,
+        weights: typing.Optional[typing.Union[int, dict[int, int]]] = None
     ) -> None:
         """
         Add a domain to a folium map.
@@ -63,7 +63,7 @@ class DomainPlotter(BasePlotter):
         colors = self._process_optional_argument_on_markers(colors, "black", unique_markers)
         weights = self._process_optional_argument_on_markers(weights, 1, unique_markers)
 
-        def style_function(x: typing.Dict[str, typing.Dict[str, typing.Any]]) -> typing.Dict[str, typing.Any]:
+        def style_function(x: dict[str, dict[str, typing.Any]]) -> dict[str, typing.Any]:
             return {
                 "color": x["properties"]["color"],
                 "weight": x["properties"]["weight"]
@@ -83,7 +83,7 @@ class DomainPlotter(BasePlotter):
 
     def _convert_domain_to_geojson(
         self, vertices: np.typing.NDArray[np.float64], segment_markers: np.typing.NDArray[np.int64],
-        colors: typing.Union[str, typing.Dict[int, str]], weights: typing.Union[int, typing.Dict[int, int]]
+        colors: typing.Union[str, dict[int, str]], weights: typing.Union[int, dict[int, int]]
     ) -> geojson.FeatureCollection:
         """
         Convert a domain to a geojson FeatureCollection.

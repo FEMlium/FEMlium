@@ -38,7 +38,7 @@ class GeoJsonWithArrows(folium.elements.JSCSSMixin, folium.features.GeoJson):
     See https://github.com/slutske22/leaflet-arrowheads for more information.
     """
 
-    default_js: typing.ClassVar[typing.List[typing.Tuple[str, str]]] = [
+    default_js: typing.ClassVar[list[tuple[str, str]]] = [
         ("geometryutil",
          "https://cdn.jsdelivr.net/npm/leaflet-arrowheads@1.2.2/src/leaflet-geometryutil.js"),
         ("arrowheads",
@@ -52,7 +52,7 @@ class GeoJsonWithArrows(folium.elements.JSCSSMixin, folium.features.GeoJson):
         proportionalToTotal: typing.Optional[bool] = False,   # noqa: N803
         **kwargs: typing.Any  # noqa: ANN401
     ) -> None:
-        super(GeoJsonWithArrows, self).__init__(data, **kwargs)
+        super().__init__(data, **kwargs)
         self._name = "GeoJsonWithArrows"
         self.arrows_options = folium.utilities.parse_options(
             yawn=yawn,
@@ -67,13 +67,13 @@ class GeoJsonWithArrows(folium.elements.JSCSSMixin, folium.features.GeoJson):
         assert original_script is not None
         patched_script = PatchedScript(original_script, self.arrows_options)
         self._template.module.__dict__["script"] = patched_script
-        super(GeoJsonWithArrows, self).render(**kwargs)
+        super().render(**kwargs)
 
 
-class PatchedScript(object):
+class PatchedScript:
     """Patch a jinja2.runtime.Macro object associated to the script part of a jinja2 template to add arrowheads."""
 
-    def __init__(self, original_script: typing.Callable[..., str], options: typing.Dict[str, typing.Any]) -> None:
+    def __init__(self, original_script: typing.Callable[..., str], options: dict[str, typing.Any]) -> None:
         self.original_script = original_script
         self.options = options
 
