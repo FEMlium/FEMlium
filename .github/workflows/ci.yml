@@ -35,8 +35,7 @@ jobs:
           - backend: dolfinx
             container: ghcr.io/fenics/dolfinx/dolfinx:nightly
             setup_git: ""
-            setup_container: |
-              rm /usr/lib/python3.*/EXTERNALLY-MANAGED
+            setup_container: ""
           - backend: firedrake
             container: firedrakeproject/firedrake
             setup_git: ""
