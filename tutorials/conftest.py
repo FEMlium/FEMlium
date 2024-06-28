@@ -9,7 +9,6 @@ import nbvalx.pytest_hooks_notebooks
 import pytest
 
 pytest_addoption = nbvalx.pytest_hooks_notebooks.addoption
-pytest_sessionstart = nbvalx.pytest_hooks_notebooks.sessionstart
 pytest_collect_file = nbvalx.pytest_hooks_notebooks.collect_file
 
 
