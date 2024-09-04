@@ -94,6 +94,7 @@ jobs:
           name: coverage-${{ matrix.backend }}
           path: |
             .coverage*
+          include-hidden-files: true
           retention-days: 1
       - name: Upload tutorials logs as an artifact in case of failure
         if: failure() || cancelled()
@@ -102,6 +103,7 @@ jobs:
           name: "tutorials-logs-${{ matrix.backend }}"
           path: |
             tutorials/**/.ipynb_pytest/**/*.log*
+          include-hidden-files: true
 
   combine_coverage:
     runs-on: ubuntu-latest
