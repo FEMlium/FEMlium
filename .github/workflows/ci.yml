@@ -29,7 +29,7 @@ jobs:
               apt install -y -qq python3-mpi4py python3-numpy python3-pip xorg
               rm /usr/lib/python3.*/EXTERNALLY-MANAGED
           - backend: dolfin
-            container: numericalpdes/base_images:fenics-real
+            container: ghcr.io/numericalpdes/fenics-real:latest
             setup_git: ""
             setup_container: ""
           - backend: dolfinx
