@@ -27,9 +27,7 @@ def pytest_runtest_setup(item: pytest.File) -> None:
     # Get notebook name
     notebook_name = item.parent.name
     # Check backend availability depending on the item name
-    if notebook_name.endswith("dolfin.ipynb"):
-        pytest.importorskip("dolfin")
-    elif notebook_name.endswith("dolfinx.ipynb"):
+    if notebook_name.endswith("dolfinx.ipynb"):
         pytest.importorskip("dolfinx")
     elif notebook_name.endswith("firedrake.ipynb"):
         pytest.importorskip("firedrake")

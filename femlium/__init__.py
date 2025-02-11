@@ -19,13 +19,6 @@ else:
     from femlium.meshio_plotter import MeshioPlotter
 
 try:
-    import dolfin
-except ImportError:
-    pass
-else:
-    from femlium.dolfin_plotter import DolfinPlotter
-
-try:
     import dolfinx
 except ImportError:
     pass

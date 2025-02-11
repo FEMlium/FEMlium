@@ -50,9 +50,6 @@ issues = "https://github.com/FEMlium/FEMlium/issues"
 funding = "https://github.com/sponsors/francesco-ballarin"
 
 [project.optional-dependencies]
-backend_dolfin = [
-    "fenics-dolfin"
-]
 backend_dolfinx = [
     "fenics-dolfinx"
 ]
