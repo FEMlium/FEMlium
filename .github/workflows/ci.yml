@@ -33,14 +33,15 @@ jobs:
             setup_git: ""
             setup_container: ""
           - backend: firedrake
-            container: firedrakeproject/firedrake
+            container: firedrakeproject/firedrake-vanilla-default
             setup_git: ""
             setup_container: |
-              echo "/home/firedrake/firedrake/bin" >> $GITHUB_PATH
+              export DEBIAN_FRONTEND="noninteractive"
+              apt update -y -q
+              apt install -y -qq xorg
+              rm /usr/lib/python3.*/EXTERNALLY-MANAGED
       fail-fast: false
-    container:
-      image: ${{ matrix.container }}
-      options: --user root
+    container: ${{ matrix.container }}
     steps:
       - name: Setup git
         run: ${{ matrix.setup_git }}
