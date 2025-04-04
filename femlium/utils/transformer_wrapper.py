@@ -8,7 +8,7 @@
 import typing
 
 import numpy as np
-import numpy.typing
+import numpy.typing as npt
 import pyproj
 
 
@@ -32,7 +32,7 @@ class TransformerWrapper:
     def __init__(self, transformer: typing.Optional[pyproj.Transformer]) -> None:
         self.transformer = transformer
 
-    def __call__(self, *args: np.float64) -> np.typing.NDArray[np.float64]:
+    def __call__(self, *args: np.float64) -> npt.NDArray[np.float64]:
         """
         Apply the transformation. If no transformer has been provided this method implements the identity map.
 

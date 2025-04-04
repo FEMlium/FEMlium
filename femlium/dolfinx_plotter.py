@@ -13,7 +13,7 @@ import dolfinx.mesh
 import dolfinx.plot
 import folium
 import numpy as np
-import numpy.typing
+import numpy.typing as npt
 
 from femlium.base_mesh_plotter import BaseMeshPlotter
 from femlium.base_solution_plotter import BaseSolutionPlotter
@@ -198,7 +198,7 @@ class DolfinxPlotter(BaseMeshPlotter, BaseSolutionPlotter):
 
     def _get_vertices_cells_of_linear_function_space(
         self, function_space: dolfinx.fem.FunctionSpace
-    ) -> tuple[np.typing.NDArray[np.float64], np.typing.NDArray[np.int64]]:
+    ) -> tuple[npt.NDArray[np.float64], npt.NDArray[np.int64]]:
         """Postprocess the output of dolfinx.plot.vtk_mesh and return vertices and cells for matplotlib."""
         cells, _, vertices = dolfinx.plot.vtk_mesh(function_space)
         cells = cells.reshape((-1, 4))

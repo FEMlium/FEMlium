@@ -13,7 +13,7 @@ import matplotlib as mpl
 import matplotlib._tri
 import matplotlib.pyplot as plt
 import numpy as np
-import numpy.typing
+import numpy.typing as npt
 
 from femlium.base_plotter import BasePlotter
 from femlium.utils import ColorbarWrapper, GeoJsonWithArrows
@@ -23,8 +23,8 @@ class BaseSolutionPlotter(BasePlotter):
     """Base interface of a geographic plotter for solution-related plots."""
 
     def add_scalar_field_to(
-        self, geo_map: folium.Map, vertices: np.typing.NDArray[np.float64], cells: np.typing.NDArray[np.int64],
-        scalar_field: np.typing.NDArray[np.float64], mode: typing.Optional[str] = None,
+        self, geo_map: folium.Map, vertices: npt.NDArray[np.float64], cells: npt.NDArray[np.int64],
+        scalar_field: npt.NDArray[np.float64], mode: typing.Optional[str] = None,
         levels: typing.Optional[typing.Union[int, list[float]]] = None,
         cmap: typing.Optional[str] = None, name: typing.Optional[str] = None
     ) -> None:
@@ -112,8 +112,8 @@ class BaseSolutionPlotter(BasePlotter):
         colorbar.add_to(geo_map)
 
     def _convert_scalar_field_to_geojson(
-        self, vertices: np.typing.NDArray[np.float64], cells: np.typing.NDArray[np.int64],
-        scalar_field: np.typing.NDArray[np.float64], mode: str, levels: typing.Union[int, list[float]],
+        self, vertices: npt.NDArray[np.float64], cells: npt.NDArray[np.int64],
+        scalar_field: npt.NDArray[np.float64], mode: str, levels: typing.Union[int, list[float]],
         colors: list[str]
     ) -> geojson.FeatureCollection:
         """
@@ -231,8 +231,8 @@ class BaseSolutionPlotter(BasePlotter):
             raise ValueError("Invalid mode")
 
     def add_vector_field_to(
-        self, geo_map: folium.Map, vertices: np.typing.NDArray[np.float64], cells: np.typing.NDArray[np.int64],
-        vector_field: np.typing.NDArray[np.float64], mode: typing.Optional[str] = None,
+        self, geo_map: folium.Map, vertices: npt.NDArray[np.float64], cells: npt.NDArray[np.int64],
+        vector_field: npt.NDArray[np.float64], mode: typing.Optional[str] = None,
         levels: typing.Optional[typing.Union[int, list[float]]] = None, scale: typing.Optional[float] = None,
         cmap: typing.Optional[str] = None, name: typing.Optional[str] = None
     ) -> None:
@@ -322,8 +322,8 @@ class BaseSolutionPlotter(BasePlotter):
             raise ValueError("Invalid mode")
 
     def _convert_vector_field_to_geojson(
-        self, vertices: np.typing.NDArray[np.float64], vector_field_magnitude: np.typing.NDArray[np.float64],
-        vector_field: np.typing.NDArray[np.float64], scale: float, cmap: typing.Callable[[float], str]
+        self, vertices: npt.NDArray[np.float64], vector_field_magnitude: npt.NDArray[np.float64],
+        vector_field: npt.NDArray[np.float64], scale: float, cmap: typing.Callable[[float], str]
     ) -> geojson.FeatureCollection:
         """
         Convert a scalar field to a geojson FeatureCollection.

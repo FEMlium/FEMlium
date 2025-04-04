@@ -8,7 +8,7 @@
 import typing
 
 import numpy as np
-import numpy.typing
+import numpy.typing as npt
 import pyproj
 
 from femlium.utils import TransformerWrapper
@@ -36,8 +36,8 @@ class BasePlotter:
 
     @staticmethod
     def _process_optional_argument_on_markers(
-        argument: typing.Any, default: typing.Any, unique_markers: np.typing.NDArray[typing.Any]  # noqa: ANN401
-    ) -> np.typing.NDArray[typing.Any]:
+        argument: typing.Any, default: typing.Any, unique_markers: npt.NDArray[typing.Any]  # noqa: ANN401
+    ) -> npt.NDArray[typing.Any]:
         """Fill optinal arguments related to markers with default value."""
         expected_type = type(default)
         assert isinstance(argument, (expected_type, dict)) or argument is None

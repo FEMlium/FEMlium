@@ -10,7 +10,7 @@ import typing
 import folium
 import geojson
 import numpy as np
-import numpy.typing
+import numpy.typing as npt
 
 from femlium.base_plotter import BasePlotter
 from femlium.utils import ColorbarWrapper
@@ -20,9 +20,9 @@ class BaseMeshPlotter(BasePlotter):
     """Base interface of a geographic plotter for mesh-related plots."""
 
     def add_mesh_to(
-        self, geo_map: folium.Map, vertices: np.typing.NDArray[np.float64], cells: np.typing.NDArray[np.int64],
-        cell_markers: typing.Optional[np.typing.NDArray[np.int64]] = None,
-        face_markers: typing.Optional[np.typing.NDArray[np.int64]] = None,
+        self, geo_map: folium.Map, vertices: npt.NDArray[np.float64], cells: npt.NDArray[np.int64],
+        cell_markers: typing.Optional[npt.NDArray[np.int64]] = None,
+        face_markers: typing.Optional[npt.NDArray[np.int64]] = None,
         cell_colors: typing.Optional[typing.Union[str, dict[int, str]]] = None,
         face_colors: typing.Optional[typing.Union[str, dict[int, str]]] = None,
         face_weights: typing.Optional[typing.Union[int, dict[int, int]]] = None
@@ -138,8 +138,8 @@ class BaseMeshPlotter(BasePlotter):
             colorbar.add_to(geo_map)
 
     def _convert_mesh_to_geojson(
-        self, vertices: np.typing.NDArray[np.float64], cells: np.typing.NDArray[np.int64],
-        cell_markers: np.typing.NDArray[np.int64], face_markers: np.typing.NDArray[np.int64],
+        self, vertices: npt.NDArray[np.float64], cells: npt.NDArray[np.int64],
+        cell_markers: npt.NDArray[np.int64], face_markers: npt.NDArray[np.int64],
         cell_colors: typing.Union[str, dict[int, str]], face_colors: typing.Union[str, dict[int, str]],
         face_weights: typing.Union[int, dict[int, int]]
     ) -> geojson.FeatureCollection:

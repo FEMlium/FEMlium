@@ -9,7 +9,7 @@ import json
 
 import folium
 import numpy as np
-import numpy.typing
+import numpy.typing as npt
 import pyproj
 import pytest
 
@@ -23,25 +23,25 @@ def transformer() -> pyproj.Transformer:
 
 
 @pytest.fixture
-def loop() -> np.typing.NDArray[np.float64]:
+def loop() -> npt.NDArray[np.float64]:
     """Define a closed loop over the vertices of a unit square domain."""
     return np.array([[0., 0.], [1., 0.], [1., 1.], [0., 1.], [0., 0.]])
 
 
 @pytest.fixture
-def single_marker() -> np.typing.NDArray[np.int64]:
+def single_marker() -> npt.NDArray[np.int64]:
     """Vertex marker with a single value."""
     return np.zeros(4, dtype=np.int64)
 
 
 @pytest.fixture
-def multiple_markers() -> np.typing.NDArray[np.int64]:
+def multiple_markers() -> npt.NDArray[np.int64]:
     """Vertex marker with a multiple values."""
     return np.array([1, 2, 1, 2], dtype=np.int64)
 
 
 def test_domain_plotter_without_transformer_add_domain_to_map_vertices_only(
-    loop: np.typing.NDArray[np.float64]
+    loop: npt.NDArray[np.float64]
 ) -> None:
     """
     Test femlium.DomainPlotter.add_domain_to in a case without a transformer and with one input argument.
@@ -71,7 +71,7 @@ def test_domain_plotter_without_transformer_add_domain_to_map_vertices_only(
 
 
 def test_domain_plotter_with_transformer_add_domain_to_map_vertices_only(
-    transformer: pyproj.Transformer, loop: np.typing.NDArray[np.float64]
+    transformer: pyproj.Transformer, loop: npt.NDArray[np.float64]
 ) -> None:
     """
     Test femlium.DomainPlotter.add_domain_to in a case with a transformer and with one input argument.
@@ -100,7 +100,7 @@ def test_domain_plotter_with_transformer_add_domain_to_map_vertices_only(
     assert expected_geojson in folium.utilities.normalize(geo_map._parent.render())
 
 
-def test_domain_plotter_add_domain_to_map_vertices_single_color_weight(loop: np.typing.NDArray[np.float64]) -> None:
+def test_domain_plotter_add_domain_to_map_vertices_single_color_weight(loop: npt.NDArray[np.float64]) -> None:
     """Test femlium.DomainPlotter.add_domain_to when providing vertices, a uniform color and uniform weight."""
     geo_map = folium.Map(location=[0, 0], zoom_start=8)
     domain_plotter = femlium.DomainPlotter()
@@ -126,7 +126,7 @@ def test_domain_plotter_add_domain_to_map_vertices_single_color_weight(loop: np.
 
 @pytest.mark.parametrize("offset", (0, 1))
 def test_domain_plotter_add_domain_to_map_vertices_single_marker(
-    loop: np.typing.NDArray[np.float64], single_marker: np.typing.NDArray[np.int64], offset: int
+    loop: npt.NDArray[np.float64], single_marker: npt.NDArray[np.int64], offset: int
 ) -> None:
     """
     Test femlium.DomainPlotter.add_domain_to when providing vertices and a single marker for all vertices.
@@ -158,7 +158,7 @@ def test_domain_plotter_add_domain_to_map_vertices_single_marker(
 
 @pytest.mark.parametrize("offset", (0, 1))
 def test_domain_plotter_add_domain_to_map_vertices_single_marker_color_weight(
-    loop: np.typing.NDArray[np.float64], single_marker: np.typing.NDArray[np.int64], offset: int
+    loop: npt.NDArray[np.float64], single_marker: npt.NDArray[np.int64], offset: int
 ) -> None:
     """
     Test femlium.DomainPlotter.add_domain_to when providing vertices, a single vertex marker, uniform color & weight.
@@ -189,7 +189,7 @@ def test_domain_plotter_add_domain_to_map_vertices_single_marker_color_weight(
 
 
 def test_domain_plotter_add_domain_to_map_vertices_multiple_markers(
-    loop: np.typing.NDArray[np.float64], multiple_markers: np.typing.NDArray[np.int64]
+    loop: npt.NDArray[np.float64], multiple_markers: npt.NDArray[np.int64]
 ) -> None:
     """Test femlium.DomainPlotter.add_domain_to when providing vertices with different markers."""
     geo_map = folium.Map(location=[0, 0], zoom_start=8)
@@ -227,7 +227,7 @@ def test_domain_plotter_add_domain_to_map_vertices_multiple_markers(
 
 
 def test_domain_plotter_add_domain_to_map_vertices_multiple_markers_colors_weights(
-    loop: np.typing.NDArray[np.float64], multiple_markers: np.typing.NDArray[np.int64]
+    loop: npt.NDArray[np.float64], multiple_markers: npt.NDArray[np.int64]
 ) -> None:
     """Test femlium.DomainPlotter.add_domain_to when providing vertices with different markers, colors & weights."""
     geo_map = folium.Map(location=[0, 0], zoom_start=8)
@@ -275,7 +275,7 @@ def test_domain_plotter_add_domain_to_map_vertices_multiple_markers_colors_weigh
 
 
 def test_domain_plotter_add_domain_to_map_vertices_multiple_markers_missing_colors_weights(
-    loop: np.typing.NDArray[np.float64], multiple_markers: np.typing.NDArray[np.int64]
+    loop: npt.NDArray[np.float64], multiple_markers: npt.NDArray[np.int64]
 ) -> None:
     """
     Test femlium.DomainPlotter.add_domain_to when providing vertices with different markers with missing values.

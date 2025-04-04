@@ -9,32 +9,32 @@ import json
 
 import folium
 import numpy as np
-import numpy.typing
+import numpy.typing as npt
 import pytest
 
 import femlium
 
 
 @pytest.fixture
-def vertices() -> np.typing.NDArray[np.float64]:
+def vertices() -> npt.NDArray[np.float64]:
     """Vertices of a unit square domain divided in two triangular cells."""
     return np.array([[0., 0.], [1., 0.], [1., 1.], [0., 1.]])
 
 
 @pytest.fixture
-def cells() -> np.typing.NDArray[np.int64]:
+def cells() -> npt.NDArray[np.int64]:
     """Cells of a unit square domain divided in two triangular cells."""
     return np.array([[0, 1, 2], [0, 2, 3]], dtype=np.int64)
 
 
 @pytest.fixture
-def single_face_marker() -> np.typing.NDArray[np.int64]:
+def single_face_marker() -> npt.NDArray[np.int64]:
     """Face marker with a single value."""
     return np.zeros((2, 3), dtype=np.int64)
 
 
 @pytest.fixture
-def multiple_face_markers() -> np.typing.NDArray[np.int64]:
+def multiple_face_markers() -> npt.NDArray[np.int64]:
     """
     Face marker with a multiple values.
 
@@ -45,19 +45,19 @@ def multiple_face_markers() -> np.typing.NDArray[np.int64]:
 
 
 @pytest.fixture
-def single_cell_marker() -> np.typing.NDArray[np.int64]:
+def single_cell_marker() -> npt.NDArray[np.int64]:
     """Cell marker with a single value."""
     return np.zeros(2, dtype=np.int64)
 
 
 @pytest.fixture
-def multiple_cell_markers() -> np.typing.NDArray[np.int64]:
+def multiple_cell_markers() -> npt.NDArray[np.int64]:
     """Cell marker with a multiple values."""
     return np.array([1, 2], dtype=np.int64)
 
 
 def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_only(
-    vertices: np.typing.NDArray[np.float64], cells: np.typing.NDArray[np.int64]
+    vertices: npt.NDArray[np.float64], cells: npt.NDArray[np.int64]
 ) -> None:
     """Test femlium.BaseMeshPlotter.add_mesh_to providing only the required input arguments (vertices and cells)."""
     geo_map = folium.Map(location=[0, 0], zoom_start=8)
@@ -89,7 +89,7 @@ def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_only(
 
 
 def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_single_face_color_weight(
-    vertices: np.typing.NDArray[np.float64], cells: np.typing.NDArray[np.int64]
+    vertices: npt.NDArray[np.float64], cells: npt.NDArray[np.int64]
 ) -> None:
     """Test femlium.BaseMeshPlotter.add_mesh_to providing vertices, cells, a uniform face color & weight."""
     geo_map = folium.Map(location=[0, 0], zoom_start=8)
@@ -122,8 +122,8 @@ def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_single_face_color_weig
 
 @pytest.mark.parametrize("offset", (0, 1))
 def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_single_face_marker(
-    vertices: np.typing.NDArray[np.float64], cells: np.typing.NDArray[np.int64],
-    single_face_marker: np.typing.NDArray[np.int64], offset: int
+    vertices: npt.NDArray[np.float64], cells: npt.NDArray[np.int64],
+    single_face_marker: npt.NDArray[np.int64], offset: int
 ) -> None:
     """
     Test femlium.BaseMeshPlotter.add_mesh_to providing vertices, cells, and a single marker for all faces.
@@ -161,8 +161,8 @@ def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_single_face_marker(
 
 @pytest.mark.parametrize("offset", (0, 1))
 def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_single_face_marker_color_weight(
-    vertices: np.typing.NDArray[np.float64], cells: np.typing.NDArray[np.int64],
-    single_face_marker: np.typing.NDArray[np.int64], offset: int
+    vertices: npt.NDArray[np.float64], cells: npt.NDArray[np.int64],
+    single_face_marker: npt.NDArray[np.int64], offset: int
 ) -> None:
     """
     Test femlium.BaseMeshPlotter.add_mesh_to providing vertices, cells, a single face marker, uniform color & weight.
@@ -200,8 +200,8 @@ def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_single_face_marker_col
 
 
 def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_multiple_face_markers(
-    vertices: np.typing.NDArray[np.float64], cells: np.typing.NDArray[np.int64],
-    multiple_face_markers: np.typing.NDArray[np.int64]
+    vertices: npt.NDArray[np.float64], cells: npt.NDArray[np.int64],
+    multiple_face_markers: npt.NDArray[np.int64]
 ) -> None:
     """
     Test femlium.BaseMeshPlotter.add_mesh_to providing vertices, cells, where faces have different markers.
@@ -293,8 +293,8 @@ def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_multiple_face_markers(
 
 
 def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_multiple_face_markers_colors_weights(
-    vertices: np.typing.NDArray[np.float64], cells: np.typing.NDArray[np.int64],
-    multiple_face_markers: np.typing.NDArray[np.int64]
+    vertices: npt.NDArray[np.float64], cells: npt.NDArray[np.int64],
+    multiple_face_markers: npt.NDArray[np.int64]
 ) -> None:
     """
     Test femlium.BaseMeshPlotter.add_mesh_to providing vertices, cells, with multiple face markers & colors & weights.
@@ -402,8 +402,8 @@ def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_multiple_face_markers_
 
 
 def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_multiple_face_markers_missing_colors_weights(
-    vertices: np.typing.NDArray[np.float64], cells: np.typing.NDArray[np.int64],
-    multiple_face_markers: np.typing.NDArray[np.int64]
+    vertices: npt.NDArray[np.float64], cells: npt.NDArray[np.int64],
+    multiple_face_markers: npt.NDArray[np.int64]
 ) -> None:
     """
     Test femlium.BaseMeshPlotter.add_mesh_to providing vertices, cells, with multiple face markers with missing values.
@@ -504,7 +504,7 @@ def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_multiple_face_markers_
 
 
 def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_single_cell_color(
-    vertices: np.typing.NDArray[np.float64], cells: np.typing.NDArray[np.int64]
+    vertices: npt.NDArray[np.float64], cells: npt.NDArray[np.int64]
 ) -> None:
     """Test femlium.BaseMeshPlotter.add_mesh_to providing vertices, cells, and a uniform cell color."""
     geo_map = folium.Map(location=[0, 0], zoom_start=8)
@@ -537,8 +537,8 @@ def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_single_cell_color(
 
 @pytest.mark.parametrize("offset", (0, 1))
 def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_single_cell_marker(
-    vertices: np.typing.NDArray[np.float64], cells: np.typing.NDArray[np.int64],
-    single_cell_marker: np.typing.NDArray[np.int64], offset: int
+    vertices: npt.NDArray[np.float64], cells: npt.NDArray[np.int64],
+    single_cell_marker: npt.NDArray[np.int64], offset: int
 ) -> None:
     """
     Test femlium.BaseMeshPlotter.add_mesh_to providing vertices, cells, and a single marker for all cells.
@@ -577,8 +577,8 @@ def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_single_cell_marker(
 
 @pytest.mark.parametrize("offset", (0, 1))
 def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_single_cell_marker_color(
-    vertices: np.typing.NDArray[np.float64], cells: np.typing.NDArray[np.int64],
-    single_cell_marker: np.typing.NDArray[np.int64], offset: int
+    vertices: npt.NDArray[np.float64], cells: npt.NDArray[np.int64],
+    single_cell_marker: npt.NDArray[np.int64], offset: int
 ) -> None:
     """
     Test femlium.BaseMeshPlotter.add_mesh_to providing vertices, cells, and a single marker for all cells.
@@ -616,8 +616,8 @@ def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_single_cell_marker_col
 
 
 def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_multiple_cell_markers(
-    vertices: np.typing.NDArray[np.float64], cells: np.typing.NDArray[np.int64],
-    multiple_cell_markers: np.typing.NDArray[np.int64]
+    vertices: npt.NDArray[np.float64], cells: npt.NDArray[np.int64],
+    multiple_cell_markers: npt.NDArray[np.int64]
 ) -> None:
     """
     Test femlium.BaseMeshPlotter.add_mesh_to providing vertices, cells, where cells have different markers.
@@ -667,8 +667,8 @@ def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_multiple_cell_markers(
 
 
 def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_multiple_cell_markers_colors(
-    vertices: np.typing.NDArray[np.float64], cells: np.typing.NDArray[np.int64],
-    multiple_cell_markers: np.typing.NDArray[np.int64]
+    vertices: npt.NDArray[np.float64], cells: npt.NDArray[np.int64],
+    multiple_cell_markers: npt.NDArray[np.int64]
 ) -> None:
     """Test femlium.BaseMeshPlotter.add_mesh_to providing vertices, cells, with multiple cell markers & colors."""
     geo_map = folium.Map(location=[0, 0], zoom_start=8)
@@ -721,8 +721,8 @@ def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_multiple_cell_markers_
 
 
 def test_base_mesh_plotter_add_mesh_to_map_vertices_cells_multiple_cell_markers_missing_colors(
-    vertices: np.typing.NDArray[np.float64], cells: np.typing.NDArray[np.int64],
-    multiple_cell_markers: np.typing.NDArray[np.int64]
+    vertices: npt.NDArray[np.float64], cells: npt.NDArray[np.int64],
+    multiple_cell_markers: npt.NDArray[np.int64]
 ) -> None:
     """
     Test femlium.BaseMeshPlotter.add_mesh_to providing vertices, cells, with multiple cell markers with missing values.
