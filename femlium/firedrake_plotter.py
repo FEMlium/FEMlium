@@ -150,7 +150,7 @@ class FiredrakePlotter(BaseMeshPlotter, BaseSolutionPlotter):
         scalar_function_space = firedrake.FunctionSpace(mesh, "CG", 1)
         vertices = mesh.coordinates.dat.data_ro
         cells = mesh.coordinates.cell_node_map().values
-        scalar_field_values = firedrake.interpolate(scalar_field, scalar_function_space).vector().array()
+        scalar_field_values = firedrake.Function(scalar_function_space).interpolate(scalar_field).vector().array()
 
         return BaseSolutionPlotter.add_scalar_field_to(
             self, geo_map, vertices, cells, scalar_field_values, mode, levels, cmap, name)
@@ -193,8 +193,8 @@ class FiredrakePlotter(BaseMeshPlotter, BaseSolutionPlotter):
         vector_function_space = firedrake.VectorFunctionSpace(mesh, "CG", 1)
         vertices = mesh.coordinates.dat.data_ro
         cells = mesh.coordinates.cell_node_map().values
-        vector_field_values = firedrake.interpolate(
-            vector_field, vector_function_space).vector().array().reshape(-1, 2)
+        vector_field_values = firedrake.Function(
+            vector_function_space).interpolate(vector_field).vector().array().reshape(-1, 2)
 
         return BaseSolutionPlotter.add_vector_field_to(
             self, geo_map, vertices, cells, vector_field_values, mode, levels, scale, cmap, name)
