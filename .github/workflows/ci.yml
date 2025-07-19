@@ -26,19 +26,22 @@ jobs:
             setup_container: |
               export DEBIAN_FRONTEND="noninteractive"
               apt update -y -q
-              apt install -y -qq python3-mpi4py python3-numpy python3-pip xorg
+              apt install -y -qq python3-mpi4py python3-numpy python3-pip xorg xvfb
               rm /usr/lib/python3.*/EXTERNALLY-MANAGED
           - backend: dolfinx
             container: ghcr.io/fenics/dolfinx/dolfinx:nightly
             setup_git: ""
-            setup_container: ""
+            setup_container: |
+              export DEBIAN_FRONTEND="noninteractive"
+              apt update -y -q
+              apt install -y -qq xvfb
           - backend: firedrake
             container: firedrakeproject/firedrake-vanilla-default
             setup_git: ""
             setup_container: |
               export DEBIAN_FRONTEND="noninteractive"
               apt update -y -q
-              apt install -y -qq xorg
+              apt install -y -qq xorg xvfb
               rm /usr/lib/python3.*/EXTERNALLY-MANAGED
       fail-fast: false
     container: ${{ matrix.container }}
@@ -84,6 +87,8 @@ jobs:
           pattern: "tutorials/**/*.ipynb"
       - name: Run tutorials
         run: |
+          export DISPLAY=":99"
+          Xvfb $DISPLAY -screen 0 1024x768x24 > /dev/null 2>&1 &
           COVERAGE_FILE=.coverage_tutorials_${{ matrix.backend }} python3 -m pytest --coverage-source=femlium tutorials
       - name: Store coverage reports as artifact
         uses: actions/upload-artifact@v4
