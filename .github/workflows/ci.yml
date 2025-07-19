@@ -19,42 +19,56 @@ jobs:
         include:
           - backend: none
             container: debian:testing
-            setup_git: |
-              export DEBIAN_FRONTEND="noninteractive"
-              apt update -y -q
-              apt install -y -qq git
-            setup_container: |
-              export DEBIAN_FRONTEND="noninteractive"
-              apt update -y -q
-              apt install -y -qq python3-mpi4py python3-numpy python3-pip xorg xvfb
-              rm /usr/lib/python3.*/EXTERNALLY-MANAGED
-          - backend: dolfinx
+          - backend: dolfinx-v0.8.0
+            container: ghcr.io/fenics/dolfinx/dolfinx:v0.8.0
+          - backend: dolfinx-v0.9.0
+            container: ghcr.io/fenics/dolfinx/dolfinx:v0.9.0
+          - backend: dolfinx-nightly
             container: ghcr.io/fenics/dolfinx/dolfinx:nightly
-            setup_git: ""
-            setup_container: |
-              export DEBIAN_FRONTEND="noninteractive"
-              apt update -y -q
-              apt install -y -qq xvfb
-          - backend: firedrake
+          - backend: firedrake-2025.4.0
+            container: firedrakeproject/firedrake-vanilla-default:2025.4.0.post0
+          - backend: firedrake-2025.4.1
+            container: firedrakeproject/firedrake-vanilla-default:2025.4.1
+          - backend: firedrake-2025.4.2
+            container: firedrakeproject/firedrake-vanilla-default:2025.4.2
+          - backend: firedrake-nightly
             container: firedrakeproject/firedrake-vanilla-default
-            setup_git: ""
-            setup_container: |
-              export DEBIAN_FRONTEND="noninteractive"
-              apt update -y -q
-              apt install -y -qq xorg xvfb
-              rm /usr/lib/python3.*/EXTERNALLY-MANAGED
       fail-fast: false
     container: ${{ matrix.container }}
     steps:
       - name: Setup git
-        run: ${{ matrix.setup_git }}
+        run: |
+          export DEBIAN_FRONTEND="noninteractive"
+          apt update -y -q
+          apt install -y -qq git
       - uses: actions/checkout@v4
       - name: Setup container
-        run: ${{ matrix.setup_container }}
+        run: |
+          export DEBIAN_FRONTEND="noninteractive"
+          apt update -y -q
+          apt install -y -qq xvfb
+          if [[ "${{ matrix.backend }}" == "dolfinx"* ]]; then
+            :
+          elif [[ "${{ matrix.backend }}" == "firedrake"* ]]; then
+            apt install -y -qq xorg
+            rm /usr/lib/python3.*/EXTERNALLY-MANAGED
+          else
+            apt install -y -qq python3-mpi4py python3-numpy python3-pip xorg
+            rm /usr/lib/python3.*/EXTERNALLY-MANAGED
+          fi
+          if [[ "${{ matrix.backend }}" == "dolfinx-v0.8.0"* ]]; then
+            python3 -m pip uninstall -y ruff
+          fi
+        shell: bash
       - name: Install FEMlium
         run: |
-          BACKEND=backend_${{ matrix.backend }}
-          python3 -m pip install .[${BACKEND},docs,lint,tests,tutorials]
+          if [[ "${{ matrix.backend }}" == "dolfinx"* ]]; then
+            python3 -m pip install .[backend_dolfinx,docs,lint,tests,tutorials]
+          elif [[ "${{ matrix.backend }}" == "firedrake"* ]]; then
+            python3 -m pip install .[backend_firedrake,docs,lint,tests,tutorials]
+          else
+            python3 -m pip install .[docs,lint,tests,tutorials]
+          fi
       - name: Run ruff on python files
         run: |
           python3 -m ruff check .
