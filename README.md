@@ -7,4 +7,4 @@
 
 Like **folium**, **FEMlium** is freely available under the MIT license.
 
-Visit [femlium.github.io](https://femlium.github.io/) for more information.
+Visit [femlium.github.io](https://femlium.github.io/) for installation instructions and additional information.
