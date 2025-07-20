@@ -76,7 +76,7 @@ tutorials = [
     "gmsh",
     "meshio",
     "nbvalx[notebooks]",
-    "viskex @ git+https://github.com/viskex/viskex.git"
+    "viskex"
 ]
 
 [tool.coverage.paths]
