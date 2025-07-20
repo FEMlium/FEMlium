@@ -1,4 +1,4 @@
-name: FEMlium CI
+name: CI
 
 on:
   push:
