@@ -7,6 +7,29 @@ on:
   workflow_call:
 
 jobs:
+  test_0_1_0_installing_from_github:
+    uses: FEMlium/FEMlium/.github/workflows/ci.yml@v0.1.0
+    with:
+      ref: v0.1.0
+      combine_coverage: false
+
+  test_0_1_0_installing_from_pypi_versioned:
+    uses: FEMlium/FEMlium/.github/workflows/ci.yml@v0.1.0
+    with:
+      ref: v0.1.0
+      index: PyPI
+      index_version: 0.1.0
+      expected_index_version: 0.1.0
+      combine_coverage: false
+
+  test_0_1_0_installing_from_pypi_unversioned:
+    uses: FEMlium/FEMlium/.github/workflows/ci.yml@v0.1.0
+    with:
+      ref: v0.1.0
+      index: PyPI
+      expected_index_version: 0.1.0
+      combine_coverage: false
+
   warn:
     runs-on: ubuntu-latest
     if: github.repository == 'FEMlium/FEMlium' && github.ref == 'refs/heads/main' && github.event_name == 'schedule'
