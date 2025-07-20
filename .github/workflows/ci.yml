@@ -23,6 +23,8 @@ jobs:
             container: ghcr.io/fenics/dolfinx/dolfinx:v0.8.0
           - backend: dolfinx-v0.9.0
             container: ghcr.io/fenics/dolfinx/dolfinx:v0.9.0
+          - backend: dolfinx-stable
+            container: ghcr.io/fenics/dolfinx/dolfinx:stable
           - backend: dolfinx-nightly
             container: ghcr.io/fenics/dolfinx/dolfinx:nightly
           - backend: firedrake-2025.4.0
@@ -31,8 +33,8 @@ jobs:
             container: firedrakeproject/firedrake-vanilla-default:2025.4.1
           - backend: firedrake-2025.4.2
             container: firedrakeproject/firedrake-vanilla-default:2025.4.2
-          - backend: firedrake-nightly
-            container: firedrakeproject/firedrake-vanilla-default
+          - backend: firedrake-latest
+            container: firedrakeproject/firedrake-vanilla-default:latest
       fail-fast: false
     container: ${{ matrix.container }}
     steps:
