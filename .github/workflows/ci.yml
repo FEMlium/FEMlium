@@ -130,9 +130,9 @@ jobs:
             echo "Installing latest compatible version from ${INDEX}"
           fi
           if [[ "${{ matrix.backend }}" == "dolfinx"* ]]; then
-            PACKAGE_EXTRAS="backend_dolfinx,docs,lint,tests,tutorials"
+            PACKAGE_EXTRAS="backend-dolfinx,docs,lint,tests,tutorials"
           elif [[ "${{ matrix.backend }}" == "firedrake"* ]]; then
-            PACKAGE_EXTRAS="backend_firedrake,docs,lint,tests,tutorials"
+            PACKAGE_EXTRAS="backend-firedrake,docs,lint,tests,tutorials"
           else
             PACKAGE_EXTRAS="docs,lint,tests,tutorials"
           fi
@@ -149,9 +149,9 @@ jobs:
         if: inputs.index == ''
         run: |
           if [[ "${{ matrix.backend }}" == "dolfinx"* ]]; then
-            PACKAGE_EXTRAS="backend_dolfinx,docs,lint,tests,tutorials"
+            PACKAGE_EXTRAS="backend-dolfinx,docs,lint,tests,tutorials"
           elif [[ "${{ matrix.backend }}" == "firedrake"* ]]; then
-            PACKAGE_EXTRAS="backend_firedrake,docs,lint,tests,tutorials"
+            PACKAGE_EXTRAS="backend-firedrake,docs,lint,tests,tutorials"
           else
             PACKAGE_EXTRAS="docs,lint,tests,tutorials"
           fi
