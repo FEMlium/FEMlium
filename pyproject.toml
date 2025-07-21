@@ -76,6 +76,9 @@ tutorials = [
     "gmsh",
     "meshio",
     "nbvalx[notebooks]",
+    # cannot specify viskex[backend-{dolfinx,firedrake}] here without splitting the tutorials extra
+    # in two separate extras, one for each backend. If needed, manually add minimum required version
+    # of viskex that agrees with the constraints defined above for backend-{dolfinx,firedrake}.
     "viskex"
 ]
 
