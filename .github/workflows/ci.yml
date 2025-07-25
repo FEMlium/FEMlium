@@ -177,11 +177,6 @@ jobs:
       - name: Run unit tests
         run: |
           COVERAGE_FILE=.coverage_unit_${{ matrix.backend }} python3 -m coverage run --source=femlium -m pytest tests/unit
-      - name: Generate tutorial files
-        run: |
-          NO_TESTS_COLLECTED=5
-          python3 -m pytest --ipynb-action=create-notebooks tutorials || (($?==$NO_TESTS_COLLECTED))
-        shell: bash
       - name: Run ruff on tutorial files
         run: |
           python3 -m nbqa ruff .
