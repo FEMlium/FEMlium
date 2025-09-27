@@ -35,14 +35,6 @@ jobs:
       expected_index_version: 0.1.0
       combine_coverage: false
 
-  test_0_1_0_installing_from_pypi_unversioned:
-    uses: FEMlium/FEMlium/.github/workflows/ci.yml@v0.1.0.post0
-    with:
-      ref: v0.1.0.post0
-      index: PyPI
-      expected_index_version: 0.1.0
-      combine_coverage: false
-
   test_0_1_1_installing_from_github:
     uses: FEMlium/FEMlium/.github/workflows/ci.yml@v0.1.1
     with:
