@@ -10,6 +10,13 @@ on:
   schedule:
     - cron: "0 3 * * *"
   workflow_dispatch:
+    inputs:
+      index:
+        description: "The package index, e.g. PyPI or TestPyPI, from which to install the package. If empty, the package will not be installed from any package index, but from the current git clone"
+      index_version:
+        description: "The version of the package to be installed from the package index. If empty, the latest version will be installed. Only used when index is non empty."
+      expected_index_version:
+        description: "The expected version of the package when installed from the package index. If emtpy, no check is carried out. Only used when index is non empty."
   workflow_call:
     inputs:
       ref:
@@ -87,10 +94,10 @@ jobs:
           fi
         shell: bash
       - name: Wait for package index availability (PyPI and TestPyPI only)
-        if: inputs.index != '' && inputs.index_version != ''
+        if: (inputs || github.event.inputs).index != '' && (inputs || github.event.inputs).index_version != ''
         run: |
-          INDEX=${{ inputs.index }}
-          INDEX_VERSION=${{ inputs.index_version }}
+          INDEX=${{ (inputs || github.event.inputs).index }}
+          INDEX_VERSION=${{ (inputs || github.event.inputs).index_version }}
           PACKAGE_NAME="FEMlium"
           if [[ "${INDEX}" == "TestPyPI" ]]; then
             INDEX_URL=https://test.pypi.org
@@ -113,11 +120,11 @@ jobs:
           done
         shell: bash
       - name: Install FEMlium (PyPI and TestPyPI only)
-        if: inputs.index != ''
+        if: (inputs || github.event.inputs).index != ''
         run: |
-          INDEX=${{ inputs.index }}
-          INDEX_VERSION=${{ inputs.index_version }}
-          EXPECTED_INDEX_VERSION=${{ inputs.expected_index_version }}
+          INDEX=${{ (inputs || github.event.inputs).index }}
+          INDEX_VERSION=${{ (inputs || github.event.inputs).index_version }}
+          EXPECTED_INDEX_VERSION=${{ (inputs || github.event.inputs).expected_index_version }}
           PACKAGE_NAME="FEMlium"
           if [[ "${INDEX}" == "TestPyPI" ]]; then
             INDEX_FLAGS="--no-cache-dir --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/"
@@ -150,7 +157,7 @@ jobs:
           fi
         shell: bash
       - name: Install FEMlium (git clone only)
-        if: inputs.index == ''
+        if: (inputs || github.event.inputs).index == ''
         run: |
           if [[ "${{ matrix.backend }}" == "dolfinx"* ]]; then
             PACKAGE_EXTRAS="backend-dolfinx,docs,lint,tests,tutorials"
@@ -162,7 +169,7 @@ jobs:
           python3 -m pip install .[${PACKAGE_EXTRAS}]
         shell: bash
       - name: Clean build files (git clone only)
-        if: inputs.index == ''
+        if: (inputs || github.event.inputs).index == ''
         run: |
           git config --global --add safe.directory $PWD
           git clean -xdf
