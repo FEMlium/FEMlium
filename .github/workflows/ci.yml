@@ -53,6 +53,10 @@ jobs:
             container: firedrakeproject/firedrake-vanilla-default:2025.4.2
           - backend: firedrake-latest
             container: firedrakeproject/firedrake-vanilla-default:latest
+          - backend: firedrake-dev-release
+            container: firedrakeproject/firedrake-vanilla-default:dev-release
+          - backend: firedrake-dev-main
+            container: firedrakeproject/firedrake-vanilla-default:dev-main
       fail-fast: false
     container: ${{ matrix.container }}
     steps:
