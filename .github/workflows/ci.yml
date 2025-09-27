@@ -32,9 +32,8 @@ on:
         description: "The expected version of the package when installed from the package index. If emtpy, no check is carried out. Only used when index is non empty."
         type: string
       combine_coverage:
-        description: "Boolean indicating whether to combine coverage or not"
-        type: boolean
-        required: true
+        description: "Boolean (represented as a string) indicating whether to combine coverage or not. If empty, the value is assumed to be equal to true."
+        type: string
 
 jobs:
   test:
@@ -204,7 +203,7 @@ jobs:
           Xvfb $DISPLAY -screen 0 1024x768x24 > /dev/null 2>&1 &
           COVERAGE_FILE=.coverage_tutorials_${{ matrix.backend }} python3 -m pytest --coverage-source=femlium tutorials
       - name: Store coverage reports as artifact
-        if: github.event_name != 'workflow_call' || (github.event_name == 'workflow_call' && inputs.combine_coverage != 'false')
+        if: inputs.combine_coverage == '' || inputs.combine_coverage == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: coverage-${{ matrix.backend }}
@@ -225,7 +224,7 @@ jobs:
     runs-on: ubuntu-latest
     container: debian:testing
     needs: [test]
-    if: github.event_name != 'workflow_call' || (github.event_name == 'workflow_call' && inputs.combine_coverage != 'false')
+    if: inputs.combine_coverage == '' || inputs.combine_coverage == 'true'
     steps:
       - uses: actions/checkout@v4
       - name: Setup container
