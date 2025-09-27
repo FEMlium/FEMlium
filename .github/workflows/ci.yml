@@ -204,7 +204,7 @@ jobs:
           Xvfb $DISPLAY -screen 0 1024x768x24 > /dev/null 2>&1 &
           COVERAGE_FILE=.coverage_tutorials_${{ matrix.backend }} python3 -m pytest --coverage-source=femlium tutorials
       - name: Store coverage reports as artifact
-        if: github.event_name != 'workflow_call' || (github.event_name == 'workflow_call' && inputs.combine_coverage != false)
+        if: github.event_name != 'workflow_call' || (github.event_name == 'workflow_call' && inputs.combine_coverage != 'false')
         uses: actions/upload-artifact@v4
         with:
           name: coverage-${{ matrix.backend }}
@@ -225,7 +225,7 @@ jobs:
     runs-on: ubuntu-latest
     container: debian:testing
     needs: [test]
-    if: github.event_name != 'workflow_call' || (github.event_name == 'workflow_call' && inputs.combine_coverage != false)
+    if: github.event_name != 'workflow_call' || (github.event_name == 'workflow_call' && inputs.combine_coverage != 'false')
     steps:
       - uses: actions/checkout@v4
       - name: Setup container
