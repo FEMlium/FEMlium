@@ -5,7 +5,6 @@
 # SPDX-License-Identifier: MIT
 """Interface of a geographic plotter for dolfinx meshes and solutions."""
 
-import typing
 
 import dolfinx.cpp
 import dolfinx.fem
@@ -24,12 +23,12 @@ class DolfinxPlotter(BaseMeshPlotter, BaseSolutionPlotter):
 
     def add_mesh_to(
         self, geo_map: folium.Map, mesh: dolfinx.mesh.Mesh,
-        cell_mesh_tags: typing.Optional[dolfinx.cpp.mesh.MeshTags_int32] = None,
-        face_mesh_tags: typing.Optional[dolfinx.cpp.mesh.MeshTags_int32] = None,
-        unmarked_cell_marker: typing.Optional[int] = None, unmarked_face_marker: typing.Optional[int] = None,
-        cell_colors: typing.Optional[typing.Union[str, dict[int, str]]] = None,
-        face_colors: typing.Optional[typing.Union[str, dict[int, str]]] = None,
-        face_weights: typing.Optional[typing.Union[int, dict[int, int]]] = None
+        cell_mesh_tags: dolfinx.cpp.mesh.MeshTags_int32 | None = None,
+        face_mesh_tags: dolfinx.cpp.mesh.MeshTags_int32 | None = None,
+        unmarked_cell_marker: int | None = None, unmarked_face_marker: int | None = None,
+        cell_colors: str | dict[int, str] | None = None,
+        face_colors: str | dict[int, str] | None = None,
+        face_weights: int | dict[int, int] | None = None
     ) -> None:
         """
         Add a triangular mesh stored in a dolfinx.Mesh to a folium map.
@@ -115,9 +114,9 @@ class DolfinxPlotter(BaseMeshPlotter, BaseSolutionPlotter):
             self, geo_map, vertices, cells, cell_markers, face_markers, cell_colors, face_colors, face_weights)
 
     def add_scalar_field_to(
-        self, geo_map: folium.Map, scalar_field: dolfinx.fem.Function, mode: typing.Optional[str] = None,
-        levels: typing.Optional[typing.Union[int, list[float]]] = None,
-        cmap: typing.Optional[str] = None, name: typing.Optional[str] = None
+        self, geo_map: folium.Map, scalar_field: dolfinx.fem.Function, mode: str | None = None,
+        levels: int | list[float] | None = None,
+        cmap: str | None = None, name: str | None = None
     ) -> None:
         """
         Add a scalar field to a folium map.
@@ -153,9 +152,9 @@ class DolfinxPlotter(BaseMeshPlotter, BaseSolutionPlotter):
             self, geo_map, vertices, cells, scalar_field_values, mode, levels, cmap, name)
 
     def add_vector_field_to(
-        self, geo_map: folium.Map, vector_field: dolfinx.fem.Function, mode: typing.Optional[str] = None,
-        levels: typing.Optional[typing.Union[int, list[float]]] = None, scale: typing.Optional[float] = None,
-        cmap: typing.Optional[str] = None, name: typing.Optional[str] = None
+        self, geo_map: folium.Map, vector_field: dolfinx.fem.Function, mode: str | None = None,
+        levels: int | list[float] | None = None, scale: float | None = None,
+        cmap: str | None = None, name: str | None = None
     ) -> None:
         """
         Add a vector field to a folium map.

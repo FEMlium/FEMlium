@@ -21,11 +21,11 @@ class BaseMeshPlotter(BasePlotter):
 
     def add_mesh_to(
         self, geo_map: folium.Map, vertices: npt.NDArray[np.float64], cells: npt.NDArray[np.int64],
-        cell_markers: typing.Optional[npt.NDArray[np.int64]] = None,
-        face_markers: typing.Optional[npt.NDArray[np.int64]] = None,
-        cell_colors: typing.Optional[typing.Union[str, dict[int, str]]] = None,
-        face_colors: typing.Optional[typing.Union[str, dict[int, str]]] = None,
-        face_weights: typing.Optional[typing.Union[int, dict[int, int]]] = None
+        cell_markers: npt.NDArray[np.int64] | None = None,
+        face_markers: npt.NDArray[np.int64] | None = None,
+        cell_colors: str | dict[int, str] | None = None,
+        face_colors: str | dict[int, str] | None = None,
+        face_weights: int | dict[int, int] | None = None
     ) -> None:
         """
         Add a triangular mesh to a folium map.
@@ -140,8 +140,8 @@ class BaseMeshPlotter(BasePlotter):
     def _convert_mesh_to_geojson(
         self, vertices: npt.NDArray[np.float64], cells: npt.NDArray[np.int64],
         cell_markers: npt.NDArray[np.int64], face_markers: npt.NDArray[np.int64],
-        cell_colors: typing.Union[str, dict[int, str]], face_colors: typing.Union[str, dict[int, str]],
-        face_weights: typing.Union[int, dict[int, int]]
+        cell_colors: str | dict[int, str], face_colors: str | dict[int, str],
+        face_weights: int | dict[int, int]
     ) -> geojson.FeatureCollection:
         """
         Convert a mesh to a geojson FeatureCollection.

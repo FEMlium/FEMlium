@@ -21,9 +21,9 @@ class DomainPlotter(BasePlotter):
 
     def add_domain_to(
         self, geo_map: folium.Map, vertices: npt.NDArray[np.float64],
-        segment_markers: typing.Optional[npt.NDArray[np.int64]] = None,
-        colors: typing.Optional[typing.Union[str, dict[int, str]]] = None,
-        weights: typing.Optional[typing.Union[int, dict[int, int]]] = None
+        segment_markers: npt.NDArray[np.int64] | None = None,
+        colors: str | dict[int, str] | None = None,
+        weights: int | dict[int, int] | None = None
     ) -> None:
         """
         Add a domain to a folium map.
@@ -83,7 +83,7 @@ class DomainPlotter(BasePlotter):
 
     def _convert_domain_to_geojson(
         self, vertices: npt.NDArray[np.float64], segment_markers: npt.NDArray[np.int64],
-        colors: typing.Union[str, dict[int, str]], weights: typing.Union[int, dict[int, int]]
+        colors: str | dict[int, str], weights: int | dict[int, int]
     ) -> geojson.FeatureCollection:
         """
         Convert a domain to a geojson FeatureCollection.

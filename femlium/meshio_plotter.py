@@ -5,7 +5,6 @@
 # SPDX-License-Identifier: MIT
 """Interface of a geographic plotter for mesh-related plots for meshes read in with meshio."""
 
-import typing
 
 import folium
 import meshio
@@ -18,10 +17,10 @@ class MeshioPlotter(BaseMeshPlotter):
     """Interface of a geographic plotter for mesh-related plots for meshes read in with meshio."""
 
     def add_mesh_to(
-        self, geo_map: folium.Map, mesh: meshio.Mesh, unmarked_face_marker: typing.Optional[int] = None,
-        cell_colors: typing.Optional[typing.Union[str, dict[int, str]]] = None,
-        face_colors: typing.Optional[typing.Union[str, dict[int, str]]] = None,
-        face_weights: typing.Optional[typing.Union[int, dict[int, int]]] = None
+        self, geo_map: folium.Map, mesh: meshio.Mesh, unmarked_face_marker: int | None = None,
+        cell_colors: str | dict[int, str] | None = None,
+        face_colors: str | dict[int, str] | None = None,
+        face_weights: int | dict[int, int] | None = None
     ) -> None:
         """
         Add a triangular mesh imported from meshio to a folium map.

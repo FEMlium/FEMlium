@@ -31,7 +31,7 @@ class BasePlotter:
         Wrapper to the transformer object provided as first input parameter.
     """
 
-    def __init__(self, transformer: typing.Optional[pyproj.Transformer] = None) -> None:
+    def __init__(self, transformer: pyproj.Transformer | None = None) -> None:
         self.transformer = TransformerWrapper(transformer)
 
     @staticmethod
@@ -40,7 +40,7 @@ class BasePlotter:
     ) -> npt.NDArray[typing.Any]:
         """Fill optinal arguments related to markers with default value."""
         expected_type = type(default)
-        assert isinstance(argument, (expected_type, dict)) or argument is None
+        assert isinstance(argument, expected_type | dict) or argument is None
         if isinstance(argument, dict):
             assert all(isinstance(value, expected_type) for (_, value) in argument.items())
 

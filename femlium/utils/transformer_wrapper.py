@@ -5,7 +5,6 @@
 # SPDX-License-Identifier: MIT
 """Wrap a pyproj.Transformer object."""
 
-import typing
 
 import numpy as np
 import numpy.typing as npt
@@ -29,7 +28,7 @@ class TransformerWrapper:
         The first input parameter.
     """
 
-    def __init__(self, transformer: typing.Optional[pyproj.Transformer]) -> None:
+    def __init__(self, transformer: pyproj.Transformer | None) -> None:
         self.transformer = transformer
 
     def __call__(self, *args: np.float64) -> npt.NDArray[np.float64]:

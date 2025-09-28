@@ -24,9 +24,9 @@ class BaseSolutionPlotter(BasePlotter):
 
     def add_scalar_field_to(
         self, geo_map: folium.Map, vertices: npt.NDArray[np.float64], cells: npt.NDArray[np.int64],
-        scalar_field: npt.NDArray[np.float64], mode: typing.Optional[str] = None,
-        levels: typing.Optional[typing.Union[int, list[float]]] = None,
-        cmap: typing.Optional[str] = None, name: typing.Optional[str] = None
+        scalar_field: npt.NDArray[np.float64], mode: str | None = None,
+        levels: int | list[float] | None = None,
+        cmap: str | None = None, name: str | None = None
     ) -> None:
         """
         Add a scalar field to a folium map.
@@ -66,7 +66,7 @@ class BaseSolutionPlotter(BasePlotter):
 
         if levels is None:
             levels = 10
-        assert isinstance(levels, (int, list, np.ndarray))
+        assert isinstance(levels, int | list | np.ndarray)
         if isinstance(levels, int):
             levels = np.linspace(scalar_field.min(), scalar_field.max(), levels)
         elif isinstance(levels, list):
@@ -113,7 +113,7 @@ class BaseSolutionPlotter(BasePlotter):
 
     def _convert_scalar_field_to_geojson(
         self, vertices: npt.NDArray[np.float64], cells: npt.NDArray[np.int64],
-        scalar_field: npt.NDArray[np.float64], mode: str, levels: typing.Union[int, list[float]],
+        scalar_field: npt.NDArray[np.float64], mode: str, levels: int | list[float],
         colors: list[str]
     ) -> geojson.FeatureCollection:
         """
@@ -232,9 +232,9 @@ class BaseSolutionPlotter(BasePlotter):
 
     def add_vector_field_to(
         self, geo_map: folium.Map, vertices: npt.NDArray[np.float64], cells: npt.NDArray[np.int64],
-        vector_field: npt.NDArray[np.float64], mode: typing.Optional[str] = None,
-        levels: typing.Optional[typing.Union[int, list[float]]] = None, scale: typing.Optional[float] = None,
-        cmap: typing.Optional[str] = None, name: typing.Optional[str] = None
+        vector_field: npt.NDArray[np.float64], mode: str | None = None,
+        levels: int | list[float] | None = None, scale: float | None = None,
+        cmap: str | None = None, name: str | None = None
     ) -> None:
         """
         Add a vector field to a folium map.
@@ -280,7 +280,7 @@ class BaseSolutionPlotter(BasePlotter):
 
         if levels is None:
             levels = 10
-        assert isinstance(levels, (int, list, np.ndarray))
+        assert isinstance(levels, int | list | np.ndarray)
         if isinstance(levels, int):
             levels = np.linspace(vector_field_magnitude.min(), vector_field_magnitude.max(), levels)
         elif isinstance(levels, list):

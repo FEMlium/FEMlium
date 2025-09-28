@@ -47,9 +47,9 @@ class GeoJsonWithArrows(folium.elements.JSCSSMixin, folium.features.GeoJson):
 
     def __init__(
         self, data: typing.Any,  # noqa: ANN401
-        yawn: typing.Optional[int] = 60, size: typing.Optional[str] = "15%",
-        frequency: typing.Optional[str] = "allvertices",
-        proportionalToTotal: typing.Optional[bool] = False,   # noqa: N803
+        yawn: int | None = 60, size: str | None = "15%",
+        frequency: str | None = "allvertices",
+        proportionalToTotal: bool | None = False,   # noqa: N803
         **kwargs: typing.Any  # noqa: ANN401
     ) -> None:
         super().__init__(data, **kwargs)
