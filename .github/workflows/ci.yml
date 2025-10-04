@@ -57,6 +57,10 @@ jobs:
             container: firedrakeproject/firedrake-vanilla-default:2025.4.1
           - backend: firedrake-2025.4.2
             container: firedrakeproject/firedrake-vanilla-default:2025.4.2
+          - backend: firedrake-2025.4.3
+            container: firedrakeproject/firedrake-vanilla-default:2025.4.3
+          - backend: firedrake-2025.10.0
+            container: firedrakeproject/firedrake-vanilla-default:2025.10.0
           - backend: firedrake-latest
             container: firedrakeproject/firedrake-vanilla-default:latest
           - backend: firedrake-dev-release
