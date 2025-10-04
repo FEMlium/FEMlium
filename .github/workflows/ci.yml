@@ -51,8 +51,6 @@ jobs:
             container: firedrakeproject/firedrake-vanilla-default:2025.4.1
           - backend: firedrake-2025.4.2
             container: firedrakeproject/firedrake-vanilla-default:2025.4.2
-          - backend: firedrake-latest
-            container: firedrakeproject/firedrake-vanilla-default:latest
       fail-fast: false
     container: ${{ matrix.container }}
     steps:
