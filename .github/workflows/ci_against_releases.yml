@@ -21,15 +21,15 @@ jobs:
   # Test released versions on github or PyPI against the workflow on the corresponding git tag.
 
   test_0_1_0_installing_from_github:
-    uses: FEMlium/FEMlium/.github/workflows/ci.yml@v0.1.0.post0
+    uses: FEMlium/FEMlium/.github/workflows/ci.yml@v0.1.0.post1
     with:
-      ref: v0.1.0.post0
+      ref: v0.1.0.post1
       combine_coverage: false
 
   test_0_1_0_installing_from_pypi_versioned:
-    uses: FEMlium/FEMlium/.github/workflows/ci.yml@v0.1.0.post0
+    uses: FEMlium/FEMlium/.github/workflows/ci.yml@v0.1.0.post1
     with:
-      ref: v0.1.0.post0
+      ref: v0.1.0.post1
       index: PyPI
       index_version: 0.1.0
       expected_index_version: 0.1.0
