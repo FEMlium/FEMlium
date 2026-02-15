@@ -76,7 +76,7 @@ jobs:
         run: |
           export DEBIAN_FRONTEND="noninteractive"
           apt update -y -q
-          apt install -y -qq xvfb
+          apt install -y -qq libegl1 libgl1-mesa-dri
           if [[ "${{ matrix.backend }}" == "dolfinx"* ]]; then
             :
           elif [[ "${{ matrix.backend }}" == "firedrake"* ]]; then
@@ -197,9 +197,7 @@ jobs:
           pattern: "tutorials/**/*.ipynb"
       - name: Run tutorials
         run: |
-          export DISPLAY=":99"
-          Xvfb $DISPLAY -screen 0 1024x768x24 > /dev/null 2>&1 &
-          COVERAGE_FILE=.coverage_tutorials_${{ matrix.backend }} python3 -m pytest --coverage-source=femlium tutorials
+          COVERAGE_FILE=.coverage_tutorials_${{ matrix.backend }} VISKEX_PYVISTA_BACKEND="static" python3 -m pytest --coverage-source=femlium tutorials
       - name: Store coverage reports as artifact
         if: inputs.combine_coverage == '' || inputs.combine_coverage == 'true'
         uses: actions/upload-artifact@v4
