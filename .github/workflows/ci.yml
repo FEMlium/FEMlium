@@ -47,6 +47,8 @@ jobs:
             container: ghcr.io/fenics/dolfinx/dolfinx:v0.8.0
           - backend: dolfinx-v0.9.0
             container: ghcr.io/fenics/dolfinx/dolfinx:v0.9.0
+          - backend: dolfinx-v0.10.0
+            container: ghcr.io/fenics/dolfinx/dolfinx:v0.10.0
           - backend: dolfinx-stable
             container: ghcr.io/fenics/dolfinx/dolfinx:stable
           - backend: dolfinx-nightly
