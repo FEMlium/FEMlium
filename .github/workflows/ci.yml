@@ -71,7 +71,7 @@ jobs:
           export DEBIAN_FRONTEND="noninteractive"
           apt update -y -q
           apt install -y -qq git
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           ref: ${{ inputs.ref }}
       - name: Setup container
@@ -224,7 +224,7 @@ jobs:
     needs: [test]
     if: inputs.combine_coverage == '' || inputs.combine_coverage == 'true'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Setup container
         run: |
           export DEBIAN_FRONTEND="noninteractive"
