@@ -202,7 +202,7 @@ jobs:
           COVERAGE_FILE=.coverage_tutorials_${{ matrix.backend }} VISKEX_PYVISTA_BACKEND="static" python3 -m pytest --coverage-source=femlium tutorials
       - name: Store coverage reports as artifact
         if: inputs.combine_coverage == '' || inputs.combine_coverage == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-${{ matrix.backend }}
           path: |
@@ -211,7 +211,7 @@ jobs:
           retention-days: 1
       - name: Upload tutorials logs as an artifact in case of failure
         if: failure() || cancelled()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: "tutorials-logs-${{ matrix.backend }}"
           path: |
