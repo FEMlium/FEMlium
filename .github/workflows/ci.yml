@@ -71,7 +71,7 @@ jobs:
           export DEBIAN_FRONTEND="noninteractive"
           apt update -y -q
           apt install -y -qq ca-certificates git
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
         with:
           ref: ${{ inputs.ref }}
       - name: Setup container
@@ -194,7 +194,7 @@ jobs:
         run: |
           python3 -m nbqa isort --check --diff .
       - name: Check for stray outputs, counts and metadata in ipynb files
-        uses: RBniCS/check-jupyter-metadata-action@main
+        uses: RBniCS/check-jupyter-metadata-action@6df653e5d45f7620d888c6a1bd85d07b4f903045  # v1.0.0
         with:
           pattern: "tutorials/**/*.ipynb"
       - name: Run tutorials
@@ -202,7 +202,7 @@ jobs:
           COVERAGE_FILE=.coverage_tutorials_${{ matrix.backend }} VISKEX_PYVISTA_BACKEND="static" python3 -m pytest --coverage-source=femlium tutorials
       - name: Store coverage reports as artifact
         if: inputs.combine_coverage == '' || inputs.combine_coverage == 'true'
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
         with:
           name: coverage-${{ matrix.backend }}
           path: |
@@ -211,7 +211,7 @@ jobs:
           retention-days: 1
       - name: Upload tutorials logs as an artifact in case of failure
         if: failure() || cancelled()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
         with:
           name: "tutorials-logs-${{ matrix.backend }}"
           path: |
@@ -224,7 +224,7 @@ jobs:
     needs: [test]
     if: inputs.combine_coverage == '' || inputs.combine_coverage == 'true'
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
       - name: Setup container
         run: |
           export DEBIAN_FRONTEND="noninteractive"
@@ -233,7 +233,7 @@ jobs:
           rm /usr/lib/python3.*/EXTERNALLY-MANAGED
           python3 -m pip -q install coverage[toml]
       - name: Download coverage reports from artifacts
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
       - name: Combine coverage reports
         run: |
           python3 -m coverage combine coverage-*/.coverage*
@@ -244,7 +244,7 @@ jobs:
     if: github.repository == 'FEMlium/FEMlium' && github.ref == 'refs/heads/main' && github.event_name == 'schedule'
     steps:
       - name: Warn if scheduled workflow is about to be disabled
-        uses: fem-on-colab/warn-workflow-about-to-be-disabled-action@main
+        uses: fem-on-colab/warn-workflow-about-to-be-disabled-action@58c6022d9aeb22accfa8df9bf5b58c3d8867208c  # v1.0.0
         with:
           workflow-filename: ci.yml
           days-elapsed: 55
