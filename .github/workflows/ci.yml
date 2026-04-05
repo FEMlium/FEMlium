@@ -66,11 +66,11 @@ jobs:
       fail-fast: false
     container: ${{ matrix.container }}
     steps:
-      - name: Setup git
+      - name: Install git
         run: |
           export DEBIAN_FRONTEND="noninteractive"
           apt update -y -q
-          apt install -y -qq git
+          apt install -y -qq ca-certificates git
       - uses: actions/checkout@v6
         with:
           ref: ${{ inputs.ref }}
