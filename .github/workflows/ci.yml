@@ -55,8 +55,10 @@ jobs:
             container: ghcr.io/fenics/dolfinx/dolfinx:nightly
           - backend: firedrake-2025.4.3
             container: firedrakeproject/firedrake-vanilla-default:2025.4.3
-          - backend: firedrake-2025.10.2
-            container: firedrakeproject/firedrake-vanilla-default:2025.10.2
+          - backend: firedrake-2025.10.4
+            container: firedrakeproject/firedrake-vanilla-default:2025.10.4
+          - backend: firedrake-2026.4.0
+            container: firedrakeproject/firedrake-vanilla-default:2026.4.0
           - backend: firedrake-latest
             container: firedrakeproject/firedrake-vanilla-default:latest
           - backend: firedrake-dev-release
