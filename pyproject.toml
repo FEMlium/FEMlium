@@ -51,10 +51,12 @@ funding = "https://github.com/sponsors/francesco-ballarin"
 
 [project.optional-dependencies]
 backend-dolfinx = [
-    "fenics-dolfinx >= 0.10.0"
+    "fenics-dolfinx >= 0.10.0",
+    "viskex[backend-dolfinx]"
 ]
 backend-firedrake = [
-    "firedrake >= 2026.4.0"
+    "firedrake >= 2026.4.0",
+    "viskex[backend-firedrake]"
 ]
 docs = [
     "sphinx"
@@ -74,9 +76,6 @@ tutorials = [
     "gmsh",
     "meshio",
     "nbvalx[notebooks]",
-    # cannot specify viskex[backend-{dolfinx,firedrake}] here without splitting the tutorials extra
-    # in two separate extras, one for each backend. If needed, manually add minimum required version
-    # of viskex that agrees with the constraints defined above for backend-{dolfinx,firedrake}.
     "viskex"
 ]
 
