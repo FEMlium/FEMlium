@@ -37,14 +37,16 @@ jobs:
         include:
           - backend: none
             container: debian:testing
+            viskex_constraint: ""
           - backend: dolfinx-v0.8.0
             container: ghcr.io/fenics/dolfinx/dolfinx:v0.8.0
+            viskex_constraint: "viskex==0.1.0"
           - backend: dolfinx-v0.9.0
             container: ghcr.io/fenics/dolfinx/dolfinx:v0.9.0
-          - backend: dolfinx-stable
-            container: ghcr.io/fenics/dolfinx/dolfinx:stable
+            viskex_constraint: "viskex==0.2.1"
           - backend: firedrake-2025.4.3
             container: firedrakeproject/firedrake-vanilla-default:2025.4.3
+            viskex_constraint: "viskex==0.2.1"
       fail-fast: false
     container: ${{ matrix.container }}
     steps:
@@ -135,6 +137,11 @@ jobs:
           else
             CONSTRAINT_FLAGS=""
           fi
+          VISKEX_CONSTRAINT="${{ matrix.viskex_constraint }}"
+          if [[ -n "${VISKEX_CONSTRAINT}" ]]; then
+            echo "${VISKEX_CONSTRAINT}" > viskex_constraint.txt
+            CONSTRAINT_FLAGS="${CONSTRAINT_FLAGS} -c viskex_constraint.txt"
+          fi
           python3 -m pip install ${INDEX_FLAGS} ${CONSTRAINT_FLAGS} ${PACKAGE_NAME}[${PACKAGE_EXTRAS}]${PACKAGE_VERSION}
           if [[ -n "${EXPECTED_INDEX_VERSION}" ]]; then
             ACTUAL_INDEX_VERSION=$(python3 -c 'import importlib.metadata; print(importlib.metadata.version("FEMlium"))')
@@ -160,6 +167,11 @@ jobs:
             CONSTRAINT_FLAGS="-c firedrake_constraint.txt"
           else
             CONSTRAINT_FLAGS=""
+          fi
+          VISKEX_CONSTRAINT="${{ matrix.viskex_constraint }}"
+          if [[ -n "${VISKEX_CONSTRAINT}" ]]; then
+            echo "${VISKEX_CONSTRAINT}" > viskex_constraint.txt
+            CONSTRAINT_FLAGS="${CONSTRAINT_FLAGS} -c viskex_constraint.txt"
           fi
           python3 -m pip install ${CONSTRAINT_FLAGS} .[${PACKAGE_EXTRAS}]
         shell: bash
