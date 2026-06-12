@@ -53,6 +53,9 @@ jobs:
           - backend: dolfinx-v0.10.0
             container: ghcr.io/fenics/dolfinx/dolfinx:v0.10.0
             viskex_constraint: ""
+          - backend: dolfinx-v0.11.0
+            container: ghcr.io/fenics/dolfinx/dolfinx:v0.11.0
+            viskex_constraint: ""
           - backend: dolfinx-stable
             container: ghcr.io/fenics/dolfinx/dolfinx:stable
             viskex_constraint: ""
