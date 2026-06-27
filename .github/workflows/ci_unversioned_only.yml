@@ -1,0 +1,254 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - "**"
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+    inputs:
+      index:
+        description: "The package index, e.g. PyPI or TestPyPI, from which to install the package. If empty, the package will not be installed from any package index, but from the current git clone"
+      index_version:
+        description: "The version of the package to be installed from the package index. If empty, the latest version will be installed. Only used when index is non empty."
+      expected_index_version:
+        description: "The expected version of the package when installed from the package index. If emtpy, no check is carried out. Only used when index is non empty."
+  workflow_call:
+    inputs:
+      ref:
+        description: "The branch, tag or SHA to checkout"
+        type: string
+      index:
+        description: "The package index, e.g. PyPI or TestPyPI, from which to install the package. If empty, the package will not be installed from any package index, but from the current git clone"
+        type: string
+      index_version:
+        description: "The version of the package to be installed from the package index. If empty, the latest compatible version will be installed. Only used when index is non empty."
+        type: string
+      expected_index_version:
+        description: "The expected version of the package when installed from the package index. If emtpy, no check is carried out. Only used when index is non empty."
+        type: string
+      combine_coverage:
+        description: "Boolean (represented as a string) indicating whether to combine coverage or not. If empty, the value is assumed to be equal to true."
+        type: string
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - backend: dolfinx-v0.8.0
+            container: ghcr.io/fenics/dolfinx/dolfinx:v0.8.0
+            viskex_constraint: "viskex==0.1.0"
+          - backend: dolfinx-v0.9.0
+            container: ghcr.io/fenics/dolfinx/dolfinx:v0.9.0
+            viskex_constraint: "viskex==0.2.1"
+          - backend: firedrake-2025.4.3
+            container: firedrakeproject/firedrake-vanilla-default:2025.4.3
+            viskex_constraint: "viskex==0.2.1"
+          - backend: firedrake-2025.10.4
+            container: firedrakeproject/firedrake-vanilla-default:2025.10.4
+            viskex_constraint: "viskex==0.2.1"
+      fail-fast: false
+    container: ${{ matrix.container }}
+    steps:
+      - name: Install git
+        run: |
+          export DEBIAN_FRONTEND="noninteractive"
+          apt update -y -q
+          apt install -y -qq ca-certificates git
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        with:
+          ref: ${{ inputs.ref }}
+      - name: Setup container
+        run: |
+          export DEBIAN_FRONTEND="noninteractive"
+          apt update -y -q
+          apt install -y -qq libegl1 libgl1-mesa-dri
+          if [[ "${{ matrix.backend }}" == "dolfinx"* ]]; then
+            :
+          elif [[ "${{ matrix.backend }}" == "firedrake"* ]]; then
+            apt install -y -qq xorg
+            rm /usr/lib/python3.*/EXTERNALLY-MANAGED
+          else
+            apt install -y -qq python3-mpi4py python3-numpy python3-pip xorg
+            rm /usr/lib/python3.*/EXTERNALLY-MANAGED
+          fi
+          if [[ "${{ matrix.backend }}" == "dolfinx-v0.8.0"* ]]; then
+            python3 -m pip uninstall -y ruff
+          fi
+        shell: bash
+      - name: Wait for package index availability (PyPI and TestPyPI only)
+        if: (inputs || github.event.inputs).index != '' && (inputs || github.event.inputs).index_version != ''
+        run: |
+          INDEX=${{ (inputs || github.event.inputs).index }}
+          INDEX_VERSION=${{ (inputs || github.event.inputs).index_version }}
+          PACKAGE_NAME="FEMlium"
+          if [[ "${INDEX}" == "TestPyPI" ]]; then
+            INDEX_URL=https://test.pypi.org
+          elif [[ "${INDEX}" == "PyPI" ]]; then
+            INDEX_URL=https://pypi.org
+          else
+            echo "Invalid package index" && exit 1
+          fi
+          COUNTER=0
+          INDEX_VERSION_FOUND=0
+          while [[ ${INDEX_VERSION_FOUND} -ne 1 ]]; do
+            python3 -m pip install --no-cache-dir --index-url ${INDEX_URL}/simple/ ${PACKAGE_NAME}==0 2> all_${PACKAGE_NAME}_versions || true
+            if grep -q ${INDEX_VERSION} all_${PACKAGE_NAME}_versions; then
+              INDEX_VERSION_FOUND=1
+            fi
+            [[ ${INDEX_VERSION_FOUND} -ne 1 && ${COUNTER} -eq 5 ]] && echo "Giving up on finding version ${INDEX_VERSION} on ${INDEX_URL}" && exit 1
+            [[ ${INDEX_VERSION_FOUND} -ne 1 ]] && echo "Cannot find version ${INDEX_VERSION} on ${INDEX_URL}, attempt ${COUNTER}: trying again after a short pause" && sleep 10
+            [[ ${INDEX_VERSION_FOUND} -eq 1 ]] && echo "Found version ${INDEX_VERSION} on ${INDEX_URL}, attempt ${COUNTER}"
+            COUNTER=$((COUNTER+1))
+          done
+        shell: bash
+      - name: Install FEMlium (PyPI and TestPyPI only)
+        if: (inputs || github.event.inputs).index != ''
+        run: |
+          INDEX=${{ (inputs || github.event.inputs).index }}
+          INDEX_VERSION=${{ (inputs || github.event.inputs).index_version }}
+          EXPECTED_INDEX_VERSION=${{ (inputs || github.event.inputs).expected_index_version }}
+          PACKAGE_NAME="FEMlium"
+          if [[ "${INDEX}" == "TestPyPI" ]]; then
+            INDEX_FLAGS="--no-cache-dir --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/"
+          elif [[ "${INDEX}" == "PyPI" ]]; then
+            INDEX_FLAGS="--no-cache-dir"
+          else
+            echo "Invalid package index" && exit 1
+          fi
+          if [[ -n "${INDEX_VERSION}" ]]; then
+            PACKAGE_VERSION="==${INDEX_VERSION}"
+            echo "Installing version ${INDEX_VERSION} from ${INDEX}"
+          else
+            PACKAGE_VERSION=""
+            echo "Installing latest compatible version from ${INDEX}"
+          fi
+          if [[ "${{ matrix.backend }}" == "dolfinx"* ]]; then
+            PACKAGE_EXTRAS="backend-dolfinx,docs,lint,tests,tutorials"
+          elif [[ "${{ matrix.backend }}" == "firedrake"* ]]; then
+            PACKAGE_EXTRAS="backend-firedrake,docs,lint,tests,tutorials"
+          else
+            PACKAGE_EXTRAS="docs,lint,tests,tutorials"
+          fi
+          if [[ "${{ matrix.backend }}" == "firedrake"* ]]; then
+            FIREDRAKE_VERSION=$(python3 -c "import importlib.metadata; print(importlib.metadata.version('firedrake'))")
+            echo "firedrake==${FIREDRAKE_VERSION}" > firedrake_constraint.txt
+            CONSTRAINT_FLAGS="-c firedrake_constraint.txt"
+          else
+            CONSTRAINT_FLAGS=""
+          fi
+          VISKEX_CONSTRAINT="${{ matrix.viskex_constraint }}"
+          if [[ -n "${VISKEX_CONSTRAINT}" ]]; then
+            echo "${VISKEX_CONSTRAINT}" > viskex_constraint.txt
+            CONSTRAINT_FLAGS="${CONSTRAINT_FLAGS} -c viskex_constraint.txt"
+          fi
+          python3 -m pip install ${INDEX_FLAGS} ${CONSTRAINT_FLAGS} ${PACKAGE_NAME}[${PACKAGE_EXTRAS}]${PACKAGE_VERSION}
+          if [[ -n "${EXPECTED_INDEX_VERSION}" ]]; then
+            ACTUAL_INDEX_VERSION=$(python3 -c 'import importlib.metadata; print(importlib.metadata.version("FEMlium"))')
+            if [[ "${ACTUAL_INDEX_VERSION}" != "${EXPECTED_INDEX_VERSION}" ]]; then
+              echo "Error: installed ${PACKAGE_NAME} version is ${ACTUAL_INDEX_VERSION}, while expected version is ${EXPECTED_INDEX_VERSION}"
+              exit 1
+            fi
+          fi
+        shell: bash
+      - name: Install FEMlium (git clone only)
+        if: (inputs || github.event.inputs).index == ''
+        run: |
+          if [[ "${{ matrix.backend }}" == "dolfinx"* ]]; then
+            PACKAGE_EXTRAS="backend-dolfinx,docs,lint,tests,tutorials"
+          elif [[ "${{ matrix.backend }}" == "firedrake"* ]]; then
+            PACKAGE_EXTRAS="backend-firedrake,docs,lint,tests,tutorials"
+          else
+            PACKAGE_EXTRAS="docs,lint,tests,tutorials"
+          fi
+          if [[ "${{ matrix.backend }}" == "firedrake"* ]]; then
+            FIREDRAKE_VERSION=$(python3 -c "import importlib.metadata; print(importlib.metadata.version('firedrake'))")
+            echo "firedrake==${FIREDRAKE_VERSION}" > firedrake_constraint.txt
+            CONSTRAINT_FLAGS="-c firedrake_constraint.txt"
+          else
+            CONSTRAINT_FLAGS=""
+          fi
+          VISKEX_CONSTRAINT="${{ matrix.viskex_constraint }}"
+          if [[ -n "${VISKEX_CONSTRAINT}" ]]; then
+            echo "${VISKEX_CONSTRAINT}" > viskex_constraint.txt
+            CONSTRAINT_FLAGS="${CONSTRAINT_FLAGS} -c viskex_constraint.txt"
+          fi
+          python3 -m pip install ${CONSTRAINT_FLAGS} .[${PACKAGE_EXTRAS}]
+        shell: bash
+      - name: Clean build files (git clone only)
+        if: (inputs || github.event.inputs).index == ''
+        run: |
+          git config --global --add safe.directory $PWD
+          git clean -xdf
+      - name: Run ruff on python files
+        run: |
+          python3 -m ruff check .
+      - name: Run isort on python files
+        run: |
+          python3 -m isort --check --diff .
+      - name: Run yamllint on workflows
+        run: |
+          python3 -m yamllint -d "{extends: default, rules: {document-start: {present: false}, line-length: disable, truthy: {check-keys: false}}}" .
+      - name: Run documentation generation
+        run: |
+          cd docs && python3 -m sphinx -W -b html . build/html
+      - name: Run unit tests
+        run: |
+          COVERAGE_FILE=.coverage_unit_${{ matrix.backend }} python3 -m coverage run --source=femlium -m pytest tests/unit
+      - name: Run ruff on tutorial files
+        run: |
+          python3 -m nbqa ruff .
+      - name: Run isort on tutorial files
+        run: |
+          python3 -m nbqa isort --check --diff .
+      - name: Check for stray outputs, counts and metadata in ipynb files
+        uses: RBniCS/check-jupyter-metadata-action@6df653e5d45f7620d888c6a1bd85d07b4f903045  # v1.0.0
+        with:
+          pattern: "tutorials/**/*.ipynb"
+      - name: Run tutorials
+        run: |
+          COVERAGE_FILE=.coverage_tutorials_${{ matrix.backend }} VISKEX_PYVISTA_BACKEND="static" python3 -m pytest --coverage-source=femlium tutorials
+      - name: Store coverage reports as artifact
+        if: inputs.combine_coverage == '' || inputs.combine_coverage == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2
+        with:
+          name: coverage-${{ matrix.backend }}
+          path: |
+            .coverage*
+          include-hidden-files: true
+          retention-days: 1
+      - name: Upload tutorials logs as an artifact in case of failure
+        if: failure() || cancelled()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2
+        with:
+          name: "tutorials-logs-${{ matrix.backend }}"
+          path: |
+            tutorials/**/.ipynb_pytest/**/*.log*
+          include-hidden-files: true
+
+  combine_coverage:
+    runs-on: ubuntu-latest
+    container: debian:testing
+    needs: [test]
+    if: inputs.combine_coverage == '' || inputs.combine_coverage == 'true'
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4.3.1
+      - name: Setup container
+        run: |
+          export DEBIAN_FRONTEND="noninteractive"
+          apt update -y -q
+          apt install -y -qq python3-pip
+          rm /usr/lib/python3.*/EXTERNALLY-MANAGED
+          python3 -m pip -q install coverage[toml]
+      - name: Download coverage reports from artifacts
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093  # v4.3.0
+      - name: Combine coverage reports
+        run: |
+          python3 -m coverage combine coverage-*/.coverage*
+          python3 -m coverage report --fail-under=100 --show-missing --skip-covered
