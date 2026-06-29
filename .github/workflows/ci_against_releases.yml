@@ -51,7 +51,7 @@ jobs:
       combine_coverage: false
 
   test_0_1_1_installing_from_pypi_unversioned:
-    uses: FEMlium/FEMlium/.github/workflows/ci_unversioned_only.yml@v0.1.1.post6
+    uses: FEMlium/FEMlium/.github/workflows/ci_unversioned_only.yml@v0.1.2
     with:
       ref: v0.1.1.post6
       index: PyPI
