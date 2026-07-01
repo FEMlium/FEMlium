@@ -52,7 +52,7 @@ jobs:
             viskex_constraint: "viskex==0.2.1"
           - backend: dolfinx-v0.10.0
             container: ghcr.io/fenics/dolfinx/dolfinx:v0.10.0
-            viskex_constraint: ""
+            viskex_constraint: "viskex==0.2.2"
           - backend: dolfinx-v0.11.0
             container: ghcr.io/fenics/dolfinx/dolfinx:v0.11.0
             viskex_constraint: ""
