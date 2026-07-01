@@ -7,3 +7,4 @@ updates:
       day: "monday"
     ignore:
       - dependency-name: "FEMlium/FEMlium/.github/workflows/ci.yml"
+      - dependency-name: "FEMlium/FEMlium/.github/workflows/ci_unversioned_only.yml"
