@@ -43,8 +43,6 @@ jobs:
         include:
           - backend: none
             container: debian:testing
-          - backend: dolfinx-v0.10.0
-            container: ghcr.io/fenics/dolfinx/dolfinx:v0.10.0
           - backend: dolfinx-v0.11.0
             container: ghcr.io/fenics/dolfinx/dolfinx:v0.11.0
           - backend: dolfinx-stable
