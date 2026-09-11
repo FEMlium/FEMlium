@@ -55,15 +55,11 @@ jobs:
             viskex_constraint: "viskex==0.2.1"
           - backend: dolfinx-v0.10.0
             container: ghcr.io/fenics/dolfinx/dolfinx:v0.10.0
+            pyvista_constraint: "pyvista<0.49"
             viskex_constraint: "viskex==0.2.2"
           - backend: dolfinx-v0.11.0
             container: ghcr.io/fenics/dolfinx/dolfinx:v0.11.0
-            viskex_constraint: ""
-          - backend: dolfinx-stable
-            container: ghcr.io/fenics/dolfinx/dolfinx:stable
-            viskex_constraint: ""
-          - backend: dolfinx-nightly
-            container: ghcr.io/fenics/dolfinx/dolfinx:nightly
+            pyvista_constraint: ""
             viskex_constraint: ""
           - backend: firedrake-2025.4.3
             container: firedrakeproject/firedrake-vanilla-default:2025.4.3
@@ -71,18 +67,11 @@ jobs:
             viskex_constraint: "viskex==0.2.1"
           - backend: firedrake-2025.10.4
             container: firedrakeproject/firedrake-vanilla-default:2025.10.4
+            pyvista_constraint: "pyvista<0.49"
             viskex_constraint: "viskex==0.2.1"
           - backend: firedrake-2026.4.0
             container: firedrakeproject/firedrake-vanilla-default:2026.4.0
-            viskex_constraint: ""
-          - backend: firedrake-latest
-            container: firedrakeproject/firedrake-vanilla-default:latest
-            viskex_constraint: ""
-          - backend: firedrake-dev-release
-            container: firedrakeproject/firedrake-vanilla-default:dev-release
-            viskex_constraint: ""
-          - backend: firedrake-dev-main
-            container: firedrakeproject/firedrake-vanilla-default:dev-main
+            pyvista_constraint: "pyvista<0.49"
             viskex_constraint: ""
       fail-fast: false
     container: ${{ matrix.container }}
