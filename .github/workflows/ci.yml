@@ -37,15 +37,19 @@ jobs:
         include:
           - backend: none
             container: debian:testing
+            pyvista_constraint: ""
             viskex_constraint: ""
           - backend: dolfinx-v0.8.0
             container: ghcr.io/fenics/dolfinx/dolfinx:v0.8.0
+            pyvista_constraint: "pyvista<0.49"
             viskex_constraint: "viskex==0.1.0"
           - backend: dolfinx-v0.9.0
             container: ghcr.io/fenics/dolfinx/dolfinx:v0.9.0
+            pyvista_constraint: "pyvista<0.49"
             viskex_constraint: "viskex==0.2.1"
           - backend: firedrake-2025.4.3
             container: firedrakeproject/firedrake-vanilla-default:2025.4.3
+            pyvista_constraint: "pyvista<0.49"
             viskex_constraint: "viskex==0.2.1"
       fail-fast: false
     container: ${{ matrix.container }}
@@ -142,6 +146,11 @@ jobs:
             echo "${VISKEX_CONSTRAINT}" > viskex_constraint.txt
             CONSTRAINT_FLAGS="${CONSTRAINT_FLAGS} -c viskex_constraint.txt"
           fi
+          PYVISTA_CONSTRAINT="${{ matrix.pyvista_constraint }}"
+          if [[ -n "${PYVISTA_CONSTRAINT}" ]]; then
+            echo "${PYVISTA_CONSTRAINT}" > pyvista_constraint.txt
+            CONSTRAINT_FLAGS="${CONSTRAINT_FLAGS} -c pyvista_constraint.txt"
+          fi
           python3 -m pip install ${INDEX_FLAGS} ${CONSTRAINT_FLAGS} ${PACKAGE_NAME}[${PACKAGE_EXTRAS}]${PACKAGE_VERSION}
           if [[ -n "${EXPECTED_INDEX_VERSION}" ]]; then
             ACTUAL_INDEX_VERSION=$(python3 -c 'import importlib.metadata; print(importlib.metadata.version("FEMlium"))')
@@ -172,6 +181,11 @@ jobs:
           if [[ -n "${VISKEX_CONSTRAINT}" ]]; then
             echo "${VISKEX_CONSTRAINT}" > viskex_constraint.txt
             CONSTRAINT_FLAGS="${CONSTRAINT_FLAGS} -c viskex_constraint.txt"
+          fi
+          PYVISTA_CONSTRAINT="${{ matrix.pyvista_constraint }}"
+          if [[ -n "${PYVISTA_CONSTRAINT}" ]]; then
+            echo "${PYVISTA_CONSTRAINT}" > pyvista_constraint.txt
+            CONSTRAINT_FLAGS="${CONSTRAINT_FLAGS} -c pyvista_constraint.txt"
           fi
           python3 -m pip install ${CONSTRAINT_FLAGS} .[${PACKAGE_EXTRAS}]
         shell: bash
